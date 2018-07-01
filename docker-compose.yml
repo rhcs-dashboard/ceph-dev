@@ -1,0 +1,25 @@
+version: '2.1'
+
+services:
+    ceph:
+        build: ./docker/ceph
+        image: ceph-dev
+        container_name: ceph
+        hostname: ceph
+        domainname: dev
+        ports: ['${DASHBOARD_HOST_PORT}:4200']
+        volumes:
+            - ./docker/ceph:/docker
+            - ${CEPH_REPO_DIR}:/ceph
+            - ${HOST_CCACHE_DIR}:/root/.ccache
+        command: /docker/start.sh
+
+networks:
+    default:
+        driver: bridge
+        enable_ipv6: true
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.20.0.0/24
+                - subnet: 2600:3c02:e000:0058::/64
