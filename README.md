@@ -61,3 +61,10 @@ docker-compose down
 ```
 docker-compose exec ceph /docker/restart-dashboard.sh
 ```
+
+## Git hooks
+
+* Add pre-commit:
+```
+cp scripts/git/pre-commit.sh /path/to/your/local/ceph/.git/hooks/pre-commit
+```
