@@ -2,19 +2,26 @@
 
 set -e
 
-readonly TS_FILES=($(git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E "*\.ts$"))
-#echo "${#TS_FILES[@]}"
+echo 'Running pre-commit hook...'
 
-if [[ 0 < ${#TS_FILES[@]} ]]; then
-    cd src/pybind/mgr/dashboard/frontend
+readonly TS_FILES=($(git diff --cached --name-only --diff-filter=ACMRTUXB "*.ts" | tr '\n' ' '))
+echo "TS_FILES: ${#TS_FILES[@]}"
+readonly SCSS_FILES=($(git diff --cached --name-only --diff-filter=ACMRTUXB "*.scss" | tr '\n' ' '))
+echo "SCSS_FILES: ${#SCSS_FILES[@]}"
 
-    echo 'Running TypeScript checks...'
+cd src/pybind/mgr/dashboard/frontend
 
-    ng lint
+if [[ ! -z "$TS_FILES" || ! -z "$SCSS_FILES" ]]; then
+    echo 'Running Prettier...'
+    npm run makePretty --staged
 
-    echo 'Running Frontend unit tests...'
+    if [[ ! -z "$TS_FILES" ]]; then
+        echo 'Running TypeScript checks...'
+        ng lint
 
-    ./node_modules/jest/bin/jest.js
+        echo 'Running Frontend unit tests...'
+        ./node_modules/jest/bin/jest.js
+    fi
 fi
 
-echo 'Pre-commit checks passed! Congratulations!'
+echo 'Pre-commit hook successfully finished! Congratulations!'
