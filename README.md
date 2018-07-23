@@ -2,8 +2,6 @@
 
 ## Installation
 
-* Install [Docker Compose](https://docs.docker.com/compose/install/).
-
 * Clone Ceph:
 ```
 git clone git@github.com:ceph/ceph.git
@@ -17,11 +15,16 @@ mkdir -p ~/.ccache
 * Clone rhcs-dashboard/ceph-dev:
 ```
 git clone git@github.com:rhcs-dashboard/ceph-dev.git
+cd ceph-dev
+```
+
+* Install [Docker Compose](https://docs.docker.com/compose/install/). If your OS is Fedora, run this:
+```
+sudo bash ./scripts/docker/install-docker-compose-fedora.sh
 ```
 
 * Create *.env* file from template and set values:
 ```
-cd ceph-dev
 cp .env.example .env
 
 CEPH_REPO_DIR=/path/to/your/local/ceph/repo
