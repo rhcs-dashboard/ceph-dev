@@ -7,9 +7,10 @@
 git clone git@github.com:ceph/ceph.git
 ```
 
-* If it doesn't exist, create a local directory for **ccache**. Example:
+* If it doesn't exist, create a local directory for **ccache** and set initial configuration. Example:
 ```
-mkdir -p ~/.ccache
+mkdir ~/.ccache
+echo 'max_size = 50.0G' > ~/.ccache/ccache.conf
 ```
 
 * Clone rhcs-dashboard/ceph-dev:
@@ -50,7 +51,7 @@ docker-compose up -d ceph
 docker-compose logs -f ceph
 ```
 
-You can open the dashboard at http://localhost:$DASHBOARD_HOST_PORT when you see something like this in the logs:
+You can open the dashboard at http://localhost:$DASHBOARD_HOST_PORT when you see in the logs something like this:
 ```
 ceph    | ℹ ｢wdm｣: Compiled successfully.
 ```
