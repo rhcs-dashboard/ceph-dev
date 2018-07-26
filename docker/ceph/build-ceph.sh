@@ -14,6 +14,10 @@ export CCACHE_SLOPPINESS="time_macros"
 
 ./do_cmake.sh
 
-cd build
+cd /ceph/src/pybind/mgr/dashboard/frontend
+
+rm -rf node_modules package-lock.json
+
+cd /ceph/build
 
 ccache make -j $(nproc --ignore=2)
