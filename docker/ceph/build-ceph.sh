@@ -21,3 +21,5 @@ rm -rf node_modules package-lock.json
 cd /ceph/build
 
 ccache make -j $(nproc --ignore=2)
+
+echo "Ceph successfully built!!!"
