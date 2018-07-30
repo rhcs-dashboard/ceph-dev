@@ -19,6 +19,7 @@ RUN yum install -y boost-random btrfs-progs bzip2 ccache cmake3 cryptsetup CUnit
     && yum clean all
 
 ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
+ENV PYTHONDONTWRITEBYTECODE="1"
 
 RUN mkdir /ceph
 
