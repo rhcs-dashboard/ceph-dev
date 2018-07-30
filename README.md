@@ -72,3 +72,28 @@ docker-compose exec ceph /docker/restart-dashboard.sh
 ```
 cp scripts/git/pre-commit.sh /path/to/your/local/ceph/.git/hooks/pre-commit
 ```
+
+## Start Luminous using installed RPM version
+
+* Clone Ceph repo in directory called **luminous** and switch to branch v12.2.7:
+```
+git clone git@github.com:rhcs-dashboard/ceph-dev.git luminous
+git checkout v12.2.7
+```
+
+* In *.env* file (ceph-dev repo), set the following variable accordingly:
+```
+LUMINOUS_REPO_DIR=/path/to/your/local/luminous
+```
+
+* Create the luminous docker image:
+```
+docker-compose build
+```
+
+* Start luminous:
+```
+docker-compose up -d luminous
+```
+
+You can open the dashboard at http://localhost:$DASHBOARD_HOST_PORT.
