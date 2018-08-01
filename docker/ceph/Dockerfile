@@ -15,7 +15,7 @@ RUN yum install -y boost-random btrfs-progs bzip2 ccache cmake3 cryptsetup CUnit
     python-routes python-sphinx python-tox python-virtualenv python-werkzeug \
     python2-bcrypt python34-Cython python34-devel python34-setuptools rdma-core-devel \
     redhat-lsb-core redhat-rpm-config selinux-policy-devel sharutils snappy-devel socat \
-    systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlstarlet yasm \
+    systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlstarlet yasm wget \
     && yum clean all
 
 ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
