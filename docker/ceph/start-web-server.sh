@@ -2,13 +2,11 @@
 
 set -e
 
-cd /ceph/build
-
-readonly DASHBOARD_URL=$(./bin/ceph mgr services | jq .dashboard)
+readonly DASHBOARD_URL='"https://ceph.dev:11000"'
 
 cd /ceph/src/pybind/mgr/dashboard/frontend
 
-jq '.["/api/"].target'=$DASHBOARD_URL proxy.conf.json.sample | jq '.["/ui-api/"].target'=$DASHBOARD_URL > proxy.conf.json
+jq '.["/api/"].target'="$DASHBOARD_URL" proxy.conf.json.sample | jq '.["/ui-api/"].target'="$DASHBOARD_URL" > proxy.conf.json
 
 npm install
 

@@ -7,6 +7,10 @@ services:
         container_name: ceph
         hostname: ceph
         domainname: dev
+        networks:
+            default:
+                aliases:
+                    - 'ceph.dev'
         ports: ['${DASHBOARD_HOST_PORT}:4200']
         volumes:
             - ./docker/ceph:/docker
@@ -14,12 +18,56 @@ services:
             - ${HOST_CCACHE_DIR}:/root/.ccache
         command: /docker/start.sh
 
+    prometheus:
+        image: 'quay.io/prometheus/prometheus'
+        container_name: prometheus
+        hostname: prometheus
+        domainname: dev
+        networks:
+            default:
+                aliases:
+                    - 'prometheus.dev'
+        volumes:
+            - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+        depends_on:
+            - node-exporter
+
+    node-exporter:
+        image: 'quay.io/prometheus/node-exporter'
+        container_name: node-exporter
+        hostname: node-exporter
+        domainname: dev
+        networks:
+            default:
+                aliases:
+                    - 'node-exporter.dev'
+
+    grafana:
+      image: 'grafana/grafana'
+      container_name: grafana
+      hostname: grafana
+      domainname: dev
+      networks:
+          default:
+              aliases:
+                  - 'grafana.dev'
+      volumes:
+          - grafana_data:/var/lib/grafana
+          - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      depends_on:
+          - prometheus
+          - ceph
+
     luminous:
         build: ./docker/ceph/luminous
         image: luminous
         container_name: ceph
         hostname: ceph
         domainname: dev
+        networks:
+            default:
+                aliases:
+                    - 'luminous.dev'
         ports: ['${DASHBOARD_HOST_PORT}:7789']
         volumes:
             - ./docker/ceph:/docker
@@ -27,6 +75,9 @@ services:
         env_file:
             - .env
         command: /docker/luminous/start.sh
+
+volumes:
+    grafana_data:
 
 networks:
     default:

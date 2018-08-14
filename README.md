@@ -41,12 +41,17 @@ docker-compose run --rm ceph /docker/build-ceph.sh
 
 ## Usage
 
-* Start ceph & dashboard:
+* Start only ceph:
 ```
 docker-compose up -d ceph
 ```
 
-* Display logs:
+* Start ceph + grafana + prometheus + node-exporter:
+```
+docker-compose up -d grafana
+```
+
+* Display ceph logs:
 ```
 docker-compose logs -f ceph
 ```
@@ -66,12 +71,14 @@ docker-compose down
 docker-compose exec ceph /docker/restart-dashboard.sh
 ```
 
-## Git hooks
+## Grafana
 
-* Add pre-commit:
-```
-cp scripts/git/pre-commit.sh /path/to/your/local/ceph/.git/hooks/pre-commit
-```
+If you have started grafana, you can open it at:
+http://localhost:$DASHBOARD_HOST_PORT/api/grafana/proxy/ (trailing slash is required)
+
+Set Prometheus as data source using this url: http://prometheus.dev:9090
+
+Import dashboards by pasting the content of this [JSON file](https://github.com/ceph/ceph/blob/master/monitoring/grafana/dashboards/ceph-cluster.json).
 
 ## Start Luminous using installed RPM version
 
@@ -97,3 +104,10 @@ docker-compose up -d luminous
 ```
 
 You can open the dashboard at http://localhost:$DASHBOARD_HOST_PORT.
+
+## Git hooks
+
+* Add pre-commit:
+```
+cp scripts/git/pre-commit.sh /path/to/your/local/ceph/.git/hooks/pre-commit
+```
