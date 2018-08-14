@@ -49,6 +49,7 @@ if [[ ! -z "$TS_FILES" ]]; then
     ng lint
 
     echo 'Running Frontend unit tests...'
+    ./node_modules/jest/bin/jest.js --clearCache
     ./node_modules/jest/bin/jest.js
 
     cd -
