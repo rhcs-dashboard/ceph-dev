@@ -11,6 +11,8 @@ git clone git@github.com:ceph/ceph.git
 ```
 mkdir ~/.ccache
 echo 'max_size = 50.0G' > ~/.ccache/ccache.conf
+echo 'max_files = 0' > ~/.ccache/ccache.conf
+echo 'sloppiness = time_macros' > ~/.ccache/ccache.conf
 ```
 
 * Clone rhcs-dashboard/ceph-dev:
