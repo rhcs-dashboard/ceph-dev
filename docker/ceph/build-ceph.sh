@@ -16,7 +16,7 @@ export CCACHE_SLOPPINESS="time_macros"
 
 cd /ceph/src/pybind/mgr/dashboard/frontend
 
-rm -rf node_modules package-lock.json
+rm -rf node_modules
 
 cd /ceph/build
 
