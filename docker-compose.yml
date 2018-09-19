@@ -58,23 +58,23 @@ services:
           - prometheus
           - ceph
 
-    luminous:
-        build: ./docker/ceph/luminous
-        image: luminous
-        container_name: ceph
-        hostname: ceph
-        domainname: dev
-        networks:
-            default:
-                aliases:
-                    - 'luminous.dev'
-        ports: ['${DASHBOARD_HOST_PORT}:7789']
-        volumes:
-            - ./docker/ceph:/docker
-            - ${LUMINOUS_REPO_DIR}:/ceph
-        env_file:
-            - .env
-        command: /docker/luminous/start.sh
+#    luminous:
+#        build: ./docker/ceph/luminous
+#        image: luminous
+#        container_name: ceph
+#        hostname: ceph
+#        domainname: dev
+#        networks:
+#            default:
+#                aliases:
+#                    - 'luminous.dev'
+#        ports: ['${DASHBOARD_HOST_PORT}:7789']
+#        volumes:
+#            - ./docker/ceph:/docker
+#            - ${LUMINOUS_REPO_DIR}:/ceph
+#        env_file:
+#            - .env
+#        command: /docker/luminous/start.sh
 
 volumes:
     grafana_data:

@@ -95,9 +95,11 @@ git checkout v12.2.7
 LUMINOUS_REPO_DIR=/path/to/your/local/luminous
 ```
 
+* In *docker-compose.yml*, uncomment the **luminous** service.
+
 * Create the luminous docker image:
 ```
-docker-compose build
+docker-compose build luminous
 ```
 
 * Start luminous:
