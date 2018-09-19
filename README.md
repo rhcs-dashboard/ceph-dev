@@ -82,6 +82,27 @@ Set Prometheus as data source using this url: http://prometheus.dev:9090
 
 Import dashboards by pasting the content of this [JSON file](https://github.com/ceph/ceph/blob/master/monitoring/grafana/dashboards/ceph-cluster.json).
 
+## Teuthology (Ceph integration test framework)
+
+* Install Teuthology in a temporary folder and start a cluster:
+```
+docker-compose run --rm ceph bash
+cd src/pybind/mgr/dashboard
+source ./run-backend-api-tests.sh
+```
+
+* Run tests (example: only dashboard tests):
+```
+run_teuthology_tests tasks.mgr.dashboard.test_dashboard.DashboardTest
+```
+
+## Git hooks
+
+* Add pre-commit:
+```
+cp scripts/git/pre-commit.sh /path/to/your/local/ceph/.git/hooks/pre-commit
+```
+
 ## Start Luminous using installed RPM version
 
 * Clone Ceph repo in directory called **luminous** and switch to branch v12.2.7:
@@ -108,10 +129,3 @@ docker-compose up -d luminous
 ```
 
 You can open the dashboard at http://localhost:$DASHBOARD_HOST_PORT.
-
-## Git hooks
-
-* Add pre-commit:
-```
-cp scripts/git/pre-commit.sh /path/to/your/local/ceph/.git/hooks/pre-commit
-```
