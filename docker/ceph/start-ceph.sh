@@ -19,6 +19,6 @@ readonly SECRET_KEY=$(./bin/radosgw-admin user info --uid=dev | jq .keys[0].secr
 # Enable prometheus module
 ./bin/ceph mgr module enable prometheus
 
-# Configure grafana
-./bin/ceph dashboard set-grafana-api-url 'http://grafana.dev:3000'
-./bin/ceph dashboard set-grafana-api-auth-method 'password'
+# Add Grafana URL
+./bin/ceph dashboard set-grafana-api-url http://localhost:3000
+
