@@ -114,6 +114,7 @@ git checkout v12.2.7
 * In *.env* file (ceph-dev repo), set the following variable accordingly:
 ```
 LUMINOUS_REPO_DIR=/path/to/your/local/luminous
+LUMINOUS_START_FROM_RPM=1
 ```
 
 * In *docker-compose.yml*, uncomment the **luminous** service.
@@ -128,4 +129,4 @@ docker-compose build luminous
 docker-compose up -d luminous
 ```
 
-You can open the dashboard at http://localhost:$DASHBOARD_HOST_PORT.
+You can open the dashboard at http://localhost:11000.

@@ -61,14 +61,14 @@ services:
 #    luminous:
 #        build: ./docker/ceph/luminous
 #        image: luminous
-#        container_name: ceph
-#        hostname: ceph
+#        container_name: luminous
+#        hostname: luminous
 #        domainname: dev
 #        networks:
 #            default:
 #                aliases:
 #                    - 'luminous.dev'
-#        ports: ['${DASHBOARD_HOST_PORT}:7789']
+#        ports: ['11000:11000','${DASHBOARD_HOST_PORT}:4200']
 #        volumes:
 #            - ./docker/ceph:/docker
 #            - ${LUMINOUS_REPO_DIR}:/ceph
