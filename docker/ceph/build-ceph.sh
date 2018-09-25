@@ -4,7 +4,8 @@ set -e
 
 CEPH_DIR=/ceph
 
-$CEPH_DIR/install-deps.sh
+cd $CEPH_DIR
+./install-deps.sh
 
 rm -rf $CEPH_DIR/build
 
