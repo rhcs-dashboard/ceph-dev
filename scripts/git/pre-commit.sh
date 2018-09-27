@@ -7,6 +7,7 @@ echo 'Running pre-commit hook...'
 readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB "*.py" | tr '\n' ' ')
 readonly TS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB "*.ts" | tr '\n' ' ')
 readonly SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB "*.scss" | tr '\n' ' ')
+readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB "*.html" | tr '\n' ' ')
 
 if [[ ! -z "$PY_FILES" ]]; then
     #printf "PY_FILES:\n$PY_FILES\n\n"
@@ -42,15 +43,15 @@ if [[ ! -z "$TS_FILES" ]]; then
 
     cd src/pybind/mgr/dashboard/frontend
 
-    echo 'Running Prettier for .ts files...'
-    echo "$TS_FILES" | awk -F "/frontend/" '{print $2}' | xargs ./node_modules/.bin/prettier --write
-
-    echo 'Running TypeScript checks...'
-    ng lint
+    echo 'Running "ng lint"...'
+    ng lint ceph-dashboard ceph-dashboard-e2e --fix
 
     echo 'Running Frontend unit tests...'
     ./node_modules/jest/bin/jest.js --clearCache
     ./node_modules/jest/bin/jest.js
+
+    echo 'Running Prettier for .ts files...'
+    echo "$TS_FILES" | awk -F "/frontend/" '{print $2}' | xargs ./node_modules/.bin/prettier --write
 
     cd -
 
@@ -70,6 +71,17 @@ if [[ ! -z "$SCSS_FILES" ]]; then
 
     # Add Prettier changes to staging:
     echo "$SCSS_FILES" | xargs git add
+fi
+
+if [[ ! -z "$HTML_FILES" ]]; then
+    #printf "HTML_FILES:\n$HTML_FILES\n\n"
+
+    cd src/pybind/mgr/dashboard/frontend
+
+    echo 'Running html-linter for .html files...'
+    echo "$HTML_FILES" | awk -F "/frontend/" '{print $2}' | xargs ./node_modules/.bin/html-linter --config html-linter.config.json
+
+    cd -
 fi
 
 echo 'Pre-commit hook successfully finished! Congratulations!'
