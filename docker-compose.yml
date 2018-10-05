@@ -16,6 +16,8 @@ services:
             - ./docker/ceph:/docker
             - ${CEPH_REPO_DIR}:/ceph
             - ${HOST_CCACHE_DIR}:/root/.ccache
+        environment:
+            - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
         command: /docker/start.sh
 
     prometheus:
@@ -27,22 +29,9 @@ services:
             default:
                 aliases:
                     - 'prometheus.dev'
-        ports: ['9090:9090']
+        ports: ['${PROMETHEUS_HOST_PORT}:9090']
         volumes:
-            - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-        depends_on:
-            - node-exporter
-
-    node-exporter:
-        image: 'quay.io/prometheus/node-exporter'
-        container_name: node-exporter
-        hostname: node-exporter
-        domainname: dev
-        networks:
-            default:
-                aliases:
-                    - 'node-exporter.dev'
-        ports: ['9100:9100']
+            - ./docker/prometheus:/etc/prometheus:ro
 
     grafana:
         build: ./docker/grafana
@@ -54,7 +43,7 @@ services:
             default:
                 aliases:
                     - 'grafana.dev'
-        ports: ['3000:3000']
+        ports: ['${GRAFANA_HOST_PORT}:3000']
         volumes:
             - grafana_data:/var/lib/grafana
             - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
