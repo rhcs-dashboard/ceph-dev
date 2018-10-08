@@ -34,6 +34,8 @@ CEPH_REPO_DIR=/path/to/your/local/ceph/repo
 HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
 
 DASHBOARD_HOST_PORT=4200    (example: set 5200 if you want to open the dashboard at http://localhost:5200)
+GRAFANA_HOST_PORT=3000    (default: 3000)
+PROMETHEUS_HOST_PORT=9090    (default: 9090)
 ```
 
 * Build Ceph:
@@ -48,9 +50,9 @@ docker-compose run --rm ceph /docker/build-ceph.sh
 docker-compose up -d ceph
 ```
 
-* Start ceph + grafana + prometheus + node-exporter:
+* Start ceph + grafana + prometheus:
 ```
-docker-compose up -d grafana
+docker-compose up -d
 ```
 
 * Display ceph logs:
@@ -76,11 +78,12 @@ docker-compose exec ceph /docker/restart-dashboard.sh
 ## Grafana
 
 If you have started grafana, you can open it at:
-http://localhost:$DASHBOARD_HOST_PORT/api/grafana/proxy/ (trailing slash is required)
+http://localhost:$GRAFANA_HOST_PORT/login
 
-Set Prometheus as data source using this url: http://prometheus.dev:9090
+## Prometheus
 
-Import dashboards by pasting the content of this [JSON file](https://github.com/ceph/ceph/blob/master/monitoring/grafana/dashboards/ceph-cluster.json).
+If you have started prometheus, you can open it at:
+http://localhost:$PROMETHEUS_HOST_PORT
 
 ## Teuthology (Ceph integration test framework)
 

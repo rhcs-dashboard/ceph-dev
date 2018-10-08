@@ -21,6 +21,10 @@ RUN yum install -y boost-random btrfs-progs bzip2 ccache cmake3 cryptsetup CUnit
 ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
 ENV PYTHONDONTWRITEBYTECODE="1"
 
+RUN wget https://github.com/prometheus/node_exporter/releases/download/v0.16.0/node_exporter-0.16.0.linux-amd64.tar.gz \
+    && tar -xzvf node_exporter-0.16.0.linux-amd64.tar.gz \
+    && mv node_exporter-0.16.0.linux-amd64 /opt/node_exporter
+
 RUN mkdir /ceph
 
 WORKDIR /ceph
