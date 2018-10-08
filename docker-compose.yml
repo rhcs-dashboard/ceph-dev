@@ -2,8 +2,8 @@ version: '2.1'
 
 services:
     ceph:
-        build: ./docker/ceph
-        image: ceph-dev
+#        build: ./docker/ceph
+        image: rhcsdashboard/ceph
         container_name: ceph
         hostname: ceph
         domainname: dev
@@ -34,8 +34,8 @@ services:
             - ./docker/prometheus:/etc/prometheus:ro
 
     grafana:
-        build: ./docker/grafana
-        image: grafana-ceph
+#        build: ./docker/grafana
+        image: rhcsdashboard/grafana
         container_name: grafana
         hostname: grafana
         domainname: dev
@@ -52,8 +52,8 @@ services:
             - prometheus
 
 #    luminous:
-#        build: ./docker/ceph/luminous
-#        image: luminous
+##        build: ./docker/ceph/luminous
+#        image: rhcsdashboard/luminous
 #        container_name: luminous
 #        hostname: luminous
 #        domainname: dev

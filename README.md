@@ -38,12 +38,18 @@ GRAFANA_HOST_PORT=3000    (default: 3000)
 PROMETHEUS_HOST_PORT=9090    (default: 9090)
 ```
 
+* Log in to rhcs-dashboard docker registry and download images:
+```
+docker login -u rhcsdashboard
+docker-compose pull
+```
+
+## Usage
+
 * Build Ceph:
 ```
 docker-compose run --rm ceph /docker/build-ceph.sh
 ```
-
-## Usage
 
 * Start only ceph:
 ```
@@ -55,7 +61,7 @@ docker-compose up -d ceph
 docker-compose up -d
 ```
 
-* Display ceph logs:
+* Display ceph container logs:
 ```
 docker-compose logs -f ceph
 ```
@@ -104,6 +110,23 @@ run_teuthology_tests tasks.mgr.dashboard.test_dashboard.DashboardTest
 * Add pre-commit:
 ```
 cp scripts/git/pre-commit.sh /path/to/your/local/ceph/.git/hooks/pre-commit
+```
+
+## Build and push an image to docker registry:
+
+If you want to update an image, you'll have to edit image's Dockerfile and then:
+
+* Build image (example: rhcsdashboard/ceph):
+```
+docker build -t {imageName} {/path/to/DockerfileDirectory}
+docker build -t rhcsdashboard/ceph ./docker/ceph
+```
+
+* Log in to rhcs-dashboard docker registry and push image (example: rhcsdashboard/ceph):
+```
+docker login -u rhcsdashboard
+docker push {imageName}
+docker push rhcsdashboard/ceph
 ```
 
 ## Start Luminous using installed RPM version

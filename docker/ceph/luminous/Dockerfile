@@ -1,4 +1,4 @@
-FROM ceph-dev
+FROM rhcsdashboard/ceph
 
 RUN rpm --import https://download.ceph.com/keys/release.asc
 
