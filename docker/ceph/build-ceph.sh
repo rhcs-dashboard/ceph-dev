@@ -9,13 +9,14 @@ cd $CEPH_DIR
 
 rm -rf $CEPH_DIR/build
 
-$CEPH_DIR/do_cmake.sh
-
 # Tricks to improve CCACHE hit ratio
 export SOURCE_DATE_EPOCH=358228200
 export BUILD_DATE=$(date --utc --date=@${SOURCE_DATE_EPOCH} +%Y-%m-%d)
-export ARGS='-D ENABLE_GIT_VERSION=OFF'
 export CCACHE_SLOPPINESS="time_macros"
+export ARGS='-D ENABLE_GIT_VERSION=OFF'
+
+$CEPH_DIR/do_cmake.sh $ARGS
+
 
 rm -rf $CEPH_DIR/src/pybind/mgr/dashboard/frontend/node_modules
 
