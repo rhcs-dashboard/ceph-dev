@@ -44,6 +44,11 @@ docker login -u rhcsdashboard
 docker-compose pull
 ```
 
+* Optionally, set up git pre-commit hook:
+```
+cp scripts/git/pre-commit.sh /path/to/your/local/ceph/repo/.git/hooks/pre-commit
+```
+
 ## Usage
 
 * Build Ceph:
@@ -71,14 +76,23 @@ You can open the dashboard at http://localhost:$DASHBOARD_HOST_PORT when you see
 ceph    | ℹ ｢wdm｣: Compiled successfully.
 ```
 
+* Restart dashboard:
+```
+docker-compose exec ceph /docker/restart-dashboard.sh
+```
+
 * Stop all:
 ```
 docker-compose down
 ```
 
-* Restart dashboard:
+* Run pre-commit hook:
 ```
-docker-compose exec ceph /docker/restart-dashboard.sh
+# If hook has been set up:
+docker-compose run --rm ceph /ceph/.git/hooks/pre-commit
+
+# If hook hasn't been set up:
+docker-compose run --rm -v $(pwd)/scripts:/scripts ceph /scripts/git/pre-commit.sh
 ```
 
 ## Grafana
@@ -103,13 +117,6 @@ source ./run-backend-api-tests.sh
 * Run tests (example: only dashboard tests):
 ```
 run_teuthology_tests tasks.mgr.dashboard.test_dashboard.DashboardTest
-```
-
-## Git hooks
-
-* Add pre-commit:
-```
-cp scripts/git/pre-commit.sh /path/to/your/local/ceph/.git/hooks/pre-commit
 ```
 
 ## Build and push an image to docker registry:
