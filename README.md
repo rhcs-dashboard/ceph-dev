@@ -7,12 +7,9 @@
 git clone git@github.com:ceph/ceph.git
 ```
 
-* If it doesn't exist, create a local directory for **ccache** and set initial configuration. Example:
+* If it doesn't exist, create a local directory for **ccache**:
 ```
-mkdir ~/.ccache
-echo 'max_size = 50.0G' > ~/.ccache/ccache.conf
-echo 'max_files = 0' >> ~/.ccache/ccache.conf
-echo 'sloppiness = time_macros' >> ~/.ccache/ccache.conf
+mkdir -p ~/.ccache
 ```
 
 * Clone rhcs-dashboard/ceph-dev:
