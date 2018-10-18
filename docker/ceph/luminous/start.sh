@@ -32,5 +32,5 @@ else
 
     npm install
 
-    exec npm run-script start -- --host 0.0.0.0
+    exec npm run start
 fi

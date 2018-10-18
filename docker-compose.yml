@@ -65,6 +65,7 @@ services:
 #        volumes:
 #            - ./docker/ceph:/docker
 #            - ${LUMINOUS_REPO_DIR}:/ceph
+#            - ${HOST_CCACHE_DIR}:/root/.ccache
 #        env_file:
 #            - .env
 #        command: /docker/luminous/start.sh

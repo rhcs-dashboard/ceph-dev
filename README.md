@@ -141,7 +141,7 @@ git clone git@github.com:rhcs-dashboard/ceph-dev.git luminous
 git checkout v12.2.7
 ```
 
-* In *.env* file (ceph-dev repo), set the following variable accordingly:
+* In *.env* file (ceph-dev repo), set the following values:
 ```
 LUMINOUS_REPO_DIR=/path/to/your/local/luminous
 LUMINOUS_START_FROM_RPM=1
@@ -149,9 +149,9 @@ LUMINOUS_START_FROM_RPM=1
 
 * In *docker-compose.yml*, uncomment the **luminous** service.
 
-* Create the luminous docker image:
+* Download luminous docker image:
 ```
-docker-compose build luminous
+docker-compose pull
 ```
 
 * Start luminous:
