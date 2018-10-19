@@ -30,7 +30,7 @@ cp .env.example .env
 CEPH_REPO_DIR=/path/to/your/local/ceph/repo
 HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
 
-DASHBOARD_HOST_PORT=4200    (example: set 5200 if you want to open the dashboard at http://localhost:5200)
+DASHBOARD_HOST_PORT=4200    (example: set 5200 if you want to access the dashboard at http://localhost:5200)
 GRAFANA_HOST_PORT=3000    (default: 3000)
 PROMETHEUS_HOST_PORT=9090    (default: 9090)
 ```
@@ -68,11 +68,18 @@ docker-compose up -d
 docker-compose logs -f ceph
 ```
 
-You can open the proxied dashboard at http://localhost:$DASHBOARD_HOST_PORT
-when you see in the logs something like this:
+* Access proxied dashboard:
+
+When you see in the logs something like this:
 ```
 ceph    | ℹ ｢wdm｣: Compiled successfully.
 ```
+
+http://localhost:$DASHBOARD_HOST_PORT
+
+* Access dashboard:
+
+https://localhost:11000
 
 * Rebuild not proxied dashboard frontend:
 ```
@@ -100,12 +107,12 @@ docker-compose run --rm -v $(pwd)/scripts:/scripts ceph /scripts/git/pre-commit.
 
 ## Grafana
 
-If you have started grafana, you can open it at:
+If you have started grafana, you can access it at:
 http://localhost:$GRAFANA_HOST_PORT/login
 
 ## Prometheus
 
-If you have started prometheus, you can open it at:
+If you have started prometheus, you can access it at:
 http://localhost:$PROMETHEUS_HOST_PORT
 
 ## Teuthology (Ceph integration test framework)
@@ -164,5 +171,3 @@ docker-compose pull
 ```
 docker-compose up -d luminous
 ```
-
-You can open the dashboard at http://localhost:11000.
