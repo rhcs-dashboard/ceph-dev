@@ -68,9 +68,15 @@ docker-compose up -d
 docker-compose logs -f ceph
 ```
 
-You can open the dashboard at http://localhost:$DASHBOARD_HOST_PORT when you see in the logs something like this:
+You can open the proxied dashboard at http://localhost:$DASHBOARD_HOST_PORT
+when you see in the logs something like this:
 ```
 ceph    | ℹ ｢wdm｣: Compiled successfully.
+```
+
+* Rebuild not proxied dashboard frontend:
+```
+docker-compose exec ceph /docker/build-dashboard-frontend.sh
 ```
 
 * Restart dashboard:

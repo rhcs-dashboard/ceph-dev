@@ -11,7 +11,7 @@ services:
             default:
                 aliases:
                     - 'ceph.dev'
-        ports: ['${DASHBOARD_HOST_PORT}:4200']
+        ports: ['${DASHBOARD_HOST_PORT}:4200','11000:11000']
         volumes:
             - ./docker/ceph:/docker
             - ${CEPH_REPO_DIR}:/ceph
@@ -61,7 +61,7 @@ services:
 #            default:
 #                aliases:
 #                    - 'luminous.dev'
-#        ports: ['11000:11000','${DASHBOARD_HOST_PORT}:4200']
+#        ports: ['${DASHBOARD_HOST_PORT}:4200','11000:11000']
 #        volumes:
 #            - ./docker/ceph:/docker
 #            - ${LUMINOUS_REPO_DIR}:/ceph
