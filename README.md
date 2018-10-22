@@ -96,6 +96,11 @@ docker-compose exec ceph /docker/restart-dashboard.sh
 docker-compose down
 ```
 
+* Run sanity checks:
+```
+docker-compose run --rm ceph /docker/sanity-checks.sh
+```
+
 * Run pre-commit hook:
 ```
 # If hook has been set up:
