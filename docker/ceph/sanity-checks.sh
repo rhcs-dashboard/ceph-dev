@@ -65,6 +65,10 @@ run_tox() {
 
 echo 'Running Sanity checks...'
 
+cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+
+npm install
+
 run_npm_lint
 run_jest
 run_tox
