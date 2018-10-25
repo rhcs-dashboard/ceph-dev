@@ -30,9 +30,14 @@ cp .env.example .env
 CEPH_REPO_DIR=/path/to/your/local/ceph/repo
 HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
 
-DASHBOARD_HOST_PORT=4200    (example: set 5200 if you want to access the dashboard at http://localhost:5200)
-GRAFANA_HOST_PORT=3000    (default: 3000)
-PROMETHEUS_HOST_PORT=9090    (default: 9090)
+# Set 5200 if you want to access the dashboard proxy at http://localhost:5200
+CEPH_PROXY_HOST_PORT=4200
+# Set 11001 if you want to access the dashboard at https://localhost:11001
+CEPH_HOST_PORT=11000
+# default: 3000
+GRAFANA_HOST_PORT=3000
+# default: 9090
+PROMETHEUS_HOST_PORT=9090
 ```
 
 * Log in to rhcs-dashboard docker registry and download images:
@@ -75,11 +80,11 @@ When you see in the logs something like this:
 ceph    | ℹ ｢wdm｣: Compiled successfully.
 ```
 
-http://localhost:$DASHBOARD_HOST_PORT
+http://localhost:$CEPH_PROXY_HOST_PORT
 
 * Access dashboard:
 
-https://localhost:11000
+https://localhost:$CEPH_HOST_PORT
 
 * Rebuild not proxied dashboard frontend:
 ```
@@ -151,28 +156,20 @@ docker push {imageName}
 docker push rhcsdashboard/ceph
 ```
 
-## Start Luminous using installed RPM version
+## Start RHCS 3.2 RPM version
 
-* Clone Ceph repo in directory called **luminous** and switch to branch v12.2.7:
+* Optionally, set appropriate values in *.env*:
 ```
-git clone git@github.com:rhcs-dashboard/ceph-dev.git luminous
-git checkout v12.2.7
-```
-
-* In *.env* file (ceph-dev repo), set the following values:
-```
-LUMINOUS_REPO_DIR=/path/to/your/local/luminous
-LUMINOUS_START_FROM_RPM=1
+# default: 11032
+RHCS3_2_HOST_PORT=11032
 ```
 
-* In *docker-compose.yml*, uncomment the **luminous** service.
-
-* Download luminous docker image:
+* Start rhcs3.2:
 ```
-docker-compose pull
+docker-compose up -d --scale rhcs3.2=1
 ```
 
-* Start luminous:
+* Start rhcs3.2 but not ceph:
 ```
-docker-compose up -d luminous
+docker-compose up -d --scale rhcs3.2=1 --scale ceph=0
 ```

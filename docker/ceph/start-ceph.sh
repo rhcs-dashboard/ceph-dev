@@ -6,21 +6,30 @@ cd /ceph/build
 
 rm -rf out dev
 
-RGW=1 CEPH_PORT=10000 ../src/vstart.sh -d -n
+export CEPH_BIN="./bin"
+
+if [[ "$(yum list installed | grep ceph-mgr | wc -l)" == '1' ]]; then
+    export CEPH_BIN=/usr/bin
+    export CEPH_LIB=/usr/lib64
+    export EC_PATH="$CEPH_LIB"/ceph/erasure-code
+    export OBJCLASS_PATH="$CEPH_LIB"/rados-classes
+    export MGR_PYTHON_PATH="$CEPH_LIB"/ceph/mgr
+fi
+
+MGR=1 RGW=1 CEPH_PORT=10000 ../src/vstart.sh -d -n
+
+echo 'vstart.sh completed!'
 
 # Enable the Object Gateway management frontend
-./bin/radosgw-admin user create --uid=dev --display-name=Dev --system
-./bin/ceph dashboard set-rgw-api-user-id dev
-readonly ACCESS_KEY=$(./bin/radosgw-admin user info --uid=dev | jq .keys[0].access_key | sed -e 's/^"//' -e 's/"$//')
-readonly SECRET_KEY=$(./bin/radosgw-admin user info --uid=dev | jq .keys[0].secret_key | sed -e 's/^"//' -e 's/"$//')
-./bin/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
-./bin/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
+"$CEPH_BIN"/radosgw-admin user create --uid=dev --display-name=Dev --system
+"$CEPH_BIN"/ceph dashboard set-rgw-api-user-id dev
+readonly ACCESS_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].access_key | sed -e 's/^"//' -e 's/"$//')
+readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].secret_key | sed -e 's/^"//' -e 's/"$//')
+"$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
+"$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
 
 # Enable prometheus module
-./bin/ceph mgr module enable prometheus
+"$CEPH_BIN"/ceph mgr module enable prometheus
 
 # Configure grafana
-./bin/ceph dashboard set-grafana-api-url "http://localhost:$GRAFANA_HOST_PORT"
-
-# Start node_exporter
-/opt/node_exporter/node_exporter &
+"$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://localhost:$GRAFANA_HOST_PORT"

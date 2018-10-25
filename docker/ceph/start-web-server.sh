@@ -2,7 +2,7 @@
 
 set -e
 
-readonly DASHBOARD_URL='"https://ceph.dev:11000"'
+readonly DASHBOARD_URL="\"https://$(hostname):11000\""
 
 cd /ceph/src/pybind/mgr/dashboard/frontend
 
