@@ -20,16 +20,18 @@ MGR=1 RGW=1 CEPH_PORT=10000 ../src/vstart.sh -d -n
 
 echo 'vstart.sh completed!'
 
-# Enable the Object Gateway management frontend
-"$CEPH_BIN"/radosgw-admin user create --uid=dev --display-name=Dev --system
-"$CEPH_BIN"/ceph dashboard set-rgw-api-user-id dev
-readonly ACCESS_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].access_key | sed -e 's/^"//' -e 's/"$//')
-readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].secret_key | sed -e 's/^"//' -e 's/"$//')
-"$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
-"$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
-
 # Enable prometheus module
-"$CEPH_BIN"/ceph mgr module enable prometheus
+"$CEPH_BIN"/ceph -c /ceph/build/ceph.conf mgr module enable prometheus
 
-# Configure grafana
-"$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://localhost:$GRAFANA_HOST_PORT"
+if [[ "$(hostname)" != 'luminous.dev' ]]; then
+    # Enable the Object Gateway management frontend
+    "$CEPH_BIN"/radosgw-admin user create --uid=dev --display-name=Dev --system
+    "$CEPH_BIN"/ceph dashboard set-rgw-api-user-id dev
+    readonly ACCESS_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].access_key | sed -e 's/^"//' -e 's/"$//')
+    readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].secret_key | sed -e 's/^"//' -e 's/"$//')
+    "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
+    "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
+
+    # Configure grafana
+    "$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://localhost:$GRAFANA_HOST_PORT"
+fi

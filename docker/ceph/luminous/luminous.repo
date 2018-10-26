@@ -1,0 +1,6 @@
+[luminous]
+name=Ceph Luminous
+baseurl=https://download.ceph.com/rpm-luminous/el7/x86_64/
+enabled=1
+gpgcheck=0
+exclude=*12.2.9*,*12.2.1*

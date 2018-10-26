@@ -10,5 +10,11 @@
         "labels": {
             "instance": "rhcs3.2"
         }
+    },
+    {
+        "targets": [ "luminous:9100" ],
+        "labels": {
+            "instance": "luminous"
+        }
     }
 ]
