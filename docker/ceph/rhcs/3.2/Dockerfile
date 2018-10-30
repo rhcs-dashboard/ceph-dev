@@ -10,7 +10,7 @@ RUN curl -LsS https://github.com/prometheus/node_exporter/releases/download/v0.1
     && rm node_exporter-0.16.0.linux-amd64.tar.gz \
     && mv node_exporter-0.16.0.linux-amd64 /opt/node_exporter
 
-RUN curl -LsS http://brew-task-repos.usersys.redhat.com/repos/scratch/tjeyasin/ceph/12.2.8/19.el7cp/ceph-12.2.8-19.el7cp-scratch.repo \
+RUN curl -LsS http://brew-task-repos.usersys.redhat.com/repos/scratch/tjeyasin/ceph/12.2.8/23.el7cp/ceph-12.2.8-23.el7cp-scratch.repo \
     -o /etc/yum.repos.d/rhcs3-2.repo
 
 RUN yum install -y ceph-mds ceph-mgr ceph-mon ceph-osd ceph-radosgw && yum clean all
