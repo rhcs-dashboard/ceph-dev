@@ -83,7 +83,8 @@ services:
         volumes:
             - grafana_data:/var/lib/grafana
             - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
-            - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+            - ./docker/grafana/provisioning:/etc/grafana/provisioning
+            - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:ro
         depends_on:
             - prometheus
 
