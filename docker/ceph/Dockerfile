@@ -24,6 +24,10 @@ RUN curl -LsS -o node_exporter.tar.gz \
     && tar -xzvf node_exporter.tar.gz --strip 1 -C /opt/node_exporter \
     && rm node_exporter.tar.gz
 
+COPY e2e/google-chrome.repo /etc/yum.repos.d
+
+RUN yum install -y google-chrome-stable && yum clean all
+
 RUN mkdir /ceph
 
 WORKDIR /ceph

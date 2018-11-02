@@ -40,9 +40,8 @@ GRAFANA_HOST_PORT=3000
 PROMETHEUS_HOST_PORT=9090
 ```
 
-* Log in to rhcs-dashboard docker registry and download images:
+* Download docker images:
 ```
-docker login -u rhcsdashboard
 docker-compose pull
 ```
 
@@ -94,6 +93,11 @@ docker-compose exec ceph /docker/build-dashboard-frontend.sh
 * Restart dashboard:
 ```
 docker-compose exec ceph /docker/restart-dashboard.sh
+```
+
+* Run frontend E2E tests:
+```
+docker-compose exec ceph /docker/e2e/run-frontend-e2e-tests.sh
 ```
 
 * Stop all:
