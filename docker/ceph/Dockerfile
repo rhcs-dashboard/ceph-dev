@@ -4,24 +4,25 @@ RUN curl -LsS https://rpm.nodesource.com/setup_8.x | bash -
 
 RUN yum install -y nodejs && yum clean all
 
-RUN yum install -y centos-release-scl epel-release && yum clean all
+RUN yum install -y centos-release-scl deltarpm epel-release && yum clean all
 
 RUN yum install -y boost-random btrfs-progs bzip2 ccache cmake cmake3 cryptsetup CUnit-devel Cython \
-    devtoolset-7 expat-devel fuse-devel gcc-c++ git gperf gperftools-devel iproute java-1.8.0-openjdk-devel \
+    devtoolset-7-gcc-c++ expat-devel fuse-devel gcc-c++ git gperf gperftools-devel iproute java-1.8.0-openjdk-devel \
     jq junit keyutils-libs-devel leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
     libcurl-devel liboath-devel libtool libuuid-devel libxml2-devel lttng-ust-devel lz4-devel mailcap \
     net-tools nss-devel openldap-devel openssl-devel parted python-cherrypy python-coverage python-devel \
-    python-nose python-pecan python-prettytable python-requests \
+    python-jwt python-nose python-pecan python-prettytable python-requests \
     python-routes python-sphinx python-tox python-virtualenv python-werkzeug \
     python2-bcrypt python34-Cython python34-devel python34-setuptools rdma-core-devel \
     redhat-lsb-core redhat-rpm-config selinux-policy-devel selinux-policy-doc sharutils snappy-devel socat \
     systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlstarlet yasm yum-utils wget \
     && yum clean all
 
-RUN wget https://github.com/prometheus/node_exporter/releases/download/v0.16.0/node_exporter-0.16.0.linux-amd64.tar.gz \
-    && tar -xzvf node_exporter-0.16.0.linux-amd64.tar.gz \
-    && rm node_exporter-0.16.0.linux-amd64.tar.gz \
-    && mv node_exporter-0.16.0.linux-amd64 /opt/node_exporter
+RUN curl -LsS -o node_exporter.tar.gz \
+    https://github.com/prometheus/node_exporter/releases/download/v0.16.0/node_exporter-0.16.0.linux-amd64.tar.gz \
+    && mkdir /opt/node_exporter \
+    && tar -xzvf node_exporter.tar.gz --strip 1 -C /opt/node_exporter \
+    && rm node_exporter.tar.gz
 
 RUN mkdir /ceph
 
