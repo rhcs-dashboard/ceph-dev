@@ -11,6 +11,10 @@ readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*
 run_tox() {
     echo 'Setting up Python Virtual Env...'
 
+    # Cleanup
+    cd "$REPO_DIR"
+    find . -iname "*.pyc" -delete
+
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/
     mkdir -p .tox
     chmod 777 .tox
