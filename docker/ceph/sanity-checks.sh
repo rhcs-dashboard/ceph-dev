@@ -25,40 +25,19 @@ run_jest() {
 }
 
 run_tox() {
-    echo 'Setting up Python Virtual Env...'
+    echo 'Running Tox...'
 
     # Cleanup
     cd "$REPO_DIR"
     find . -iname "*.pyc" -delete
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/
+
     mkdir -p .tox
     chmod 777 .tox
 
-    PYTHON_VIRTUAL_ENV='.tox/venv-pre-commit'
-    if [ -d '/docker' ]; then
-        PYTHON_VIRTUAL_ENV="$PYTHON_VIRTUAL_ENV-docker"
-    fi
-    if [ ! -d "$PYTHON_VIRTUAL_ENV" ]; then
-        if [ "$(python -V)" == *"Python 3"* ]; then
-            PYTHON_VIRTUAL_ENV="$PYTHON_VIRTUAL_ENV-py3"
-            python3 -m venv "$PYTHON_VIRTUAL_ENV"
-        else
-            PYTHON_VIRTUAL_ENV="$PYTHON_VIRTUAL_ENV-py2"
-            virtualenv "$PYTHON_VIRTUAL_ENV"
-        fi
-    fi
-
-    source "$PYTHON_VIRTUAL_ENV"/bin/activate
-
-    pip install -U pip
-    pip install -r requirements.txt
-
-    echo 'Running Tox...'
-
-    export WITH_PYTHON3="OFF"
-    export MGR_DASHBOARD_VIRTUALENV="$PYTHON_VIRTUAL_ENV"
-    ./run-tox.sh
+    export CEPH_BUILD_DIR=.tox
+    tox -e py27-cov,py27-lint
 
     # Cleanup
     find .tox -maxdepth 1 -iname "py*" -type d -exec chmod -R 777 {} \;
