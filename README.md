@@ -30,6 +30,9 @@ cp .env.example .env
 CEPH_REPO_DIR=/path/to/your/local/ceph/repo
 HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
 
+# Only set this variable if you want to use a build directory other than $CEPH_REPO_DIR/build
+CEPH_BUILD_DIR=
+
 # Set 5200 if you want to access the dashboard proxy at http://localhost:5200
 CEPH_PROXY_HOST_PORT=4200
 # Set 11001 if you want to access the dashboard at https://localhost:11001
