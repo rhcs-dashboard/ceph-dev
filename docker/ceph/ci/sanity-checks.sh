@@ -21,7 +21,9 @@ run_jest() {
         cp 'src/unit-test-configuration.ts.sample' 'src/unit-test-configuration.ts'
     fi
 
-    ./node_modules/jest/bin/jest.js --no-cache
+    JEST_SILENT_REPORTER_DOTS=true ./node_modules/jest/bin/jest.js --no-cache --reporters jest-silent-reporter
+
+    echo 'All tests passed: OK'
 }
 
 run_tox() {
@@ -44,16 +46,3 @@ run_tox() {
     cd "$REPO_DIR"
     find . -iname "*.pyc" -delete
 }
-
-
-echo 'Running Sanity checks...'
-
-cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
-
-npm install
-
-run_npm_lint
-run_jest
-run_tox
-
-echo 'Sanity checks successfully finished! Congratulations!'

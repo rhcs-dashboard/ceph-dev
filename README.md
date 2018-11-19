@@ -50,7 +50,7 @@ docker-compose pull
 
 * Optionally, set up git pre-commit hook:
 ```
-cp scripts/git/pre-commit.sh /path/to/your/local/ceph/repo/.git/hooks/pre-commit
+docker-compose run --rm -e HOST_PWD=$PWD ceph /docker/ci/pre-commit-setup.sh
 ```
 
 ## Usage
@@ -110,29 +110,10 @@ docker-compose down
 
 * Run sanity checks:
 ```
-docker-compose run --rm ceph /docker/sanity-checks.sh
+docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh
 ```
 
-* Run pre-commit hook:
-```
-# If hook has been set up:
-docker-compose run --rm ceph /ceph/.git/hooks/pre-commit
-
-# If hook hasn't been set up:
-docker-compose run --rm -v $(pwd)/scripts:/scripts ceph /scripts/git/pre-commit.sh
-```
-
-## Grafana
-
-If you have started grafana, you can access it at:
-http://localhost:$GRAFANA_HOST_PORT/login
-
-## Prometheus
-
-If you have started prometheus, you can access it at:
-http://localhost:$PROMETHEUS_HOST_PORT
-
-## Teuthology (Ceph integration test framework)
+## API tests based on Teuthology (Ceph integration test framework)
 
 * Install Teuthology in a temporary folder and start a cluster:
 ```
@@ -145,6 +126,16 @@ source ./run-backend-api-tests.sh
 ```
 run_teuthology_tests tasks.mgr.dashboard.test_dashboard.DashboardTest
 ```
+
+## Grafana
+
+If you have started grafana, you can access it at:
+http://localhost:$GRAFANA_HOST_PORT/login
+
+## Prometheus
+
+If you have started prometheus, you can access it at:
+http://localhost:$PROMETHEUS_HOST_PORT
 
 ## Build and push an image to docker registry:
 
