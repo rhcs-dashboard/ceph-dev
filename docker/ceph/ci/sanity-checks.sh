@@ -21,7 +21,7 @@ run_jest() {
         cp 'src/unit-test-configuration.ts.sample' 'src/unit-test-configuration.ts'
     fi
 
-    JEST_SILENT_REPORTER_DOTS=true ./node_modules/jest/bin/jest.js --no-cache --reporters jest-silent-reporter
+    npm run test:ci -- --no-cache
 
     echo 'All tests passed: OK'
 }

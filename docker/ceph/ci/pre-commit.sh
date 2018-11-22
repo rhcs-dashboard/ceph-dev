@@ -32,6 +32,8 @@ if [[ ! -z "$HTML_FILES" ]]; then
 fi
 
 if [[ ! -z "$SCSS_FILES" || ! -z "$TS_FILES" ]]; then
+    npm install
+
     run_npm_fix
 
     # Add fixes to staging:
