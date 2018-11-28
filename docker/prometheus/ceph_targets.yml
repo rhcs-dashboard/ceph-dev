@@ -4,6 +4,10 @@
         "labels": {}
     },
     {
+        "targets": [ "ceph2.dev:9283" ],
+        "labels": {}
+    },
+    {
         "targets": [ "rhcs3-2.dev:9283" ],
         "labels": {}
     },

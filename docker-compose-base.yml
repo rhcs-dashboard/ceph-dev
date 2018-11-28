@@ -1,0 +1,16 @@
+version: '2.2'
+
+services:
+    ceph-base:
+        image: rhcsdashboard/ceph
+        domainname: dev
+        volumes:
+            - ./docker/ceph:/docker:ro
+            - ${HOST_CCACHE_DIR}:/root/.ccache
+        environment:
+            - GRAFANA_HOSTNAME=${HOSTNAME}
+            - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
+        cap_add:
+            - ALL
+        entrypoint: /docker/entrypoint.sh
+        command: /docker/start.sh

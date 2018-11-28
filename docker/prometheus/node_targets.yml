@@ -6,6 +6,12 @@
         }
     },
     {
+        "targets": [ "ceph2.dev:9100" ],
+        "labels": {
+            "instance": "ceph2"
+        }
+    },
+    {
         "targets": [ "rhcs3-2.dev:9100" ],
         "labels": {
             "instance": "rhcs3.2"

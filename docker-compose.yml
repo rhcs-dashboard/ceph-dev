@@ -2,28 +2,35 @@ version: '2.2'
 
 services:
     ceph:
-#        build: ./docker/ceph
-        image: rhcsdashboard/ceph
+        extends:
+            file: docker-compose-base.yml
+            service: ceph-base
         container_name: ceph
         hostname: ceph
-        domainname: dev
         networks:
             default:
                 aliases:
                     - 'ceph.dev'
         ports: ['${CEPH_PROXY_HOST_PORT:-4200}:4200','${CEPH_HOST_PORT:-11000}:11000']
         volumes:
-            - ./docker/ceph:/docker:ro
             - ${CEPH_REPO_DIR}:/ceph
-            - ${HOST_CCACHE_DIR}:/root/.ccache
             - ${CEPH_BUILD_DIR:-ceph_build_empty}:/build
-        environment:
-            - GRAFANA_HOSTNAME=${HOSTNAME}
-            - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
-        cap_add:
-            - ALL
-        entrypoint: /docker/entrypoint.sh
-        command: /docker/start.sh
+
+    ceph2:
+        extends:
+            file: docker-compose-base.yml
+            service: ceph-base
+        container_name: ceph2
+        hostname: ceph2
+        networks:
+            default:
+                aliases:
+                    - 'ceph2.dev'
+        ports: ['${CEPH2_PROXY_HOST_PORT:-4202}:4200','${CEPH2_HOST_PORT:-11002}:11000']
+        volumes:
+            - ${CEPH2_REPO_DIR}:/ceph
+            - ${CEPH2_BUILD_DIR:-ceph_build_empty}:/build
+        scale: -1
 
     rhcs3.2:
         image: rhcsdashboard/rhcs3.2
@@ -76,7 +83,6 @@ services:
             - ./docker/prometheus:/etc/prometheus:ro
 
     grafana:
-#        build: ./docker/grafana
         image: rhcsdashboard/grafana
         container_name: grafana
         hostname: grafana

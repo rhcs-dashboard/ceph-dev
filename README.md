@@ -27,16 +27,16 @@ sudo bash ./scripts/docker/install-docker-compose-fedora.sh
 ```
 cp .env.example .env
 
-CEPH_REPO_DIR=/path/to/your/local/ceph/repo
 HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
 
+CEPH_REPO_DIR=/path/to/your/local/ceph/repo
 # Only set this variable if you want to use a build directory other than $CEPH_REPO_DIR/build
 CEPH_BUILD_DIR=
-
 # Set 5200 if you want to access the dashboard proxy at http://localhost:5200
 CEPH_PROXY_HOST_PORT=4200
 # Set 11001 if you want to access the dashboard at https://localhost:11001
 CEPH_HOST_PORT=11000
+
 # default: 3000
 GRAFANA_HOST_PORT=3000
 # default: 9090
@@ -60,14 +60,12 @@ docker-compose run --rm -e HOST_PWD=$PWD ceph /docker/ci/pre-commit-setup.sh
 docker-compose run --rm ceph /docker/build-ceph.sh
 ```
 
-* Start only ceph:
-```
-docker-compose up -d ceph
-```
-
 * Start ceph + grafana + prometheus:
 ```
 docker-compose up -d
+
+# Only ceph:
+docker-compose up -d ceph
 ```
 
 * Display ceph container logs:
@@ -154,20 +152,39 @@ docker push {imageName}
 docker push rhcsdashboard/ceph
 ```
 
+## Start Ceph 2 (useful for parallel development)
+
+* Set appropriate values in *.env*:
+```
+CEPH2_REPO_DIR=/path/to/your/local/ceph2
+# Only set this variable if you want to use a build directory other than $CEPH2_REPO_DIR/build
+CEPH2_BUILD_DIR=
+# default: 4202
+CEPH2_PROXY_HOST_PORT=4202
+# default: 11002
+CEPH2_HOST_PORT=11002
+```
+
+* Start ceph + ceph2:
+```
+docker-compose up -d --scale ceph2=1
+
+# Only ceph2:
+docker-compose up -d --scale ceph2=1 --scale ceph=0
+```
+
 ## Start RHCS 3.2 RPM version
 
-* Optionally, set appropriate values in *.env*:
+* Set appropriate values in *.env*:
 ```
 # default: 11032
 RHCS3_2_HOST_PORT=11032
 ```
 
-* Start rhcs3.2:
+* Start ceph + rhcs3.2:
 ```
 docker-compose up -d --scale rhcs3.2=1
-```
 
-* Start rhcs3.2 but not ceph:
-```
+# Only rhcs3.2:
 docker-compose up -d --scale rhcs3.2=1 --scale ceph=0
 ```
