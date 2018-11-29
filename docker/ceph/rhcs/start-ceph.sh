@@ -27,4 +27,5 @@ export CEPH_OUT_DIR="$VSTART_DEBUG_DIR"/out
 cd /ceph
 ln -sf /ceph/build/ceph.conf ceph.conf
 
-exec /opt/node_exporter/node_exporter
+# Keep container running
+exec tail -f /dev/null

@@ -69,19 +69,6 @@ services:
         command: /docker/luminous/start.sh
         scale: -1
 
-    prometheus:
-        image: 'quay.io/prometheus/prometheus'
-        container_name: prometheus
-        hostname: prometheus
-        domainname: dev
-        networks:
-            default:
-                aliases:
-                    - 'prometheus.dev'
-        ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
-        volumes:
-            - ./docker/prometheus:/etc/prometheus:ro
-
     grafana:
         image: rhcsdashboard/grafana
         container_name: grafana
@@ -97,8 +84,37 @@ services:
             - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
             - ./docker/grafana/provisioning:/etc/grafana/provisioning
             - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:ro
-        depends_on:
-            - prometheus
+
+    prometheus:
+        image: quay.io/prometheus/prometheus
+        container_name: prometheus
+        hostname: prometheus
+        domainname: dev
+        networks:
+            default:
+                aliases:
+                    - 'prometheus.dev'
+        ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
+        volumes:
+            - ./docker/prometheus:/etc/prometheus:ro
+
+    node-exporter:
+        image: quay.io/prometheus/node-exporter:v0.16.0
+        container_name: node-exporter
+        hostname: node-exporter
+        domainname: dev
+        networks:
+            default:
+                aliases:
+                    - 'node-exporter.dev'
+        ports: ['${NODE_EXPORTER_HOST_PORT:-9100}:9100']
+        volumes:
+            - /proc:/host/proc:ro
+            - /sys:/host/sys:ro
+        command:
+            - '--path.procfs=/host/proc'
+            - '--path.sysfs=/host/sys'
+            - '--no-collector.timex'
 
 volumes:
     ceph_build_empty:

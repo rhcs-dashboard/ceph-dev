@@ -24,12 +24,6 @@ RUN sed -i 's/LIBLTDL=1 -I/LIBLTDL=1 -DXMLSEC_NO_SIZE_T -I/' /usr/bin/xmlsec1-co
 RUN pip install -U pip \
     && pip install python-saml==2.4.2 tox==2.9.1
 
-RUN curl -LsS -o node_exporter.tar.gz \
-    https://github.com/prometheus/node_exporter/releases/download/v0.16.0/node_exporter-0.16.0.linux-amd64.tar.gz \
-    && mkdir /opt/node_exporter \
-    && tar -xzvf node_exporter.tar.gz --strip 1 -C /opt/node_exporter \
-    && rm node_exporter.tar.gz
-
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 
 RUN yum install -y google-chrome-stable && yum clean all
