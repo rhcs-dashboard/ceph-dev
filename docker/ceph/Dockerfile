@@ -1,9 +1,5 @@
 FROM centos:7
 
-RUN curl -LsS https://rpm.nodesource.com/setup_8.x | bash -
-
-RUN yum install -y nodejs && yum clean all
-
 RUN yum install -y centos-release-scl deltarpm epel-release && yum clean all
 
 RUN yum install -y boost-random btrfs-progs bzip2 ccache cmake cmake3 cryptsetup CUnit-devel Cython \
@@ -27,6 +23,10 @@ RUN pip install -U pip \
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 
 RUN yum install -y google-chrome-stable && yum clean all
+
+RUN curl -LsS https://rpm.nodesource.com/setup_10.x | bash -
+
+RUN yum install -y nodejs && yum clean all
 
 RUN mkdir /ceph
 
