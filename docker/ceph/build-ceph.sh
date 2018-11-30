@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ -n "$CUSTOM_BUILD_DIR" ]]; then
+    echo 'ERROR: custom build directory not allowed for new build creation.'
+    exit 1
+fi
+
 readonly CEPH_DIR=/ceph
 
 cd $CEPH_DIR
@@ -19,7 +24,7 @@ fi
 $CEPH_DIR/do_cmake.sh -D ENABLE_GIT_VERSION=OFF
 
 cd $CEPH_DIR/src/pybind/mgr/dashboard/frontend
-npm install
+rm -rf node_modules
 
 cd $CEPH_DIR/build
 

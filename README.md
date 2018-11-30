@@ -30,8 +30,8 @@ cp .env.example .env
 HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
 
 CEPH_REPO_DIR=/path/to/your/local/ceph/repo
-# Only set this variable if you want to use a build directory other than $CEPH_REPO_DIR/build
-CEPH_BUILD_DIR=
+# Optional: a custom build directory other than default one ($CEPH_REPO_DIR/build)
+CEPH_CUSTOM_BUILD_DIR=
 # Set 5200 if you want to access the dashboard proxy at http://localhost:5200
 CEPH_PROXY_HOST_PORT=4200
 # Set 11001 if you want to access the dashboard at https://localhost:11001
@@ -159,8 +159,7 @@ docker push rhcsdashboard/ceph
 * Set appropriate values in *.env*:
 ```
 CEPH2_REPO_DIR=/path/to/your/local/ceph2
-# Only set this variable if you want to use a build directory other than $CEPH2_REPO_DIR/build
-CEPH2_BUILD_DIR=
+CEPH2_CUSTOM_BUILD_DIR=
 # default: 4202
 CEPH2_PROXY_HOST_PORT=4202
 # default: 11002
