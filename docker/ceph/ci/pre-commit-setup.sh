@@ -12,7 +12,7 @@ set -e
 
 cd $HOST_PWD
 
-docker-compose run --rm ceph /docker/ci/pre-commit.sh
+docker-compose run --rm $(hostname -s) /docker/ci/pre-commit.sh
 " > "$PRE_COMMIT_FILE"
 
 chmod 755 "$PRE_COMMIT_FILE"
