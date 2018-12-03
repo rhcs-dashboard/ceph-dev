@@ -43,6 +43,11 @@ fi
 
 if [[ ! -z "$TS_FILES" ]]; then
     run_jest
+
+    run_npm_i18n \
+    || echo "FIXING: adding $TRANSLATION_FILE to commit..." \
+    && cd "$REPO_DIR" \
+    && git add "$TRANSLATION_FILE"
 fi
 
 if [[ ! -z "$PY_FILES" ]]; then

@@ -3,6 +3,7 @@
 set -e
 
 readonly REPO_DIR="$PWD"
+readonly TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
 
 run_npm_lint() {
     echo 'Running "npm lint"...'
@@ -24,6 +25,21 @@ run_jest() {
     npm run test:ci -- --no-cache
 
     echo 'All tests passed: OK'
+}
+
+run_npm_i18n() {
+    echo 'Running "npm i18n"...'
+
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+
+    npm run i18n --if-present
+
+    cd "$REPO_DIR"
+    if [[ $(git diff --name-only --diff-filter=M -- "$TRANSLATION_FILE" | wc -l) == 1 ]]; then
+        echo "ERROR: uncommitted changes detected in $TRANSLATION_FILE"
+
+        return 1
+    fi
 }
 
 run_tox() {
