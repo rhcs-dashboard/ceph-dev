@@ -125,6 +125,7 @@ source ./run-backend-api-tests.sh
 * Run tests (example: only dashboard tests):
 ```
 run_teuthology_tests tasks.mgr.dashboard.test_dashboard.DashboardTest
+cleanup_teuthology
 ```
 
 ## Grafana
