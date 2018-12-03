@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ -n "$CUSTOM_BUILD_DIR" ]]; then
+if [[ -n "$CUSTOM_BUILD_DIR_ENABLED" ]]; then
     echo 'ERROR: custom build directory not allowed for new build creation.'
     exit 1
 fi

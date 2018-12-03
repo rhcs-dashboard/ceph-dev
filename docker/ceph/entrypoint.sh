@@ -2,13 +2,19 @@
 
 set -e
 
-NODEENV_BIN_DIR=src/pybind/mgr/dashboard/node-env/bin
+readonly BUILD_DIR=/ceph/build
+readonly CUSTOM_BUILD_DIR=/build
+readonly NODEENV_BIN_DIR=src/pybind/mgr/dashboard/node-env/bin
 
-if [[ -e "/build/$NODEENV_BIN_DIR" ]]; then
-    mkdir -p /ceph/build
-    mount -o bind /build /ceph/build
+if [[ -e "$CUSTOM_BUILD_DIR/$NODEENV_BIN_DIR" ]]; then
+    mkdir -p $BUILD_DIR
+    mount -o bind $CUSTOM_BUILD_DIR $BUILD_DIR
 
-    export CUSTOM_BUILD_DIR=1
+    export CUSTOM_BUILD_DIR_ENABLED=1
+fi
+
+if [[ -e "$BUILD_DIR/$NODEENV_BIN_DIR" ]]; then
+    export PATH="$BUILD_DIR/$NODEENV_BIN_DIR:$PATH"
 fi
 
 exec "$@"
