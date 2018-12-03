@@ -33,7 +33,7 @@ services:
         scale: -1
 
     rhcs3.2:
-        image: rhcsdashboard/rhcs3.2
+        image: docker-registry.engineering.redhat.com/ceph-dashboard/rhcs3.2
         container_name: rhcs3.2
         hostname: rhcs3-2
         domainname: dev
