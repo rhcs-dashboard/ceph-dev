@@ -8,8 +8,7 @@ source /docker/ci/sanity-checks.sh
 
 cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
-npm install
-
+run_npm_ci
 run_npm_lint
 run_jest
 run_npm_i18n

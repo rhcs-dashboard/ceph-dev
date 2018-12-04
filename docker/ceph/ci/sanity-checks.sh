@@ -5,6 +5,14 @@ set -e
 readonly REPO_DIR="$PWD"
 readonly TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
 
+run_npm_ci() {
+    echo 'Running "npm ci"...'
+
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+
+    npm ci
+}
+
 run_npm_lint() {
     echo 'Running "npm lint"...'
 

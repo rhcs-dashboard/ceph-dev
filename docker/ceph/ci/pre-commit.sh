@@ -22,18 +22,21 @@ run_npm_fix() {
     npm run fix
 }
 
-readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.html" | tr '\n' ' ')
+readonly NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E "package(-lock){0,1}.json" | wc -l)
+readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.html" | wc -l)
 readonly SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.scss" | tr '\n' ' ')
 readonly TS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.ts" | tr '\n' ' ')
-readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.py" | tr '\n' ' ')
+readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.py" | wc -l)
 
-if [[ ! -z "$HTML_FILES" ]]; then
+if [[ "$NPM_PACKAGE_FILES" > 0 || -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
+    run_npm_ci
+fi
+
+if [[ "$HTML_FILES" > 0 ]]; then
     run_npm_lint_html
 fi
 
-if [[ ! -z "$SCSS_FILES" || ! -z "$TS_FILES" ]]; then
-    npm install
-
+if [[ -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
     run_npm_fix
 
     # Add fixes to staging:
@@ -41,7 +44,7 @@ if [[ ! -z "$SCSS_FILES" || ! -z "$TS_FILES" ]]; then
     echo "$SCSS_FILES $TS_FILES" | xargs git add
 fi
 
-if [[ ! -z "$TS_FILES" ]]; then
+if [[ -n "$TS_FILES" ]]; then
     run_jest
 
     run_npm_i18n \
@@ -50,7 +53,7 @@ if [[ ! -z "$TS_FILES" ]]; then
     && git add "$TRANSLATION_FILE"
 fi
 
-if [[ ! -z "$PY_FILES" ]]; then
+if [[ "$PY_FILES" > 0 ]]; then
     run_tox
 fi
 
