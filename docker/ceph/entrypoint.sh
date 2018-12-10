@@ -13,8 +13,4 @@ if [[ -e "$CUSTOM_BUILD_DIR/$NODEENV_BIN_DIR" ]]; then
     export CUSTOM_BUILD_DIR_ENABLED=1
 fi
 
-if [[ -e "$BUILD_DIR/$NODEENV_BIN_DIR" ]]; then
-    export PATH="$BUILD_DIR/$NODEENV_BIN_DIR:$PATH"
-fi
-
 exec "$@"

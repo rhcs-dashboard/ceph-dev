@@ -88,12 +88,7 @@ http://localhost:$CEPH_PROXY_HOST_PORT
 
 https://localhost:$CEPH_HOST_PORT
 
-* Rebuild not proxied dashboard frontend:
-```
-docker-compose exec ceph /docker/build-dashboard-frontend.sh
-```
-
-* Restart dashboard:
+* Restart dashboard module:
 ```
 docker-compose exec ceph /docker/restart-dashboard.sh
 ```
@@ -106,6 +101,11 @@ docker-compose exec ceph /docker/e2e/run-frontend-e2e-tests.sh
 * Stop all:
 ```
 docker-compose down
+```
+
+* Rebuild not proxied dashboard frontend:
+```
+docker-compose run --rm ceph /docker/build-dashboard-frontend.sh
 ```
 
 * Run sanity checks:
