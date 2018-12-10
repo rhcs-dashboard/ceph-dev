@@ -177,8 +177,9 @@ docker-compose up -d --scale ceph2=1 --scale ceph=0
 
 ## Start RHCS 3.2 RPM version
 
-* Set appropriate values in *.env*:
+* Set appropriate values in *.env* (you have to be logged into private registry):
 ```
+RHCS3_2_IMAGE=docker-registry.engineering.redhat.com/ceph-dashboard/rhcs3.2
 # default: 11032
 RHCS3_2_HOST_PORT=11032
 ```

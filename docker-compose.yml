@@ -3,7 +3,7 @@ version: '2.2'
 services:
     ceph:
         extends:
-            file: docker-compose-base.yml
+            file: docker-compose.templates.yml
             service: ceph-base
         container_name: ceph
         hostname: ceph
@@ -18,7 +18,7 @@ services:
 
     ceph2:
         extends:
-            file: docker-compose-base.yml
+            file: docker-compose.templates.yml
             service: ceph-base
         container_name: ceph2
         hostname: ceph2
@@ -33,7 +33,7 @@ services:
         scale: -1
 
     rhcs3.2:
-        image: docker-registry.engineering.redhat.com/ceph-dashboard/rhcs3.2
+        image: ${RHCS3_2_IMAGE:-hello-world}
         container_name: rhcs3.2
         hostname: rhcs3-2
         domainname: dev
