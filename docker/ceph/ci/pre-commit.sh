@@ -32,7 +32,7 @@ if [[ "$NPM_PACKAGE_FILES" > 0 || -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
     run_npm_ci
 fi
 
-if [[ "$HTML_FILES" > 0 ]]; then
+if [[ "$HTML_FILES" > 0 && -z "$SCSS_FILES" && -z "$TS_FILES" ]]; then
     run_npm_lint_html
 fi
 
@@ -42,6 +42,8 @@ if [[ -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
     # Add fixes to staging:
     cd "$REPO_DIR"
     echo "$SCSS_FILES $TS_FILES" | xargs git add
+
+    run_npm_lint
 fi
 
 if [[ -n "$TS_FILES" ]]; then
