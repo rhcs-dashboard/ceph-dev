@@ -48,11 +48,13 @@ fi
 
 if [[ -n "$TS_FILES" ]]; then
     run_jest
+fi
 
+if [[ "$HTML_FILES" > 0 || -n "$TS_FILES" ]]; then
     run_npm_i18n \
-    || echo "FIXING: adding $TRANSLATION_FILE to commit..." \
-    && cd "$REPO_DIR" \
-    && git add "$TRANSLATION_FILE"
+        || echo "FIXING: adding $TRANSLATION_FILE to commit..." \
+        && cd "$REPO_DIR" \
+        && git add "$TRANSLATION_FILE"
 fi
 
 if [[ "$PY_FILES" > 0 ]]; then
