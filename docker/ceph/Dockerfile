@@ -31,6 +31,10 @@ RUN yum install -y google-chrome-stable && yum clean all
 #    && rm nodejs.tar.xz \
 #    && ln -s /opt/nodejs/bin/node /usr/bin/node && ln -s /opt/nodejs/bin/npm /usr/bin/npm
 
+RUN yum-config-manager --save --setopt=\*.skip_if_unavailable=true \*
+
+RUN rm -rf /var/cache/yum/*
+
 RUN mkdir /ceph
 
 WORKDIR /ceph
