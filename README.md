@@ -108,24 +108,17 @@ docker-compose down
 docker-compose run --rm ceph /docker/build-dashboard-frontend.sh
 ```
 
+* Run API tests (based on Teuthology: Ceph integration test framework):
+```
+docker-compose run --rm ceph /docker/ci/run-api-tests.sh
+
+# Only specific tests:
+docker-compose run --rm ceph /docker/ci/run-api-tests.sh tasks.mgr.dashboard.test_health.HealthTest tasks.mgr.dashboard.test_pool.PoolTest
+```
+
 * Run sanity checks:
 ```
 docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh
-```
-
-## API tests based on Teuthology (Ceph integration test framework)
-
-* Install Teuthology in a temporary folder and start a cluster:
-```
-docker-compose run --rm ceph bash
-cd src/pybind/mgr/dashboard
-source ./run-backend-api-tests.sh
-```
-
-* Run tests (example: only dashboard tests):
-```
-run_teuthology_tests tasks.mgr.dashboard.test_dashboard.DashboardTest
-cleanup_teuthology
 ```
 
 ## Grafana

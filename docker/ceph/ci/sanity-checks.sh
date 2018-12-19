@@ -70,3 +70,12 @@ run_tox() {
     cd "$REPO_DIR"
     find . -iname "*.pyc" -delete
 }
+
+run_api_tests() {
+    echo 'Running API tests...'
+
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard
+
+    source ./run-backend-api-tests.sh \
+        && run_teuthology_tests "$@"
+}

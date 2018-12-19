@@ -13,5 +13,6 @@ run_npm_lint
 run_jest
 run_npm_i18n
 run_tox
+run_api_tests
 
 echo 'Sanity checks successfully finished! Congratulations!'
