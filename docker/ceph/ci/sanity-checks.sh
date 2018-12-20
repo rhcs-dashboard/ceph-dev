@@ -79,3 +79,24 @@ run_api_tests() {
     source ./run-backend-api-tests.sh \
         && run_teuthology_tests "$@"
 }
+
+run_frontend_e2e_tests() {
+    echo 'Running frontend E2E tests...'
+
+    if [[ $(ps -ef | grep -v grep | grep "ng serve" | wc -l) > 0 ]]; then
+        ARGS="--dev-server-target"
+    else
+        ARGS="--host=0.0.0.0"
+
+        cd "$REPO_DIR"/build
+        ../src/stop.sh
+
+        /docker/start-ceph.sh
+    fi
+
+    /docker/set-web-server-proxy.sh
+
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+
+    npm run e2e -- "$ARGS"
+}

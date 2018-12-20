@@ -16,7 +16,7 @@ if [[ "$(yum list installed | grep ceph-mgr | wc -l)" == '1' ]]; then
     export MGR_PYTHON_PATH="$CEPH_LIB"/ceph/mgr
 fi
 
-MGR=1 RGW=1 CEPH_PORT=10000 ../src/vstart.sh -d -n
+MGR=1 RGW=1 ../src/vstart.sh -d -n
 
 echo 'vstart.sh completed!'
 

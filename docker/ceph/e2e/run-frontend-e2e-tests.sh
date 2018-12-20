@@ -2,8 +2,8 @@
 
 set -e
 
-cd /ceph/src/pybind/mgr/dashboard/frontend
+source /docker/ci/sanity-checks.sh
 
-npm install
+run_frontend_e2e_tests
 
-npm run ng e2e -- --dev-server-target
+echo 'Frontend E2E tests successfully finished! Congratulations!'

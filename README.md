@@ -93,11 +93,6 @@ https://localhost:$CEPH_HOST_PORT
 docker-compose exec ceph /docker/restart-dashboard.sh
 ```
 
-* Run frontend E2E tests:
-```
-docker-compose exec ceph /docker/e2e/run-frontend-e2e-tests.sh
-```
-
 * Stop all:
 ```
 docker-compose down
@@ -113,7 +108,16 @@ docker-compose run --rm ceph /docker/build-dashboard-frontend.sh
 docker-compose run --rm ceph /docker/ci/run-api-tests.sh
 
 # Only specific tests:
-docker-compose run --rm ceph /docker/ci/run-api-tests.sh tasks.mgr.dashboard.test_health.HealthTest tasks.mgr.dashboard.test_pool.PoolTest
+docker-compose run --rm ceph /docker/ci/run-api-tests.sh tasks.mgr.dashboard.test_health tasks.mgr.dashboard.test_pool
+```
+
+* Run frontend E2E tests:
+```
+# If ceph is running:
+docker-compose exec ceph /docker/e2e/run-frontend-e2e-tests.sh
+
+# If ceph is not running:
+docker-compose run --rm ceph /docker/e2e/run-frontend-e2e-tests.sh
 ```
 
 * Run sanity checks:
