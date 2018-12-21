@@ -22,11 +22,19 @@ run_npm_fix() {
     npm run fix
 }
 
+run_doc_build() {
+  echo 'Running "build-doc"...'
+
+  cd "$REPO_DIR"
+  admin/build-doc
+}
+
 readonly NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E "package(-lock){0,1}.json" | wc -l)
 readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.html" | wc -l)
 readonly SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.scss" | tr '\n' ' ')
 readonly TS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.ts" | tr '\n' ' ')
 readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.py" | wc -l)
+readonly DOC_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "doc/*.rst" | wc -l)
 
 if [[ "$NPM_PACKAGE_FILES" > 0 || -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
     run_npm_ci
@@ -59,6 +67,10 @@ fi
 
 if [[ "$PY_FILES" > 0 ]]; then
     run_tox
+fi
+
+if [[ "$DOC_FILES" > 0 ]]; then
+    run_doc_build
 fi
 
 echo 'Pre-commit hook successfully finished! Congratulations!'
