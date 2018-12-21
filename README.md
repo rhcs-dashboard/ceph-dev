@@ -103,6 +103,14 @@ docker-compose down
 docker-compose run --rm ceph /docker/build-dashboard-frontend.sh
 ```
 
+* Run backend unit tests:
+```
+docker-compose run --rm ceph /docker/ci/run-backend-unit-tests.sh
+
+# Only specific tests:
+docker-compose run --rm ceph /docker/ci/run-backend-unit-tests.sh tests/test_rest_client.py tests/test_grafana.py
+```
+
 * Run API tests (based on Teuthology: Ceph integration test framework):
 ```
 docker-compose run --rm ceph /docker/ci/run-api-tests.sh

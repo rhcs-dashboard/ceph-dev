@@ -57,13 +57,18 @@ run_tox() {
     cd "$REPO_DIR"
     find . -iname "*.pyc" -delete
 
-    cd "$REPO_DIR"/src/pybind/mgr/dashboard/
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard
 
     mkdir -p .tox
     chmod 777 .tox
 
-    export CEPH_BUILD_DIR=.tox
-    tox -e py27-cov,py27-lint
+    export CEPH_BUILD_DIR="$PWD"/.tox
+    TOX_ARGS="$@"
+    if [[ -z "$TOX_ARGS" ]]; then
+        TOX_ARGS='-e py27-cov,py27-lint'
+    fi
+
+    tox $TOX_ARGS
 
     # Cleanup
     find .tox -maxdepth 1 -iname "py*" -type d -exec chmod -R 777 {} \;
