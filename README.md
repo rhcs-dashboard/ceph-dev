@@ -147,16 +147,32 @@ http://localhost:$PROMETHEUS_HOST_PORT
 
 If you want to update an image, you'll have to edit image's Dockerfile and then:
 
-* Build image (example: rhcsdashboard/ceph):
+* Build image:
 ```
 docker build -t {imageName} {/path/to/DockerfileDirectory}
+
+# Example:
 docker build -t rhcsdashboard/ceph ./docker/ceph
 ```
 
-* Log in to rhcs-dashboard docker registry and push image (example: rhcsdashboard/ceph):
+* Optionally, tag image:
+```
+docker tag {imageName} {imageName}:{tag}
+
+# Example:
+docker tag rhcsdashboard/ceph rhcsdashboard/ceph:centos7
+```
+
+* Log in to rhcs-dashboard docker registry:
 ```
 docker login -u rhcsdashboard
+```
+
+* Push image:
+```
 docker push {imageName}
+
+# Example:
 docker push rhcsdashboard/ceph
 ```
 
