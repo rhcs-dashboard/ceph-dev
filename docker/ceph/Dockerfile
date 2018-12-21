@@ -2,8 +2,8 @@ FROM centos:7
 
 RUN yum install -y centos-release-scl deltarpm epel-release && yum clean all
 
-RUN yum install -y boost-random btrfs-progs bzip2 ccache cmake cmake3 cryptsetup CUnit-devel Cython \
-    devtoolset-7-gcc-c++ expat-devel fuse-devel gcc-c++ git gperf gperftools-devel iproute java-1.8.0-openjdk-devel \
+RUN yum install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 ccache cmake cmake3 cryptsetup CUnit-devel Cython \
+    devtoolset-7-gcc-c++ doxygen expat-devel fuse-devel gcc-c++ git gperf gperftools-devel graphviz iproute java-1.8.0-openjdk-devel \
     jq junit keyutils-libs-devel leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
     libcurl-devel liboath-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel lttng-ust-devel lz4-devel mailcap \
     net-tools nss-devel openldap-devel openssl-devel parted python-cherrypy python-coverage python-devel \
@@ -14,6 +14,11 @@ RUN yum install -y boost-random btrfs-progs bzip2 ccache cmake cmake3 cryptsetup
     systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlsec1 xmlsec1-devel xmlsec1-nss \
     xmlsec1-openssl xmlsec1-openssl-devel xmlstarlet yasm yum-utils wget \
     && yum clean all
+
+# Install doc-build deps
+RUN wget "https://kojipkgs.fedoraproject.org//packages/jericho-html/3.2/5.fc19/noarch/jericho-html-3.2-5.fc19.noarch.rpm" \
+      "https://kojipkgs.fedoraproject.org//packages/ditaa/0.9/10.r74.fc20/noarch/ditaa-0.9-10.r74.fc20.noarch.rpm" && \
+      rpm -vih jericho-html-3.2-5.fc19.noarch.rpm ditaa-0.9-10.r74.fc20.noarch.rpm
 
 RUN sed -i 's/LIBLTDL=1 -I/LIBLTDL=1 -DXMLSEC_NO_SIZE_T -I/' /usr/bin/xmlsec1-config
 
