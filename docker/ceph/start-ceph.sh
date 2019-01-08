@@ -33,5 +33,6 @@ if [[ "$(hostname)" != 'luminous.dev' ]]; then
     "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
 
     # Configure grafana
-    "$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://$GRAFANA_HOSTNAME:$GRAFANA_HOST_PORT"
+    GRAFANA_IP=$(getent ahosts grafana.dev | tail -1 | awk '{print $1}')
+    "$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://$GRAFANA_IP:$GRAFANA_HOST_PORT"
 fi
