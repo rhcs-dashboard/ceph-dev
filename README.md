@@ -75,18 +75,16 @@ docker-compose up -d ceph
 docker-compose logs -f ceph
 ```
 
-* Access proxied dashboard:
+* Access dashboard with credentials: admin / admin
 
-When you see in the logs something like this:
+https://localhost:$CEPH_HOST_PORT
+
+Access dev. server dashboard when you see in container logs something like this:
 ```
 ceph    | ℹ ｢wdm｣: Compiled successfully.
 ```
 
 http://localhost:$CEPH_PROXY_HOST_PORT
-
-* Access dashboard:
-
-https://localhost:$CEPH_HOST_PORT
 
 * Restart dashboard module:
 ```
@@ -136,12 +134,42 @@ docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh
 ## Grafana
 
 If you have started grafana, you can access it at:
+
 http://localhost:$GRAFANA_HOST_PORT/login
 
 ## Prometheus
 
 If you have started prometheus, you can access it at:
+
 http://localhost:$PROMETHEUS_HOST_PORT
+
+## Single Sign-On (SSO)
+
+Keycloak (open source Identity and Access Management solution)
+will be used for authentication, so localhost port 8080 must be available.
+
+* Start Keycloak:
+```
+docker-compose up -d --scale keycloak=1 keycloak
+```
+
+You can access Keycloak administration console with credentials: admin / keycloak
+
+http://localhost:8080
+
+* Enable dashboard SSO in running ceph container:
+```
+docker-compose exec ceph /docker/sso/sso-enable.sh
+```
+
+* Access dashboard with SSO credentials: admin / ssoadmin
+
+https://localhost:$CEPH_HOST_PORT
+
+* Disable dashboard SSO:
+```
+docker-compose exec ceph /docker/sso/sso-disable.sh
+```
 
 ## Build and push an image to docker registry:
 

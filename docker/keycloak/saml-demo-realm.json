@@ -1,0 +1,124 @@
+{
+    "id": "saml-demo",
+    "realm": "saml-demo",
+    "enabled": true,
+    "sslRequired": "external",
+    "privateKey": "MIICXAIBAAKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQABAoGAfmO8gVhyBxdqlxmIuglbz8bcjQbhXJLR2EoS8ngTXmN1bo2L90M0mUKSdc7qF10LgETBzqL8jYlQIbt+e6TH8fcEpKCjUlyq0Mf/vVbfZSNaVycY13nTzo27iPyWQHK5NLuJzn1xvxxrUeXI6A2WFpGEBLbHjwpx5WQG9A+2scECQQDvdn9NE75HPTVPxBqsEd2z10TKkl9CZxu10Qby3iQQmWLEJ9LNmy3acvKrE3gMiYNWb6xHPKiIqOR1as7L24aTAkEAtyvQOlCvr5kAjVqrEKXalj0Tzewjweuxc0pskvArTI2Oo070h65GpoIKLc9jf+UA69cRtquwP93aZKtW06U8dQJAF2Y44ks/mK5+eyDqik3koCI08qaC8HYq2wVl7G2QkJ6sbAaILtcvD92ToOvyGyeE0flvmDZxMYlvaZnaQ0lcSQJBAKZU6umJi3/xeEbkJqMfeLclD27XGEFoPeNrmdx0q10Azp4NfJAY+Z8KRyQCR2BEG+oNitBOZ+YXF9KCpH3cdmECQHEigJhYg+ykOvr1aiZUMFT72HU0jnmQe2FVekuG+LJUt2Tm7GtMjTFoGpf0JwrVuZN39fOYAlo+nTixgeW7X8Y=",
+    "publicKey": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQAB",
+    "requiredCredentials": [ "password" ],
+    "defaultRoles": [ "user" ],
+    "smtpServer": {
+        "from": "auto@keycloak.org",
+        "host": "localhost",
+        "port":"3025"
+    },
+    "users" : [
+        {
+            "username" : "admin",
+            "enabled": true,
+            "credentials" : [
+                { "type" : "password",
+                  "value" : "ssoadmin" }
+            ],
+            "realmRoles": ["manager"]
+        },
+        {
+            "username" : "test",
+            "enabled": true,
+            "credentials" : [
+                { "type" : "password",
+                  "value" : "ssotest" }
+            ],
+            "realmRoles": ["manager"]
+        },
+        {
+            "username" : "foo",
+            "enabled": true,
+            "credentials" : [
+                { "type" : "password",
+                  "value" : "bar" }
+            ],
+            "realmRoles": ["manager"]
+        }
+    ],
+    "clients": [
+        {
+      "id": "f06be0c6-8722-45ec-b5b2-bc5e0d824c1b",
+      "clientId": "https://localhost:11000/auth/saml2/metadata",
+      "adminUrl": "http://localhost:8080/auth/realms/saml-demo/protocol/saml",
+      "baseUrl": "https://localhost:11000/",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "redirectUris": [
+        "https://localhost:11000/*"
+      ],
+      "webOrigins": [
+        "https://localhost:11000"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "protocol": "saml",
+      "attributes": {
+        "saml.assertion.signature": "false",
+        "saml.force.post.binding": "false",
+        "saml.multivalued.roles": "false",
+        "saml.encrypt": "false",
+        "saml.server.signature": "true",
+        "saml.server.signature.keyinfo.ext": "false",
+        "exclude.session.state.from.auth.response": "false",
+        "saml.signing.certificate": "MIIB0DCCATkCBgFJH5u0EDANBgkqhkiG9w0BAQsFADAuMSwwKgYDVQQDEyNodHRwOi8vbG9jYWxob3N0OjgwODAvZW1wbG95ZWUtc2lnLzAeFw0xNDEwMTcxOTMzNThaFw0yNDEwMTcxOTM1MzhaMC4xLDAqBgNVBAMTI2h0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9lbXBsb3llZS1zaWcvMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+9kVgPFpshjS2aT2g52lqTv2lqb1jgvXZVk7iFF4LAO6SdCXKXRZI4SuzIRkVNpE1a42V1kQRlaozoFklgvX5sje8tkpa9ylq+bxGXM9RRycqRu2B+oWUV7Aqq7Bs0Xud0WeHQYRcEoCjqsFKGy65qkLRDdT70FTJgpSHts+gDwIDAQABMA0GCSqGSIb3DQEBCwUAA4GBACKyPLGqMX8GsIrCfJU8eVnpaqzTXMglLVo/nTcfAnWe9UAdVe8N3a2PXpDBvuqNA/DEAhVcQgxdlOTWnB6s8/yLTRuH0bZgb3qGdySif+lU+E7zZ/SiDzavAvn+ABqemnzHcHyhYO+hNRGHvUbW5OAii9Vdjhm8BI32YF1NwhKp",
+        "saml_single_logout_service_url_redirect": "https://localhost:11000",
+        "saml.signature.algorithm": "RSA_SHA1",
+        "saml_force_name_id_format": "true",
+        "saml.client.signature": "true",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "saml.authnstatement": "true",
+        "display.on.consent.screen": "false",
+        "saml.signing.private.key": "MIICXQIBAAKBgQC+9kVgPFpshjS2aT2g52lqTv2lqb1jgvXZVk7iFF4LAO6SdCXKXRZI4SuzIRkVNpE1a42V1kQRlaozoFklgvX5sje8tkpa9ylq+bxGXM9RRycqRu2B+oWUV7Aqq7Bs0Xud0WeHQYRcEoCjqsFKGy65qkLRDdT70FTJgpSHts+gDwIDAQABAoGANU1efgc6ojIvwn7Lsf8GAKN9z2D6uS0T3I9nw1k2CtI+xWhgKAUltEANx5lEfBRYIdYclidRpqrk8DYgzASrDYTHXzqVBJfAk1VrAGpqyRq+TNMLUHkXiTiSDOQ6WqhX93UGMmAgQm1RsLa6+fy1BO/B2y85+Yf2OUylsKS6avECQQDslRDiNFdtEjdvyOL20tQ7+W+eKVxVxKAyQ3gFjIIDizELZt+Jq1Wz6XV9NhK1JFtlVugeD1tlW/+K16fEmDYXAkEAzqKoN/JeGb20rfQldAUWdQbb0jrQAYlgoSU/9fYH9YVJT8vnkfhPBTwIw9H9euf1//lRP/jHltHd5ch4230YyQJBAN3rOkoltPiABPZbpuLGgwS7BwOCYrWlWmurtBLoaTCvyVKbrgXybNL1pBrOtR+rufvGWLeRyja65Gs1vY6BBQMCQQCTsNq/MjJj/522f7yNUl2cw4w2lOa7Um+IflFbAcDqkZu2ty0Kvgns2d4B6INeZ5ECpjaWnMA7YkFRzZnkd2NRAkB8lEY56ScnNigoZkkjtEUd2ejdhZPYuS9SKfv9zHwN+I+DE2vVFZz8GPq/iLcMx13PkZaYaJNQ4FtQY/hRLSn5",
+        "saml.onetimeuse.condition": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "id": "f3d422a1-ca32-4a0f-9699-336e230cb97e",
+          "name": "username",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "username",
+            "attribute.name": "username"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "roles",
+        "profile",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access"
+      ]
+        }
+    ],
+    "roles" : {
+        "realm" : [
+            {
+                "name": "manager",
+                "description": "Have Manager privileges"
+            }
+        ]
+    }
+}

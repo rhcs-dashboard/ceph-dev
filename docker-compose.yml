@@ -115,6 +115,24 @@ services:
             - '--path.sysfs=/host/sys'
             - '--no-collector.timex'
 
+    keycloak:
+        image: jboss/keycloak
+        container_name: keycloak
+        hostname: keycloak
+        domainname: dev
+        networks:
+            default:
+                aliases:
+                    - 'keycloak.dev'
+        ports: ['${KEYCLOAK_HOST_PORT:-8080}:8080']
+        volumes:
+            - ./docker/keycloak:/docker:ro
+        environment:
+            - KEYCLOAK_USER=admin
+            - KEYCLOAK_PASSWORD=keycloak
+        command: -b 0.0.0.0 -Dkeycloak.import=/docker/saml-demo-realm.json
+        scale: -1
+
 volumes:
     ceph_build_empty:
     grafana_data:
