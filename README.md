@@ -18,9 +18,13 @@ git clone git@github.com:rhcs-dashboard/ceph-dev.git
 cd ceph-dev
 ```
 
-* Install [Docker Compose](https://docs.docker.com/compose/install/). If your OS is Fedora, run this:
+* Install [Docker Compose](https://docs.docker.com/compose/install/). Depending on your host OS (Fedora or CentOS/RHEL), run either:
 ```
 sudo bash ./scripts/docker/install-docker-compose-fedora.sh
+```
+or:
+```
+sudo bash ./scripts/docker/install-docker-compose-centos-rhel.sh
 ```
 
 * Create *.env* file from template and set values:
