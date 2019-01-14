@@ -18,12 +18,12 @@ git clone git@github.com:rhcs-dashboard/ceph-dev.git
 cd ceph-dev
 ```
 
-* Install [Docker Compose](https://docs.docker.com/compose/install/). Depending on your host OS (Fedora or CentOS/RHEL), run either:
+Install [Docker Compose](https://docs.docker.com/compose/install/). If your OS is Fedora/CentOS/RHEL, you can run this:
 ```
+# Fedora:
 sudo bash ./scripts/docker/install-docker-compose-fedora.sh
-```
-or:
-```
+
+# CentOS/RHEL:
 sudo bash ./scripts/docker/install-docker-compose-centos-rhel.sh
 ```
 
@@ -138,6 +138,18 @@ docker-compose run --rm ceph /docker/e2e/run-frontend-e2e-tests.sh
 * Run sanity checks:
 ```
 docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh
+```
+
+* Build Ceph documentation:
+```
+docker-compose run --rm ceph admin/build-doc
+```
+
+* Display Ceph documentation:
+```
+docker-compose run --rm -p 11001:8080 ceph admin/serve-doc
+
+# Access here: http://localhost:11001
 ```
 
 ## Grafana

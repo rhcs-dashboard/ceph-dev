@@ -15,5 +15,6 @@ run_npm_i18n
 run_tox
 run_api_tests
 run_frontend_e2e_tests
+run_build_doc
 
 echo 'Sanity checks successfully finished! Congratulations!'

@@ -105,3 +105,11 @@ run_frontend_e2e_tests() {
 
     npm run e2e -- "$ARGS"
 }
+
+run_build_doc() {
+  echo 'Running "build-doc"...'
+
+  cd "$REPO_DIR"
+
+  admin/build-doc
+}
