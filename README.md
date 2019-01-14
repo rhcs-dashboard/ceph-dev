@@ -95,6 +95,11 @@ http://localhost:$CEPH_PROXY_HOST_PORT
 docker-compose exec ceph /docker/restart-dashboard.sh
 ```
 
+* Add OSD in 2nd host (once ceph dashboard is accessible):
+```
+docker-compose up -d --scale ceph-host2=1
+```
+
 * Stop all:
 ```
 docker-compose down

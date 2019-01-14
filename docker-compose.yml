@@ -12,9 +12,15 @@ services:
                 aliases:
                     - 'ceph.dev'
         ports: ['${CEPH_PROXY_HOST_PORT:-4200}:4200','${CEPH_HOST_PORT:-11000}:11000']
-        volumes:
-            - ${CEPH_REPO_DIR}:/ceph
-            - ${CEPH_CUSTOM_BUILD_DIR:-ceph_build_empty}:/build
+
+    ceph-host2:
+        extends:
+            file: docker-compose.templates.yml
+            service: ceph-base
+        container_name: ceph-host2
+        hostname: ceph-host2
+        command: /docker/start-ceph-additional-host.sh
+        scale: -1
 
     ceph2:
         extends:
