@@ -23,19 +23,32 @@ echo 'vstart.sh completed!'
 # Enable prometheus module
 "$CEPH_BIN"/ceph -c /ceph/build/ceph.conf mgr module enable prometheus
 
-if [[ "$(hostname)" != 'luminous.dev' ]]; then
-    # Enable the Object Gateway management frontend
-    "$CEPH_BIN"/radosgw-admin user create --uid=dev --display-name=Dev --system
-    "$CEPH_BIN"/ceph dashboard set-rgw-api-user-id dev
-    readonly ACCESS_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].access_key | sed -e 's/^"//' -e 's/"$//')
-    readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].secret_key | sed -e 's/^"//' -e 's/"$//')
-    "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
-    "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
-
-    # Configure grafana
-    GRAFANA_IP=$(getent ahosts grafana.dev | tail -1 | awk '{print $1}')
-    "$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://$GRAFANA_IP:$GRAFANA_HOST_PORT"
-
-    # Create dashboard "test" user:
-    "$CEPH_BIN"/ceph dashboard ac-user-create test test
+if [[ "$(hostname)" == 'luminous.dev' ]]; then
+    return 0
 fi
+
+# Enable the Object Gateway management frontend
+"$CEPH_BIN"/radosgw-admin user create --uid=dev --display-name=Dev --system
+"$CEPH_BIN"/ceph dashboard set-rgw-api-user-id dev
+readonly ACCESS_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].access_key | sed -e 's/^"//' -e 's/"$//')
+readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].secret_key | sed -e 's/^"//' -e 's/"$//')
+"$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
+"$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
+
+# Configure grafana
+set_grafana_api_url() {
+    while true; do
+        GRAFANA_IP=$(getent ahosts grafana.dev | tail -1 | awk '{print $1}')
+        if [[ -n "$GRAFANA_IP" ]]; then
+            "$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://$GRAFANA_IP:$GRAFANA_HOST_PORT"
+
+            break
+        fi
+
+        sleep 3
+    done
+}
+set_grafana_api_url &
+
+# Create dashboard "test" user:
+"$CEPH_BIN"/ceph dashboard ac-user-create test test
