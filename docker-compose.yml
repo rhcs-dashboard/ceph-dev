@@ -91,7 +91,7 @@ services:
             - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:ro
 
     prometheus:
-        image: quay.io/prometheus/prometheus
+        image: prom/prometheus:v2.5.0
         container_name: prometheus
         hostname: prometheus
         domainname: dev
@@ -104,7 +104,7 @@ services:
             - ./docker/prometheus:/etc/prometheus:ro
 
     node-exporter:
-        image: quay.io/prometheus/node-exporter:v0.16.0
+        image: prom/node-exporter:v0.17.0
         container_name: node-exporter
         hostname: node-exporter
         domainname: dev
@@ -122,7 +122,7 @@ services:
             - '--no-collector.timex'
 
     keycloak:
-        image: jboss/keycloak
+        image: jboss/keycloak:4.8.3.Final
         container_name: keycloak
         hostname: keycloak
         domainname: dev
