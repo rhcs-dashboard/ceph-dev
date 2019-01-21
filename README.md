@@ -33,6 +33,7 @@ cp .env.example .env
 
 HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
 
+CEPH_IMAGE_TAG=fedora29
 CEPH_REPO_DIR=/path/to/your/local/ceph/repo
 # Optional: a custom build directory other than default one ($CEPH_REPO_DIR/build)
 CEPH_CUSTOM_BUILD_DIR=
@@ -61,7 +62,7 @@ docker-compose run --rm -e HOST_PWD=$PWD ceph /docker/ci/pre-commit-setup.sh
 
 ## Usage
 
-* Build Ceph:
+* Build Ceph (with python 3: CEPH_IMAGE_TAG=fedora29; with python 2: CEPH_IMAGE_TAG=centos7):
 ```
 docker-compose run --rm ceph /docker/build-ceph.sh
 ```
@@ -198,18 +199,18 @@ If you want to update an image, you'll have to edit image's Dockerfile and then:
 
 * Build image:
 ```
-docker build -t {imageName} {/path/to/DockerfileDirectory}
+docker build -t {imageName}:{imageTag} -f {/path/to/Dockerfile} ./docker/ceph
 
 # Example:
-docker build -t rhcsdashboard/ceph ./docker/ceph
+docker build -t rhcsdashboard/ceph:fedora29 -f ./docker/ceph/fedora/Dockerfile ./docker/ceph
 ```
 
-* Optionally, tag image:
+* Optionally, create an additional tag:
 ```
-docker tag {imageName} {imageName}:{tag}
+docker tag {imageName}:{imageTag} {imageName}:{imageNewTag}
 
 # Example:
-docker tag rhcsdashboard/ceph rhcsdashboard/ceph:centos7
+docker tag rhcsdashboard/ceph:fedora29 rhcsdashboard/ceph:latest
 ```
 
 * Log in to rhcs-dashboard docker registry:
@@ -219,10 +220,10 @@ docker login -u rhcsdashboard
 
 * Push image:
 ```
-docker push {imageName}
+docker push {imageName}:{imageTag}
 
 # Example:
-docker push rhcsdashboard/ceph
+docker push rhcsdashboard/ceph:fedora29
 ```
 
 ## Start Ceph 2 (useful for parallel development)

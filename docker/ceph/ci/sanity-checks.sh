@@ -3,6 +3,7 @@
 set -e
 
 readonly REPO_DIR="$PWD"
+readonly PYTHON_VERSION=$(python -V | awk '{print substr($2, 1, 1)}')
 readonly TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
 
 run_npm_ci() {
@@ -65,7 +66,10 @@ run_tox() {
     export CEPH_BUILD_DIR="$PWD"/.tox
     TOX_ARGS="$@"
     if [[ -z "$TOX_ARGS" ]]; then
-        TOX_ARGS='-e py27-cov,py27-lint'
+        TOX_ARGS='-e py3-cov,py3-lint'
+        if [[ "$PYTHON_VERSION" != '3' ]]; then
+            TOX_ARGS='-e py27-cov,py27-lint'
+        fi
     fi
 
     tox $TOX_ARGS

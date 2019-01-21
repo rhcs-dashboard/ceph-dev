@@ -2,7 +2,7 @@ version: '2.2'
 
 services:
     ceph-base:
-        image: rhcsdashboard/ceph
+        image: rhcsdashboard/ceph:${CEPH_IMAGE_TAG:-fedora29}
         domainname: dev
         volumes:
             - ./docker/ceph:/docker:ro
