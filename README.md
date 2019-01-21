@@ -2,34 +2,27 @@
 
 ## Installation
 
-* Clone Ceph:
-```
-git clone git@github.com:ceph/ceph.git
-```
-
 * If it doesn't exist, create a local directory for **ccache**:
 ```
 mkdir -p ~/.ccache
 ```
 
+* Clone Ceph:
+```
+git clone git@github.com:ceph/ceph.git
+```
+
 * Clone rhcs-dashboard/ceph-dev:
 ```
 git clone git@github.com:rhcs-dashboard/ceph-dev.git
+```
+
+* In ceph-dev, create *.env* file from template and set values:
+```
 cd ceph-dev
-```
-
-Install [Docker Compose](https://docs.docker.com/compose/install/). If your OS is Fedora/CentOS/RHEL, you can run this:
-```
-# Fedora:
-sudo bash ./scripts/docker/install-docker-compose-fedora.sh
-
-# CentOS/RHEL:
-sudo bash ./scripts/docker/install-docker-compose-centos-rhel.sh
-```
-
-* Create *.env* file from template and set values:
-```
 cp .env.example .env
+
+# default values:
 
 HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
 
@@ -42,13 +35,21 @@ CEPH_PROXY_HOST_PORT=4200
 # Set 11001 if you want to access the dashboard at https://localhost:11001
 CEPH_HOST_PORT=11000
 
-# default: 3000
 GRAFANA_HOST_PORT=3000
-# default: 9090
 PROMETHEUS_HOST_PORT=9090
-# default: 9100
 NODE_EXPORTER_HOST_PORT=9100
 ```
+
+* Install [Docker Compose](https://docs.docker.com/compose/install/). If your OS is Fedora/CentOS/RHEL, you can run:
+```
+# Fedora:
+sudo bash ./scripts/docker/install-docker-compose-fedora.sh
+
+# CentOS/RHEL:
+sudo bash ./scripts/docker/install-docker-compose-centos-rhel.sh
+```
+
+If you ran the above script, then you can run *docker* and *docker-compose* without *sudo* if you log out and log in.
 
 * Download docker images:
 ```
@@ -117,6 +118,9 @@ docker-compose run --rm ceph /docker/ci/run-backend-unit-tests.sh
 
 # Only specific tests:
 docker-compose run --rm ceph /docker/ci/run-backend-unit-tests.sh tests/test_rest_client.py tests/test_grafana.py
+
+# Only 1 test:
+docker-compose run --rm ceph /docker/ci/run-backend-unit-tests.sh tests/test_rgw_client.py::RgwClientTest::test_ssl_verify
 ```
 
 * Run API tests (based on Teuthology: Ceph integration test framework):
