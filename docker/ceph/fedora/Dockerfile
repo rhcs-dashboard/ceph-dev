@@ -7,16 +7,15 @@ RUN dnf install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 c
     libcurl-devel liboath-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel lttng-ust-devel \
     lz4-devel mailcap net-tools nss-devel openldap-devel openssl-devel parted perl python3-cherrypy python3-coverage \
     python3-jwt python3-nose python3-pecan python3-prettytable python3-requests \
-    python3-routes python3-sphinx python3-tox python3-werkzeug \
+    python3-routes python3-sphinx python3-tox python3-virtualenv python3-werkzeug \
     python3-bcrypt python3-pip python3-saml python3-Cython python3-devel python3-setuptools rdma-core-devel \
     redhat-lsb-core redhat-rpm-config selinux-policy-devel selinux-policy-doc sharutils snappy-devel socat \
     systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlsec1 xmlsec1-devel xmlsec1-nss \
     xmlsec1-openssl xmlsec1-openssl-devel xmlstarlet yasm dnf-utils wget \
     && dnf clean all
 
-# Required for building ceph documentation:
-COPY fedora/koji.repo /etc/yum.repos.d
-RUN dnf install -y python-virtualenv && dnf clean all
+# Required in order for build-doc to check the appropriate dependencies:
+RUN dnf remove -y dnf-yum && dnf clean all
 
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 RUN dnf install -y google-chrome-stable && dnf clean all

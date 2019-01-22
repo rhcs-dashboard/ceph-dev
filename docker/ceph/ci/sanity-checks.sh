@@ -115,5 +115,7 @@ run_build_doc() {
 
   cd "$REPO_DIR"
 
+  rm -rf "$REPO_DIR/build-doc/virtualenv"
+
   admin/build-doc
 }
