@@ -66,13 +66,13 @@ run_tox() {
     export CEPH_BUILD_DIR="$PWD"/.tox
     TOX_ARGS="$@"
     if [[ -z "$TOX_ARGS" ]]; then
-        TOX_ARGS='-e py3-cov,py3-lint'
+        TOX_ARGS='py3-cov,py3-lint'
         if [[ "$PYTHON_VERSION" != '3' ]]; then
-            TOX_ARGS='-e py27-cov,py27-lint'
+            TOX_ARGS=${TOX_ARGS//3/27}
         fi
     fi
 
-    tox $TOX_ARGS
+    tox -e $TOX_ARGS
 
     # Cleanup
     find .tox -maxdepth 1 -iname "py*" -type d -exec chmod -R 777 {} \;
