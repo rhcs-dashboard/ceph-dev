@@ -242,11 +242,11 @@ CEPH2_PROXY_HOST_PORT=4202
 CEPH2_HOST_PORT=11002
 ```
 
-* Start ceph + ceph2:
+* Start ceph2 + ceph + ...:
 ```
 docker-compose up -d --scale ceph2=1
 
-# Only ceph2:
+# Start ceph2 but not ceph:
 docker-compose up -d --scale ceph2=1 --scale ceph=0
 ```
 
@@ -259,10 +259,10 @@ RHCS3_2_IMAGE=docker-registry.engineering.redhat.com/ceph-dashboard/rhcs3.2
 RHCS3_2_HOST_PORT=11032
 ```
 
-* Start ceph + rhcs3.2:
+* Start rhcs3.2 + ceph + ...:
 ```
 docker-compose up -d --scale rhcs3.2=1
 
-# Only rhcs3.2:
+# Start rhcs3.2 but not ceph:
 docker-compose up -d --scale rhcs3.2=1 --scale ceph=0
 ```
