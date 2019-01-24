@@ -16,6 +16,8 @@ RUN dnf install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 c
 
 # Required in order for build-doc to check the appropriate dependencies:
 RUN dnf remove -y dnf-yum && dnf clean all
+# Required in order for build-doc to run successfully:
+RUN pip3 install -U Cython==0.29.3
 
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 RUN dnf install -y google-chrome-stable && dnf clean all
@@ -28,7 +30,7 @@ RUN mkdir /ceph
 
 WORKDIR /ceph
 
-ENV PATH="/ceph/build/src/pybind/mgr/dashboard/node-env/bin:/usr/libexec/python3-sphinx:$PATH"
+ENV PATH="/usr/libexec/python3-sphinx:$PATH"
 ENV PYTHONDONTWRITEBYTECODE="1"
 
 # To increase ccache hit rate

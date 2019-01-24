@@ -8,7 +8,7 @@ rm -rf out dev
 
 export CEPH_BIN="./bin"
 
-if [[ "$(yum list installed | grep ceph-mgr | wc -l)" == '1' ]]; then
+if [[ -e /usr/bin/ceph-mgr ]]; then
     export CEPH_BIN=/usr/bin
     export CEPH_LIB=/usr/lib64
     export EC_PATH="$CEPH_LIB"/ceph/erasure-code

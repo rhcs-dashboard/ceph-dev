@@ -147,7 +147,7 @@ docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh
 
 * Build Ceph documentation:
 ```
-docker-compose run --rm ceph admin/build-doc
+docker-compose run --rm ceph /docker/build-doc.sh
 ```
 
 * Display Ceph documentation:

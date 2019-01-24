@@ -3,7 +3,7 @@
 set -e
 
 readonly REPO_DIR="$PWD"
-readonly PYTHON_VERSION=$(python -V | awk '{print substr($2, 1, 1)}')
+readonly PYTHON_VERSION=$(grep MGR_PYTHON_VERSION:STRING "$REPO_DIR"/build/CMakeCache.txt | cut -d '=' -f 2)
 readonly TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
 
 run_npm_ci() {

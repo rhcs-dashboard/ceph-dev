@@ -44,7 +44,7 @@ RUN mkdir /ceph
 
 WORKDIR /ceph
 
-ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:/ceph/build/src/pybind/mgr/dashboard/node-env/bin:$PATH"
+ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
 ENV PYTHONDONTWRITEBYTECODE="1"
 
 # To increase ccache hit rate
