@@ -12,3 +12,13 @@ scrape_configs:
     file_sd_configs:
       - files:
         - ceph-targets.yml
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - 'alertmanager.dev:9093'
+
+rule_files:
+  - 'alerting-rules.yml'

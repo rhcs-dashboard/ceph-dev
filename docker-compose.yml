@@ -121,6 +121,21 @@ services:
             - '--path.sysfs=/host/sys'
             - '--no-collector.timex'
 
+    alertmanager:
+        image: prom/alertmanager:v0.16.0
+        container_name: alertmanager
+        hostname: alertmanager
+        domainname: dev
+        networks:
+            default:
+                aliases:
+                    - 'alertmanager.dev'
+        ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']
+        volumes:
+            - ./docker/alertmanager:/etc/alertmanager:ro
+        command:
+            - '--config.file=/etc/alertmanager/config.yml'
+
     keycloak:
         image: jboss/keycloak:4.8.3.Final
         container_name: keycloak

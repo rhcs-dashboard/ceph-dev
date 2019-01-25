@@ -50,5 +50,20 @@ set_grafana_api_url() {
 }
 set_grafana_api_url &
 
+# Configure alertmanager
+set_alertmanager_api_host() {
+    while true; do
+        ALERTMANAGER_IP=$(getent ahosts alertmanager.dev | tail -1 | awk '{print $1}')
+        if [[ -n "$ALERTMANAGER_IP" ]]; then
+            "$CEPH_BIN"/ceph dashboard set-alertmanager-api-host "http://$ALERTMANAGER_IP:$ALERTMANAGER_HOST_PORT"
+
+            break
+        fi
+
+        sleep 3
+    done
+}
+set_alertmanager_api_host &
+
 # Create dashboard "test" user:
 "$CEPH_BIN"/ceph dashboard ac-user-create test test

@@ -38,6 +38,7 @@ CEPH_HOST_PORT=11000
 GRAFANA_HOST_PORT=3000
 PROMETHEUS_HOST_PORT=9090
 NODE_EXPORTER_HOST_PORT=9100
+ALERTMANAGER_HOST_PORT=9093
 ```
 
 * Install [Docker Compose](https://docs.docker.com/compose/install/). If your OS is Fedora/CentOS/RHEL, you can run:
@@ -68,7 +69,7 @@ docker-compose run --rm -e HOST_PWD=$PWD ceph /docker/ci/pre-commit-setup.sh
 docker-compose run --rm ceph /docker/build-ceph.sh
 ```
 
-* Start ceph + grafana + prometheus + node-exporter:
+* Start ceph + dashboard feature services:
 ```
 docker-compose up -d
 
