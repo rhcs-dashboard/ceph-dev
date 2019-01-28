@@ -12,6 +12,11 @@ services:
         environment:
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
+            - MDS
+            - MGR
+            - MON
+            - OSD
+            - RGW
         cap_add:
             - ALL
         entrypoint: /docker/entrypoint.sh

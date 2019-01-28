@@ -15,8 +15,14 @@ if [[ -e /usr/bin/ceph-mgr ]]; then
     export OBJCLASS_PATH="$CEPH_LIB"/rados-classes
     export MGR_PYTHON_PATH="$CEPH_LIB"/ceph/mgr
 fi
+if [[ -z "$MGR" ]]; then
+    export MGR=1
+fi
+if [[ -z "$RGW" ]]; then
+    export RGW=1
+fi
 
-MGR=1 RGW=1 ../src/vstart.sh -d -n
+../src/vstart.sh -d -n
 
 echo 'vstart.sh completed!'
 
