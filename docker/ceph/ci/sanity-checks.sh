@@ -87,6 +87,8 @@ run_api_tests() {
 
     source ./run-backend-api-tests.sh \
         && run_teuthology_tests "$@"
+
+    echo 'API tests successfully finished! Congratulations!'
 }
 
 run_frontend_e2e_tests() {
