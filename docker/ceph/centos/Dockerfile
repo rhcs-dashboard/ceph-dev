@@ -15,6 +15,9 @@ RUN yum install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 c
     xmlsec1-openssl xmlsec1-openssl-devel xmlstarlet yasm yum-utils wget \
     && yum clean all
 
+# Required to enable debug repos and install python debug packages
+RUN debuginfo-install -y python
+
 # Install doc-build deps
 RUN wget "https://kojipkgs.fedoraproject.org//packages/jericho-html/3.2/5.fc19/noarch/jericho-html-3.2-5.fc19.noarch.rpm" \
       "https://kojipkgs.fedoraproject.org//packages/ditaa/0.9/10.r74.fc20/noarch/ditaa-0.9-10.r74.fc20.noarch.rpm" && \
