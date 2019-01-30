@@ -208,6 +208,7 @@ docker build -t {imageName}:{imageTag} -f {/path/to/Dockerfile} ./docker/ceph
 
 # Example:
 docker build -t rhcsdashboard/ceph:fedora29 -f ./docker/ceph/fedora/Dockerfile ./docker/ceph
+docker build -t rhcsdashboard/ceph:centos7 -f ./docker/ceph/centos/Dockerfile  ./docker/ceph
 ```
 
 * Optionally, create an additional tag:
@@ -216,6 +217,7 @@ docker tag {imageName}:{imageTag} {imageName}:{imageNewTag}
 
 # Example:
 docker tag rhcsdashboard/ceph:fedora29 rhcsdashboard/ceph:latest
+docker tag rhcsdashboard/ceph:centos7 rhcsdashboard/ceph:latest
 ```
 
 * Log in to rhcs-dashboard docker registry:
@@ -229,6 +231,7 @@ docker push {imageName}:{imageTag}
 
 # Example:
 docker push rhcsdashboard/ceph:fedora29
+docker push rhcsdashboard/ceph:centos7
 ```
 
 ## Start Ceph 2 (useful for parallel development)
