@@ -3,7 +3,7 @@ FROM fedora:29
 RUN dnf install -y curl dnf-plugins-core iputils net-tools && dnf clean all
 
 RUN dnf install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 ccache cmake cmake3 cryptsetup \
-    CUnit-devel Cython ditaa doxygen expat-devel fuse-devel gcc-c++ git gperf gperftools-devel graphviz \
+    CUnit-devel Cython ditaa dnf-utils doxygen expat-devel fuse-devel gcc-c++ git gperf gperftools-devel graphviz \
     jericho-html iproute java-1.8.0-openjdk-devel \
     jq junit keyutils-libs-devel leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
     libcurl-devel liboath-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel lttng-ust-devel \
@@ -15,6 +15,9 @@ RUN dnf install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 c
     systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlsec1 xmlsec1-devel xmlsec1-nss \
     xmlsec1-openssl xmlsec1-openssl-devel xmlstarlet yasm wget \
     && dnf clean all
+
+# Required to enable debug repos and install python debug packages
+RUN debuginfo-install python2 python3
 
 # Required in order for build-doc to check the appropriate dependencies:
 RUN dnf remove -y dnf-yum && dnf clean all
