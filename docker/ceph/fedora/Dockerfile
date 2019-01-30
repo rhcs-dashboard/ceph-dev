@@ -17,7 +17,7 @@ RUN dnf install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 c
     && dnf clean all
 
 # Required to enable debug repos and install python debug packages
-RUN debuginfo-install python2 python3
+RUN debuginfo-install -y python2 python3
 
 # Required in order for build-doc to check the appropriate dependencies:
 RUN dnf remove -y dnf-yum && dnf clean all
