@@ -1,22 +1,27 @@
 FROM centos:7
 
-RUN yum install -y centos-release-scl deltarpm epel-release && yum clean all
+RUN yum install -y bind-utils centos-release-scl curl epel-release iputils net-tools yum yum-utils \
+    && yum clean all
 
-RUN yum install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 ccache cmake cmake3 cryptsetup CUnit-devel Cython \
-    devtoolset-7-gcc-c++ doxygen expat-devel fuse-devel gcc-c++ git gperf gperftools-devel graphviz iproute java-1.8.0-openjdk-devel \
+RUN yum install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 ccache cmake cmake3 \
+    cryptsetup CUnit-devel Cython \
+    devtoolset-7-gcc-c++ doxygen expat-devel fuse-devel gcc-c++ git gperf gperftools-devel graphviz \
+    iproute java-1.8.0-openjdk-devel \
     jq junit keyutils-libs-devel leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
-    libcurl-devel liboath-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel lttng-ust-devel lz4-devel mailcap \
-    net-tools nss-devel openldap-devel openssl-devel parted python-cherrypy python-coverage python-devel \
-    python-jwt python-nose python-pecan python-prettytable python-requests \
-    python-routes python-sphinx python-tox python-virtualenv python-werkzeug \
-    python2-bcrypt python2-pip python34-Cython python34-devel python34-setuptools rdma-core-devel \
-    redhat-lsb-core redhat-rpm-config selinux-policy-devel selinux-policy-doc sharutils snappy-devel socat \
+    libcurl-devel liboath-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel \
+    lttng-ust-devel lz4-devel mailcap ncurses-devel nss-devel openldap-devel openssl-devel parted \
+    python-cherrypy python-coverage python-devel python-jwt python-nose python-pecan \
+    python-prettytable python-requests python-routes python-sphinx python-tox \
+    python-virtualenv python-werkzeug python2-bcrypt python2-pip python34-Cython \
+    python34-devel python34-setuptools \
+    rdma-core-devel redhat-lsb-core redhat-rpm-config selinux-policy-devel \
+    selinux-policy-doc sharutils snappy-devel socat \
     systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlsec1 xmlsec1-devel xmlsec1-nss \
-    xmlsec1-openssl xmlsec1-openssl-devel xmlstarlet yasm yum-utils wget \
+    xmlsec1-openssl xmlsec1-openssl-devel xmlstarlet yasm wget \
     && yum clean all
 
 # Required to enable debug repos and install python debug packages
-RUN debuginfo-install -y python
+RUN debuginfo-install -y python && yum clean all
 
 # Install doc-build deps
 RUN wget "https://kojipkgs.fedoraproject.org//packages/jericho-html/3.2/5.fc19/noarch/jericho-html-3.2-5.fc19.noarch.rpm" \
@@ -47,12 +52,10 @@ RUN mkdir /ceph
 
 WORKDIR /ceph
 
-ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
-ENV PYTHONDONTWRITEBYTECODE="1"
-
-# To increase ccache hit rate
-ENV SOURCE_DATE_EPOCH="358228200"
-ENV BUILD_DATE="1981-05-09"
-
-# ceph specific:
-ENV CEPH_PORT=10000
+ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH" \
+    PYTHONDONTWRITEBYTECODE="1" \
+    # To increase ccache hit rate
+    SOURCE_DATE_EPOCH="358228200" \
+    BUILD_DATE="1981-05-09" \
+    # ceph specific:
+    CEPH_PORT=10000
