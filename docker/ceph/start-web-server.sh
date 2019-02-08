@@ -6,6 +6,4 @@ set -e
 
 cd /ceph/src/pybind/mgr/dashboard/frontend
 
-npm install -f
-
 exec npm run start
