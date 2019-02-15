@@ -8,12 +8,22 @@ rm -rf out dev
 
 export CEPH_BIN="./bin"
 
+# rpm installation configuration:
 if [[ -e /usr/bin/ceph-mgr ]]; then
     export CEPH_BIN=/usr/bin
-    export CEPH_LIB=/usr/lib64
-    export EC_PATH="$CEPH_LIB"/ceph/erasure-code
-    export OBJCLASS_PATH="$CEPH_LIB"/rados-classes
-    export MGR_PYTHON_PATH="$CEPH_LIB"/ceph/mgr
+    export CEPH_LIB=/usr/lib64/ceph
+    export CEPH_PORT=10000
+    export EC_PATH="$CEPH_LIB"/erasure-code
+    export MGR_PYTHON_PATH="$CEPH_LIB"/mgr
+    export OBJCLASS_PATH=/usr/lib64/rados-classes
+
+    ln -sf "$EC_PATH"/* "$CEPH_LIB"
+    ln -sf "$OBJCLASS_PATH"/* "$CEPH_LIB"
+
+#    function on_exit {
+#        cat /ceph/build/ceph.conf
+#    }
+#    trap on_exit ERR
 fi
 if [[ -z "$MGR" ]]; then
     export MGR=1
@@ -29,8 +39,8 @@ echo 'vstart.sh completed!'
 # Enable prometheus module
 "$CEPH_BIN"/ceph -c /ceph/build/ceph.conf mgr module enable prometheus
 
-if [[ "$(hostname)" == 'luminous.dev' ]]; then
-    return 0
+if [[ "$(hostname -s)" == 'luminous' ]]; then
+    exit 0
 fi
 
 # Enable the Object Gateway management frontend

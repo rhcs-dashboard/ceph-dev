@@ -39,40 +39,43 @@ services:
         scale: -1
 
     rhcs3.2:
+        extends:
+            file: docker-compose.templates.yml
+            service: ceph-rpm-base
         image: ${RHCS3_2_IMAGE:-hello-world}
         container_name: rhcs3.2
         hostname: rhcs3-2
-        domainname: dev
         networks:
             default:
                 aliases:
                     - 'rhcs3-2.dev'
         ports: ['${RHCS3_2_HOST_PORT:-11032}:11000']
-        volumes:
-            - ./docker/ceph:/docker:ro
-            - ${CEPH_REPO_DIR}:/ceph/debug
-        environment:
-            - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
-        command: /docker/rhcs/3.2/start.sh
-        scale: -1
+
+    nautilus:
+        extends:
+            file: docker-compose.templates.yml
+            service: ceph-rpm-base
+        image: rhcsdashboard/nautilus
+        container_name: nautilus
+        hostname: nautilus
+        networks:
+            default:
+                aliases:
+                    - 'nautilus.dev'
+        ports: ['${NAUTILUS_HOST_PORT:-11014}:11000']
 
     luminous:
+        extends:
+            file: docker-compose.templates.yml
+            service: ceph-rpm-base
         image: rhcsdashboard/luminous
         container_name: luminous
         hostname: luminous
-        domainname: dev
         networks:
             default:
                 aliases:
                     - 'luminous.dev'
         ports: ['${LUMINOUS_HOST_PORT:-11012}:11000']
-        volumes:
-            - ./docker/ceph:/docker:ro
-            - ${CEPH_REPO_DIR}:/ceph/debug
-        environment:
-            - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
-        command: /docker/luminous/start.sh
-        scale: -1
 
     grafana:
         image: rhcsdashboard/grafana

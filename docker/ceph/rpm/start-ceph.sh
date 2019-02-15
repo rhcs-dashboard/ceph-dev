@@ -10,6 +10,7 @@ WITH_RBD:BOOL=ON
 ' > /ceph/build/CMakeCache.txt
 
 # Create directory for vstart logs, ...
+readonly VSTART_DEBUG_DIR=/ceph/debug/build/"$(hostname -s)"
 rm -rf "$VSTART_DEBUG_DIR"
 mkdir -p "$VSTART_DEBUG_DIR"
 

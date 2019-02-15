@@ -21,3 +21,14 @@ services:
             - ALL
         entrypoint: /docker/entrypoint.sh
         command: /docker/start.sh
+
+    ceph-rpm-base:
+        domainname: dev
+        volumes:
+            - ./docker/ceph:/docker:ro
+            - ${CEPH_REPO_DIR}:/ceph/debug
+        environment:
+            - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
+            - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
+        command: /docker/rpm/start-ceph.sh
+        scale: -1
