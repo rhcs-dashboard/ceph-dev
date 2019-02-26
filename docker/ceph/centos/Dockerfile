@@ -8,7 +8,7 @@ RUN yum install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 c
     devtoolset-7-gcc-c++ doxygen expat-devel fuse-devel gcc-c++ git gperf gperftools-devel graphviz \
     iproute java-1.8.0-openjdk-devel \
     jq junit keyutils-libs-devel leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
-    libcurl-devel liboath-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel \
+    libcurl-devel liboath-devel librabbitmq-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel \
     lttng-ust-devel lz4-devel mailcap ncurses-devel nss-devel openldap-devel openssl-devel parted \
     python-cherrypy python-coverage python-devel python-jwt python-nose python-pecan \
     python-prettytable python-requests python-routes python-sphinx python-tox \

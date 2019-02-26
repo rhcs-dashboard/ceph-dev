@@ -6,8 +6,9 @@ RUN dnf install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 c
     CUnit-devel Cython ditaa doxygen expat-devel fuse-devel gcc-c++ git gperf gperftools-devel graphviz \
     jericho-html iproute java-1.8.0-openjdk-devel \
     jq junit keyutils-libs-devel leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
-    libcurl-devel liboath-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel lttng-ust-devel \
-    lz4-devel mailcap ncurses-devel nss-devel openldap-devel openssl-devel parted perl \
+    libcurl-devel liboath-devel librabbitmq-devel libtool libtool-ltdl-devel \
+    libuuid-devel libxml2-devel lttng-ust-devel lz4-devel mailcap ncurses-devel \
+    nss-devel openldap-devel openssl-devel parted perl \
     python3-cherrypy python3-coverage python3-jwt python3-nose python3-pecan python3-prettytable \
     python3-requests python3-routes python3-sphinx python3-tox python3-virtualenv python3-werkzeug \
     python3-bcrypt python3-pip python3-saml python3-Cython python3-devel python3-setuptools \
