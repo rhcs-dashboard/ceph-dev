@@ -26,6 +26,7 @@ services:
         extends:
             file: docker-compose.templates.yml
             service: ceph-base
+        image: rhcsdashboard/ceph:${CEPH2_IMAGE_TAG:-fedora29}
         container_name: ceph2
         hostname: ceph2
         networks:

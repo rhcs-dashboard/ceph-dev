@@ -238,6 +238,7 @@ docker push rhcsdashboard/ceph:centos7
 
 * Set appropriate values in *.env*:
 ```
+CEPH2_IMAGE_TAG=fedora29
 CEPH2_REPO_DIR=/path/to/your/local/ceph2
 CEPH2_CUSTOM_BUILD_DIR=
 # default: 4202
