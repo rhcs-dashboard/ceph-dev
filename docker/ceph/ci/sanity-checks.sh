@@ -83,12 +83,20 @@ run_tox() {
 run_api_tests() {
     echo 'Running API tests...'
 
+    cd "$REPO_DIR"/build
+
+    rm -rf out dev vstart_runner.log
+
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
 
     source ./run-backend-api-tests.sh \
         && run_teuthology_tests "$@"
 
     echo 'API tests successfully finished! Congratulations!'
+
+    cleanup_teuthology
+
+    echo 'API tests cleanup finished!'
 }
 
 run_frontend_e2e_tests() {
