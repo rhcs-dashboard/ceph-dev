@@ -115,13 +115,24 @@ docker-compose run --rm ceph /docker/build-dashboard-frontend.sh
 
 * Run backend unit tests:
 ```
-docker-compose run --rm ceph /docker/ci/run-backend-unit-tests.sh
+# All tests:
+docker-compose run --rm ceph /docker/ci/run-tox.sh
 
 # Only specific tests:
-docker-compose run --rm ceph /docker/ci/run-backend-unit-tests.sh tests/test_rest_client.py tests/test_grafana.py
+docker-compose run --rm ceph /docker/ci/run-tox.sh tests/test_rest_client.py tests/test_grafana.py
 
 # Only 1 test:
-docker-compose run --rm ceph /docker/ci/run-backend-unit-tests.sh tests/test_rgw_client.py::RgwClientTest::test_ssl_verify
+docker-compose run --rm ceph /docker/ci/run-tox.sh tests/test_rgw_client.py::RgwClientTest::test_ssl_verify
+```
+
+* Run backend lint:
+```
+# All files:
+docker-compose run --rm ceph /docker/ci/run-tox.sh py3-lint
+
+# Only 1 file:
+docker-compose run --rm ceph /docker/ci/run-tox.sh py3-run -- pylint controllers/health.py
+docker-compose run --rm ceph /docker/ci/run-tox.sh py3-run -- pycodestyle controllers/health.py
 ```
 
 * Run API tests (based on Teuthology: Ceph integration test framework):

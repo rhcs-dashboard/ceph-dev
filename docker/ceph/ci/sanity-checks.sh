@@ -66,10 +66,16 @@ run_tox() {
     export CEPH_BUILD_DIR="$PWD"/.tox
     TOX_ARGS="$@"
     if [[ -z "$TOX_ARGS" ]]; then
+        # Default behaviour (pre-commit)
         TOX_ARGS='py3-cov,py3-lint'
-        if [[ "$PYTHON_VERSION" != '3' ]]; then
-            TOX_ARGS=${TOX_ARGS//3/27}
-        fi
+    fi
+
+    if [[ "$TOX_ARGS" == *'py27-'* && "$PYTHON_VERSION" == '3' ]]; then
+        echo 'Python 3 build detected: switching to python 3 tox env.'
+        TOX_ARGS=${TOX_ARGS//py27-/py3-}
+    elif [[ "$TOX_ARGS" == *'py3-'* && "$PYTHON_VERSION" != '3' ]]; then
+        echo 'Python 2 build detected: switching to python 2 tox env.'
+        TOX_ARGS=${TOX_ARGS//py3-/py27-}
     fi
 
     tox -e $TOX_ARGS
