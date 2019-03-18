@@ -65,6 +65,19 @@ services:
                     - 'nautilus.dev'
         ports: ['${NAUTILUS_HOST_PORT:-11014}:11000']
 
+    mimic:
+        extends:
+            file: docker-compose.templates.yml
+            service: ceph-rpm-base
+        image: rhcsdashboard/mimic:${MIMIC_IMAGE_TAG:-v13.2.5}
+        container_name: mimic
+        hostname: mimic
+        networks:
+            default:
+                aliases:
+                    - 'mimic.dev'
+        ports: ['${MIMIC_HOST_PORT:-11013}:11000']
+
     luminous:
         extends:
             file: docker-compose.templates.yml

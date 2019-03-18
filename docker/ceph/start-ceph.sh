@@ -51,6 +51,10 @@ readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0
 "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
 "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
 
+if [[ "$(hostname -s)" == 'mimic' ]]; then
+    exit 0
+fi
+
 # Configure grafana
 set_grafana_api_url() {
     while true; do

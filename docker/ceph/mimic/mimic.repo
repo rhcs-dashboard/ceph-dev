@@ -1,0 +1,5 @@
+[mimic]
+name=Ceph Mimic
+baseurl=https://download.ceph.com/rpm-mimic/el7/x86_64/
+enabled=1
+gpgcheck=0
