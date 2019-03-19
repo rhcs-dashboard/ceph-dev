@@ -16,3 +16,11 @@ RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/v13.2.5/src/vstart.sh 
     && chmod +x /ceph/src/vstart.sh
 
 WORKDIR /ceph
+
+# For dev. purposes (compile frontend app into 'dist' directory)
+RUN yum install -y bzip2 gcc-c++ make python2-pip \
+    && yum clean all \
+    && pip install nodeenv \
+    && nodeenv venv -n 8.10.0
+
+RUN rm -rf /var/cache/yum/*

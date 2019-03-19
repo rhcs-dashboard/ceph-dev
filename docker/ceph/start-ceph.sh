@@ -14,7 +14,7 @@ if [[ -e /usr/bin/ceph-mgr ]]; then
     export CEPH_LIB=/usr/lib64/ceph
     export CEPH_PORT=10000
     export EC_PATH="$CEPH_LIB"/erasure-code
-    export MGR_PYTHON_PATH="$CEPH_LIB"/mgr
+    [[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH="$CEPH_LIB"/mgr
     export OBJCLASS_PATH=/usr/lib64/rados-classes
 
     ln -sf "$EC_PATH"/* "$CEPH_LIB"

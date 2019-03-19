@@ -10,12 +10,32 @@ WITH_RBD:BOOL=ON
 ' > /ceph/build/CMakeCache.txt
 
 # Create directory for vstart logs, ...
-readonly VSTART_DEBUG_DIR=/ceph/debug/build/"$(hostname -s)"
+readonly CEPH_RPM_DEV_DIR=/ceph/dev
+readonly VSTART_DEBUG_DIR="$CEPH_RPM_DEV_DIR"/build/"$(hostname -s)"
 rm -rf "$VSTART_DEBUG_DIR"
 mkdir -p "$VSTART_DEBUG_DIR"
 
 export CEPH_DEV_DIR="$VSTART_DEBUG_DIR"/dev
 export CEPH_OUT_DIR="$VSTART_DEBUG_DIR"/out
+
+if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
+    export MGR_PYTHON_PATH="$CEPH_RPM_DEV_DIR"/src/pybind/mgr
+    export PYTHONDONTWRITEBYTECODE=1
+
+    . venv/bin/activate
+    cd "$MGR_PYTHON_PATH"/dashboard/frontend
+
+    if [[ "$(hostname -s)" == 'mimic' ]]; then
+        rm -rf package-lock.json node_modules/@angular/cli
+        npm update @angular/cli
+    fi
+
+    npm install -f
+    npm run build
+    deactivate_node
+
+    ln -sf /ceph/dev/src/vstart.sh /ceph/src/vstart.sh
+fi
 
 /docker/start-ceph.sh
 
@@ -28,5 +48,11 @@ export CEPH_OUT_DIR="$VSTART_DEBUG_DIR"/out
 cd /ceph
 ln -sf /ceph/build/ceph.conf ceph.conf
 
-# Keep container running
-exec tail -f /dev/null
+if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
+    . venv/bin/activate
+    cd "$MGR_PYTHON_PATH"/dashboard/frontend
+    exec npm run build -- --watch
+else
+    # Keep container running
+    exec tail -f /dev/null
+fi
