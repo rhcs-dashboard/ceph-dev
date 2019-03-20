@@ -17,7 +17,9 @@ echo 'vstart.sh completed!'
 # Enable prometheus module
 "$CEPH_BIN"/ceph -c /ceph/build/ceph.conf mgr module enable prometheus
 
-if [[ "$(hostname -s)" == 'luminous' ]]; then
+[[ -z "$CEPH_VERSION" ]] && export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
+
+if [[ "$CEPH_VERSION" == '12' ]]; then
     exit 0
 fi
 
@@ -29,7 +31,7 @@ readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0
 "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
 "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
 
-if [[ "$(hostname -s)" == 'mimic' ]]; then
+if [[ "$CEPH_VERSION" == '13' ]]; then
     exit 0
 fi
 

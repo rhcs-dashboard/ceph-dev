@@ -8,11 +8,7 @@
         "labels": {}
     },
     {
-        "targets": [ "rhcs3-2.dev:9283" ],
-        "labels": {}
-    },
-    {
-        "targets": [ "luminous.dev:9283" ],
+        "targets": [ "ceph-rpm.dev:9283" ],
         "labels": {}
     }
 ]

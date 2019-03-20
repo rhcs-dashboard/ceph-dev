@@ -38,25 +38,29 @@ if [[ ! -d "$MGR_PYTHON_PATH" ]]; then
     export MGR_PYTHON_PATH="$CEPH_LIB"/mgr
 fi
 
+export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
+
 if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
     export MGR_PYTHON_PATH="$CEPH_RPM_DEV_DIR"/src/pybind/mgr
     export PYTHONDONTWRITEBYTECODE=1
 
-    . venv/bin/activate
-    cd "$MGR_PYTHON_PATH"/dashboard/frontend
+    if [[ "$CEPH_VERSION" -ge '13' ]]; then
+        . venv/bin/activate
+        cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
-    run_npm_install() {
-        if [[ "$(hostname -s)" == 'mimic' ]]; then
-            rm -rf package-lock.json node_modules/@angular/cli
-            npm update @angular/cli
-        fi
+        run_npm_install() {
+            if [[ "$CEPH_VERSION" == '13' ]]; then
+                rm -rf package-lock.json node_modules/@angular/cli
+                npm update @angular/cli
+            fi
 
-        npm install -f
-    }
+            npm install -f
+        }
 
-    run_npm_install || (rm -rf node_modules && run_npm_install)
-    npm run build
-    deactivate_node
+        run_npm_install || (rm -rf node_modules && run_npm_install)
+        npm run build
+        deactivate_node
+    fi
 
     ln -sf /ceph/dev/src/vstart.sh /ceph/src/vstart.sh
 fi
@@ -72,7 +76,7 @@ fi
 cd /ceph
 ln -sf /ceph/build/ceph.conf ceph.conf
 
-if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
+if [[ "$CEPH_RPM_DEV" == 'true' && "$CEPH_VERSION" -ge '13' ]]; then
     . venv/bin/activate
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
     exec npm run build -- --watch

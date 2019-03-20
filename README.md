@@ -266,19 +266,22 @@ docker-compose up -d --scale ceph2=1
 docker-compose up -d --scale ceph2=1 --scale ceph=0
 ```
 
-## Start RHCS 3.2 RPM version
+## Start Ceph RPM version
 
-* Set appropriate values in *.env* (you have to be logged into private registry):
+* Set appropriate values in *.env*:
 ```
-RHCS3_2_IMAGE=docker-registry.engineering.redhat.com/ceph-dashboard/rhcs3.2
-# default: 11032
-RHCS3_2_HOST_PORT=11032
+CEPH_RPM_IMAGE=rhcsdashboard/nautilus:v14.2.0
+# default: 11001
+CEPH_RPM_HOST_PORT=11001
 ```
 
-* Start rhcs3.2 + ceph + ...:
+* Start ceph-rpm + ceph + ...:
 ```
-docker-compose up -d --scale rhcs3.2=1
+docker-compose up -d --scale ceph-rpm=1
 
-# Start rhcs3.2 but not ceph:
-docker-compose up -d --scale rhcs3.2=1 --scale ceph=0
+# Start ceph-rpm but not ceph:
+docker-compose up -d --scale ceph-rpm=1 --scale ceph=0
+
+# Start only ceph-rpm:
+docker-compose up -d --scale ceph-rpm=1 ceph-rpm
 ```

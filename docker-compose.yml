@@ -39,57 +39,18 @@ services:
             - ${CEPH2_CUSTOM_BUILD_DIR:-ceph_build_empty}:/build
         scale: -1
 
-    rhcs3.2:
+    ceph-rpm:
         extends:
             file: docker-compose.templates.yml
             service: ceph-rpm-base
-        image: ${RHCS3_2_IMAGE:-hello-world}
-        container_name: rhcs3.2
-        hostname: rhcs3-2
+        image: ${CEPH_RPM_IMAGE:-rhcsdashboard/nautilus:v14.2.0}
+        container_name: ceph-rpm
+        hostname: ceph-rpm
         networks:
             default:
                 aliases:
-                    - 'rhcs3-2.dev'
-        ports: ['${RHCS3_2_HOST_PORT:-11032}:11000']
-
-    nautilus:
-        extends:
-            file: docker-compose.templates.yml
-            service: ceph-rpm-base
-        image: rhcsdashboard/nautilus:${NAUTILUS_IMAGE_TAG:-v14.2.0}
-        container_name: nautilus
-        hostname: nautilus
-        networks:
-            default:
-                aliases:
-                    - 'nautilus.dev'
-        ports: ['${NAUTILUS_HOST_PORT:-11014}:11000']
-
-    mimic:
-        extends:
-            file: docker-compose.templates.yml
-            service: ceph-rpm-base
-        image: rhcsdashboard/mimic:${MIMIC_IMAGE_TAG:-v13.2.5}
-        container_name: mimic
-        hostname: mimic
-        networks:
-            default:
-                aliases:
-                    - 'mimic.dev'
-        ports: ['${MIMIC_HOST_PORT:-11013}:11000']
-
-    luminous:
-        extends:
-            file: docker-compose.templates.yml
-            service: ceph-rpm-base
-        image: rhcsdashboard/luminous
-        container_name: luminous
-        hostname: luminous
-        networks:
-            default:
-                aliases:
-                    - 'luminous.dev'
-        ports: ['${LUMINOUS_HOST_PORT:-11012}:11000']
+                    - 'ceph-rpm.dev'
+        ports: ['${CEPH_RPM_HOST_PORT:-11001}:11000']
 
     grafana:
         image: rhcsdashboard/grafana

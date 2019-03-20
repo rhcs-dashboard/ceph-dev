@@ -28,7 +28,7 @@ services:
             - ./docker/ceph:/docker:ro
             - ${CEPH_REPO_DIR}:/ceph/dev
         environment:
-            - CEPH_RPM_DEV=${CEPH_RPM_DEV}
+            - CEPH_RPM_DEV=${CEPH_RPM_DEV:-false}
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
         command: /docker/rpm/start-ceph.sh
