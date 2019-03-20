@@ -56,7 +56,7 @@ services:
         extends:
             file: docker-compose.templates.yml
             service: ceph-rpm-base
-        image: rhcsdashboard/nautilus
+        image: rhcsdashboard/nautilus:${NAUTILUS_IMAGE_TAG:-v14.2.0}
         container_name: nautilus
         hostname: nautilus
         networks:

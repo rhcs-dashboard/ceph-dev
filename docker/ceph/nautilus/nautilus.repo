@@ -1,5 +1,11 @@
 [nautilus]
 name=Ceph Nautilus
-baseurl=https://4.chacra.ceph.com/r/ceph/master/97258013a5a445216bfce38ff02c22d9d707e2aa/centos/7/flavors/default/x86_64/
+baseurl=https://download.ceph.com/rpm-nautilus/el7/x86_64/
+enabled=1
+gpgcheck=0
+
+[nautilus-noarch]
+name=Ceph Nautilus noarch
+baseurl=https://download.ceph.com/rpm-nautilus/el7/noarch/
 enabled=1
 gpgcheck=0

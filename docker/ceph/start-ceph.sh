@@ -6,31 +6,9 @@ cd /ceph/build
 
 rm -rf out dev
 
-export CEPH_BIN="./bin"
-
-# rpm installation configuration:
-if [[ -e /usr/bin/ceph-mgr ]]; then
-    export CEPH_BIN=/usr/bin
-    export CEPH_LIB=/usr/lib64/ceph
-    export CEPH_PORT=10000
-    export EC_PATH="$CEPH_LIB"/erasure-code
-    [[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH="$CEPH_LIB"/mgr
-    export OBJCLASS_PATH=/usr/lib64/rados-classes
-
-    ln -sf "$EC_PATH"/* "$CEPH_LIB"
-    ln -sf "$OBJCLASS_PATH"/* "$CEPH_LIB"
-
-#    function on_exit {
-#        cat /ceph/build/ceph.conf
-#    }
-#    trap on_exit ERR
-fi
-if [[ -z "$MGR" ]]; then
-    export MGR=1
-fi
-if [[ -z "$RGW" ]]; then
-    export RGW=1
-fi
+[[ -z "$CEPH_BIN" ]] && export CEPH_BIN=./bin
+[[ -z "$MGR" ]] && export MGR=1
+[[ -z "$RGW" ]] && export RGW=1
 
 ../src/vstart.sh -d -n
 

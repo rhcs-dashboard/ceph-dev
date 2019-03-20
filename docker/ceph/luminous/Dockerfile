@@ -4,7 +4,7 @@ RUN yum install -y epel-release yum-utils && yum clean all
 
 RUN yum install -y curl jq net-tools && yum clean all
 
-COPY luminous.repo /etc/yum.repos.d
+COPY luminous/luminous.repo /etc/yum.repos.d
 
 RUN yum install -y ceph-mds ceph-mgr ceph-mon ceph-osd ceph-radosgw && yum clean all
 

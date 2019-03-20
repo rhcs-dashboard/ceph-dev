@@ -5,7 +5,7 @@ RUN yum install -y bind-utils curl epel-release iputils net-tools yum yum-utils 
 
 RUN yum install -y jq && yum clean all
 
-COPY mimic.repo /etc/yum.repos.d
+COPY mimic/mimic.repo /etc/yum.repos.d
 
 RUN yum install -y ceph-mds ceph-mgr ceph-mon ceph-osd ceph-radosgw && yum clean all
 
