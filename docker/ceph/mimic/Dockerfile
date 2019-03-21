@@ -23,4 +23,7 @@ RUN yum install -y bzip2 gcc-c++ make python2-pip \
     && pip install nodeenv \
     && nodeenv venv -n 8.10.0
 
+COPY e2e/google-chrome.repo /etc/yum.repos.d
+RUN yum install -y google-chrome-stable && yum clean all
+
 RUN rm -rf /var/cache/yum/*
