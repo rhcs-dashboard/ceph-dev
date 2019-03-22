@@ -2,7 +2,6 @@
 
 set -e
 
-[[ -z "$CEPH_BIN" ]] && export CEPH_BIN=/ceph/build/bin
 [[ -z "$CEPH_VERSION" ]] && export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
 [[ -z "$MGR" ]] && export MGR=1
 [[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH=/ceph/src/pybind/mgr
@@ -11,10 +10,6 @@ set -e
 # Build frontend ('dist' dir required by dashboard module):
 if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
-
-    if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
-        . /ceph/venv/bin/activate
-    fi
 
     run_npm_build() {
         if [[ "$CEPH_VERSION" == '13' ]]; then
@@ -27,10 +22,6 @@ if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && -d "$MGR_PYTHON_PATH"
     }
 
     run_npm_build || (rm -rf node_modules && run_npm_build)
-
-    if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
-        deactivate_node
-    fi
 fi
 
 cd /ceph/build

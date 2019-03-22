@@ -4,5 +4,5 @@ set -e
 
 cd /ceph/build
 
-bin/ceph mgr module disable dashboard
-bin/ceph mgr module enable dashboard --force
+"$CEPH_BIN"/ceph mgr module disable dashboard
+"$CEPH_BIN"/ceph mgr module enable dashboard --force

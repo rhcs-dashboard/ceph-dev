@@ -21,7 +21,6 @@ rm -rf "$VSTART_DEST_DIR"
 mkdir -p "$VSTART_DEST_DIR"
 
 # Env. vars used in vstart
-export CEPH_BIN=/usr/bin
 export CEPH_DEV_DIR="$VSTART_DEST_DIR"/dev
 export CEPH_OUT_DIR="$VSTART_DEST_DIR"/out
 export CEPH_LIB=/usr/lib64/ceph
@@ -47,10 +46,10 @@ fi
 
 /docker/start-ceph.sh
 
-#/usr/bin/ceph -c /ceph/build/ceph.conf config-key set mgr/dashboard/ssl false
-#/usr/bin/ceph -c /ceph/build/ceph.conf mgr module disable dashboard
+#"$CEPH_BIN"/ceph -c /ceph/build/ceph.conf config-key set mgr/dashboard/ssl false
+#"$CEPH_BIN"/ceph -c /ceph/build/ceph.conf mgr module disable dashboard
 #sleep 1
-#/usr/bin/ceph -c /ceph/build/ceph.conf mgr module enable dashboard
+#"$CEPH_BIN"/ceph -c /ceph/build/ceph.conf mgr module enable dashboard
 
 # Avoid the need of using "-c" option when running ceph command from /ceph dir
 cd /ceph
@@ -59,7 +58,6 @@ ln -sf /ceph/build/ceph.conf ceph.conf
 if [[ "$CEPH_RPM_DEV" == 'true' && -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
-    . venv/bin/activate
     exec npm run build -- --watch
 else
     # Keep container running

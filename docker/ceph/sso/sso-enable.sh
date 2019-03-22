@@ -4,12 +4,7 @@ set -e
 
 cd /ceph/build
 
-CEPH_BIN=bin/ceph
-if [[ ! -e "$CEPH_BIN" ]]; then
-    CEPH_BIN=/usr/bin/ceph
-fi
-
-"$CEPH_BIN" dashboard sso setup saml2 \
+"$CEPH_BIN"/ceph dashboard sso setup saml2 \
     https://localhost:11000 \
     /docker/sso/idp-metadata.xml \
     username \
