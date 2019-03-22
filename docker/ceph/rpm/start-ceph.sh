@@ -16,14 +16,14 @@ WITH_RBD:BOOL=ON
 
 # Create directory for vstart logs, ...
 readonly CEPH_RPM_DEV_DIR=/ceph/dev
-readonly VSTART_DEBUG_DIR="$CEPH_RPM_DEV_DIR"/build/"$(hostname -s)"
-rm -rf "$VSTART_DEBUG_DIR"
-mkdir -p "$VSTART_DEBUG_DIR"
+readonly VSTART_DEST_DIR="$CEPH_RPM_DEV_DIR"/build/"$(hostname -s)"
+rm -rf "$VSTART_DEST_DIR"
+mkdir -p "$VSTART_DEST_DIR"
 
 # Env. vars used in vstart
 export CEPH_BIN=/usr/bin
-export CEPH_DEV_DIR="$VSTART_DEBUG_DIR"/dev
-export CEPH_OUT_DIR="$VSTART_DEBUG_DIR"/out
+export CEPH_DEV_DIR="$VSTART_DEST_DIR"/dev
+export CEPH_OUT_DIR="$VSTART_DEST_DIR"/out
 export CEPH_LIB=/usr/lib64/ceph
 export CEPH_PORT=10000
 export EC_PATH="$CEPH_LIB"/erasure-code
@@ -38,29 +38,9 @@ if [[ ! -d "$MGR_PYTHON_PATH" ]]; then
     export MGR_PYTHON_PATH="$CEPH_LIB"/mgr
 fi
 
-export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
-
 if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
     export MGR_PYTHON_PATH="$CEPH_RPM_DEV_DIR"/src/pybind/mgr
     export PYTHONDONTWRITEBYTECODE=1
-
-    if [[ "$CEPH_VERSION" -ge '13' ]]; then
-        . venv/bin/activate
-        cd "$MGR_PYTHON_PATH"/dashboard/frontend
-
-        run_npm_install() {
-            if [[ "$CEPH_VERSION" == '13' ]]; then
-                rm -rf package-lock.json node_modules/@angular/cli
-                npm update @angular/cli
-            fi
-
-            npm install -f
-        }
-
-        run_npm_install || (rm -rf node_modules && run_npm_install)
-        npm run build
-        deactivate_node
-    fi
 
     ln -sf /ceph/dev/src/vstart.sh /ceph/src/vstart.sh
 fi
@@ -76,9 +56,10 @@ fi
 cd /ceph
 ln -sf /ceph/build/ceph.conf ceph.conf
 
-if [[ "$CEPH_RPM_DEV" == 'true' && "$CEPH_VERSION" -ge '13' ]]; then
-    . venv/bin/activate
+if [[ "$CEPH_RPM_DEV" == 'true' && -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
+
+    . venv/bin/activate
     exec npm run build -- --watch
 else
     # Keep container running

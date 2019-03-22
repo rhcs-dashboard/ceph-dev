@@ -2,13 +2,40 @@
 
 set -e
 
+[[ -z "$CEPH_BIN" ]] && export CEPH_BIN=/ceph/build/bin
+[[ -z "$CEPH_VERSION" ]] && export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
+[[ -z "$MGR" ]] && export MGR=1
+[[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH=/ceph/src/pybind/mgr
+[[ -z "$RGW" ]] && export RGW=1
+
+# Build frontend ('dist' dir required by dashboard module):
+if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
+    cd "$MGR_PYTHON_PATH"/dashboard/frontend
+
+    if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
+        . /ceph/venv/bin/activate
+    fi
+
+    run_npm_build() {
+        if [[ "$CEPH_VERSION" == '13' ]]; then
+            rm -rf package-lock.json node_modules/@angular/cli
+            npm update @angular/cli
+        fi
+
+        npm install -f
+        npm run build
+    }
+
+    run_npm_build || (rm -rf node_modules && run_npm_build)
+
+    if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
+        deactivate_node
+    fi
+fi
+
 cd /ceph/build
 
 rm -rf out dev
-
-[[ -z "$CEPH_BIN" ]] && export CEPH_BIN=./bin
-[[ -z "$MGR" ]] && export MGR=1
-[[ -z "$RGW" ]] && export RGW=1
 
 ../src/vstart.sh -d -n
 
@@ -17,9 +44,8 @@ echo 'vstart.sh completed!'
 # Enable prometheus module
 "$CEPH_BIN"/ceph -c /ceph/build/ceph.conf mgr module enable prometheus
 
-[[ -z "$CEPH_VERSION" ]] && export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
-
-if [[ "$CEPH_VERSION" == '12' ]]; then
+# Upstream luminous start ends here
+if [[ ! -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
     exit 0
 fi
 
@@ -31,9 +57,13 @@ readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0
 "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
 "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
 
+# Upstream mimic start ends here
 if [[ "$CEPH_VERSION" == '13' ]]; then
     exit 0
 fi
+
+# Create dashboard "test" user:
+"$CEPH_BIN"/ceph dashboard ac-user-create test test
 
 # Configure grafana
 set_grafana_api_url() {
@@ -50,6 +80,11 @@ set_grafana_api_url() {
 }
 set_grafana_api_url &
 
+# RHCS 3.2 beta start ends here
+if [[ "$CEPH_VERSION" -le '13' ]]; then
+    exit 0
+fi
+
 # Configure alertmanager
 set_alertmanager_api_host() {
     while true; do
@@ -64,6 +99,3 @@ set_alertmanager_api_host() {
     done
 }
 set_alertmanager_api_host &
-
-# Create dashboard "test" user:
-"$CEPH_BIN"/ceph dashboard ac-user-create test test
