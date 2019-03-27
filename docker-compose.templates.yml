@@ -10,7 +10,12 @@ services:
             - ${CEPH_REPO_DIR}:/ceph
             - ${CEPH_CUSTOM_BUILD_DIR:-ceph_build_empty}:/build
         environment:
+            - CEPH_ASOK_DIR=/ceph/build/ceph/out
             - CEPH_BIN=/ceph/build/bin
+            - CEPH_CONF=/ceph/build/ceph/ceph.conf
+            - CEPH_CONF_PATH=/ceph/build/ceph
+            - CEPH_DEV_DIR=/ceph/build/ceph/dev
+            - CEPH_OUT_DIR=/ceph/build/ceph/out
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
             - MDS
@@ -29,8 +34,14 @@ services:
             - ./docker/ceph:/docker:ro
             - ${CEPH_REPO_DIR}:/ceph/dev
         environment:
+            - CEPH_ASOK_DIR=/ceph/dev/build/ceph-rpm/out
             - CEPH_BIN=/usr/bin
+            - CEPH_CONF=/ceph/dev/build/ceph-rpm/ceph.conf
+            - CEPH_CONF_PATH=/ceph/dev/build/ceph-rpm
+            - CEPH_DEV_DIR=/ceph/dev/build/ceph-rpm/dev
+            - CEPH_OUT_DIR=/ceph/dev/build/ceph-rpm/out
             - CEPH_RPM_DEV=${CEPH_RPM_DEV:-false}
+            - CEPH_RPM_DEV_DIR=/ceph/dev
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
         entrypoint: /docker/rpm/entrypoint.sh

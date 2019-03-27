@@ -37,6 +37,12 @@ services:
         volumes:
             - ${CEPH2_REPO_DIR}:/ceph
             - ${CEPH2_CUSTOM_BUILD_DIR:-ceph_build_empty}:/build
+        environment:
+            - CEPH_ASOK_DIR=/ceph/build/ceph2/out
+            - CEPH_CONF=/ceph/build/ceph2/ceph.conf
+            - CEPH_CONF_PATH=/ceph/build/ceph2
+            - CEPH_DEV_DIR=/ceph/build/ceph2/dev
+            - CEPH_OUT_DIR=/ceph/build/ceph2/out
         scale: -1
 
     ceph-rpm:

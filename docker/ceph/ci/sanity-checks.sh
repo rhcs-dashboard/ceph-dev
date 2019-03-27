@@ -91,7 +91,8 @@ run_api_tests() {
 
     cd "$REPO_DIR"/build
 
-    rm -rf out dev vstart_runner.log
+    rm -rf "$CEPH_CONF_PATH" && mkdir "$CEPH_CONF_PATH"
+    rm vstart_runner.log
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
 

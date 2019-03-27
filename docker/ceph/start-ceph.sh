@@ -24,16 +24,15 @@ if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && -d "$MGR_PYTHON_PATH"
     run_npm_build || (rm -rf node_modules && run_npm_build)
 fi
 
+rm -rf "$CEPH_CONF_PATH" && mkdir "$CEPH_CONF_PATH"
+
 cd /ceph/build
-
-rm -rf out dev
-
 ../src/vstart.sh -d -n
 
 echo 'vstart.sh completed!'
 
 # Enable prometheus module
-"$CEPH_BIN"/ceph -c /ceph/build/ceph.conf mgr module enable prometheus
+"$CEPH_BIN"/ceph mgr module enable prometheus
 
 # Upstream luminous start ends here
 if [[ ! -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
