@@ -20,10 +20,15 @@ fi
 
 /docker/start-ceph.sh
 
-#"$CEPH_BIN"/ceph config-key set mgr/dashboard/ssl false
-#"$CEPH_BIN"/ceph mgr module disable dashboard
-#sleep 1
-#"$CEPH_BIN"/ceph mgr module enable dashboard
+# Disable ssl
+if [[ -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
+    echo "Disabling SSL..."
+
+    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/ssl false
+    /docker/restart-dashboard.sh
+
+    echo "SSL disabled."
+fi
 
 if [[ "$CEPH_RPM_DEV" == 'true' && -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend

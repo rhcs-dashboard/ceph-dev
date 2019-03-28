@@ -71,7 +71,7 @@ set_grafana_api_url() {
 set_grafana_api_url &
 
 # RHCS 3.2 beta start ends here
-if [[ "$CEPH_VERSION" -le '13' ]]; then
+if [[ "$CEPH_VERSION" == '12' ]]; then
     exit 0
 fi
 

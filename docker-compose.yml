@@ -87,7 +87,7 @@ services:
             - '--no-collector.timex'
 
     alertmanager:
-        image: prom/alertmanager:v0.16.0
+        image: prom/alertmanager:v0.16.1
         container_name: alertmanager
         hostname: alertmanager
         ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']

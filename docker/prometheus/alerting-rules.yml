@@ -2,6 +2,15 @@ groups:
 - name: test
   rules:
 
+  - alert: osd_in_lt3
+    expr: sum(ceph_osd_in) by (instance) < 3
+    for: 5s
+    labels:
+      severity: page
+    annotations:
+      summary: "Instance {{ $labels.instance }} with OSDs in < 3 !!!"
+      description: "Detailed description"
+
   - alert: load_0
     expr: node_load1 > 0
     for: 10s

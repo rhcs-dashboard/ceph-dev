@@ -1,13 +1,29 @@
 route:
-    receiver: 'ceph-dashboard'
-    group_wait: 1m
-    group_interval: 1m
-    repeat_interval: 1m
+  receiver: 'default'
+  group_wait: 30s
+  group_interval: 30s
+  repeat_interval: 30s
+  routes:
+    - match:
+        instance: "ceph:9283"
+      receiver: 'ceph'
+
+    - match:
+        instance: "ceph2:9283"
+      receiver: 'ceph2'
+
+    - match:
+        instance: "ceph-rpm:9283"
+      receiver: 'ceph-rpm'
 
 receivers:
-    - name: 'ceph-dashboard'
-      webhook_configs:
-      - url: 'http://ceph:4200/api/prometheus_receiver'
-    - name: 'ceph-rpm-dashboard'
-      webhook_configs:
-      - url: 'https://ceph-rpm:11000/api/prometheus_receiver'
+  - name: 'default'
+  - name: 'ceph'
+    webhook_configs:
+    - url: 'http://ceph:4200/api/prometheus_receiver'
+  - name: 'ceph2'
+    webhook_configs:
+    - url: 'http://ceph2:4200/api/prometheus_receiver'
+  - name: 'ceph-rpm'
+    webhook_configs:
+    - url: 'http://ceph-rpm:11000/api/prometheus_receiver'
