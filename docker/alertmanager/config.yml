@@ -8,3 +8,6 @@ receivers:
     - name: 'ceph-dashboard'
       webhook_configs:
       - url: 'http://ceph.dev:4200/api/prometheus_receiver'
+    - name: 'ceph-rpm-dashboard'
+      webhook_configs:
+      - url: 'https://ceph-rpm.dev:11000/api/prometheus_receiver'
