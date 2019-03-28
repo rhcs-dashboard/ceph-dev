@@ -1,6 +1,6 @@
 [
     {
-        "targets": [ "node-exporter.dev:9100" ],
+        "targets": [ "node-exporter:9100" ],
         "labels": {
             "instance": "node-exporter"
         }

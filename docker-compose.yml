@@ -4,19 +4,15 @@ services:
     ceph:
         extends:
             file: docker-compose.templates.yml
-            service: ceph-base
+            service: ceph-build-base
         container_name: ceph
         hostname: ceph
-        networks:
-            default:
-                aliases:
-                    - 'ceph.dev'
         ports: ['${CEPH_PROXY_HOST_PORT:-4200}:4200','${CEPH_HOST_PORT:-11000}:11000']
 
     ceph-host2:
         extends:
             file: docker-compose.templates.yml
-            service: ceph-base
+            service: ceph-build-base
         container_name: ceph-host2
         hostname: ceph-host2
         command: /docker/start-ceph-additional-host.sh
@@ -25,18 +21,14 @@ services:
     ceph2:
         extends:
             file: docker-compose.templates.yml
-            service: ceph-base
+            service: ceph-build-base
         image: rhcsdashboard/ceph:${CEPH2_IMAGE_TAG:-fedora29}
         container_name: ceph2
         hostname: ceph2
-        networks:
-            default:
-                aliases:
-                    - 'ceph2.dev'
         ports: ['${CEPH2_PROXY_HOST_PORT:-4202}:4200','${CEPH2_HOST_PORT:-11002}:11000']
         volumes:
             - ${CEPH2_REPO_DIR}:/ceph
-            - ${CEPH2_CUSTOM_BUILD_DIR:-ceph_build_empty}:/build
+            - ${CEPH2_CUSTOM_BUILD_DIR:-empty_volume}:/build
         environment:
             - CEPH_ASOK_DIR=/ceph/build/ceph2/out
             - CEPH_CONF=/ceph/build/ceph2/ceph.conf
@@ -51,10 +43,6 @@ services:
             service: ceph-rpm-base
         container_name: ceph-rpm
         hostname: ceph-rpm
-        networks:
-            default:
-                aliases:
-                    - 'ceph-rpm.dev'
         ports: ['${CEPH_RPM_HOST_PORT:-11001}:11000']
 
     ceph-rpm-host2:
@@ -70,11 +58,6 @@ services:
         image: rhcsdashboard/grafana
         container_name: grafana
         hostname: grafana
-        domainname: dev
-        networks:
-            default:
-                aliases:
-                    - 'grafana.dev'
         ports: ['${GRAFANA_HOST_PORT:-3000}:3000']
         volumes:
             - grafana_data:/var/lib/grafana
@@ -86,11 +69,6 @@ services:
         image: prom/prometheus:v2.5.0
         container_name: prometheus
         hostname: prometheus
-        domainname: dev
-        networks:
-            default:
-                aliases:
-                    - 'prometheus.dev'
         ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
         volumes:
             - ./docker/prometheus:/etc/prometheus:ro
@@ -99,11 +77,6 @@ services:
         image: prom/node-exporter:v0.17.0
         container_name: node-exporter
         hostname: node-exporter
-        domainname: dev
-        networks:
-            default:
-                aliases:
-                    - 'node-exporter.dev'
         ports: ['${NODE_EXPORTER_HOST_PORT:-9100}:9100']
         volumes:
             - /proc:/host/proc:ro
@@ -117,11 +90,6 @@ services:
         image: prom/alertmanager:v0.16.0
         container_name: alertmanager
         hostname: alertmanager
-        domainname: dev
-        networks:
-            default:
-                aliases:
-                    - 'alertmanager.dev'
         ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']
         volumes:
             - ./docker/alertmanager:/etc/alertmanager:ro
@@ -132,11 +100,6 @@ services:
         image: jboss/keycloak:4.8.3.Final
         container_name: keycloak
         hostname: keycloak
-        domainname: dev
-        networks:
-            default:
-                aliases:
-                    - 'keycloak.dev'
         ports: ['${KEYCLOAK_HOST_PORT:-8080}:8080']
         volumes:
             - ./docker/keycloak:/docker:ro
@@ -147,7 +110,7 @@ services:
         scale: -1
 
 volumes:
-    ceph_build_empty:
+    empty_volume:
     grafana_data:
 
 networks:

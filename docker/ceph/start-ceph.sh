@@ -58,7 +58,7 @@ fi
 # Configure grafana
 set_grafana_api_url() {
     while true; do
-        GRAFANA_IP=$(getent ahosts grafana.dev | tail -1 | awk '{print $1}')
+        GRAFANA_IP=$(getent ahosts grafana | tail -1 | awk '{print $1}')
         if [[ -n "$GRAFANA_IP" ]]; then
             "$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://$GRAFANA_IP:$GRAFANA_HOST_PORT"
 
@@ -78,7 +78,7 @@ fi
 # Configure alertmanager
 set_alertmanager_api_host() {
     while true; do
-        ALERTMANAGER_IP=$(getent ahosts alertmanager.dev | tail -1 | awk '{print $1}')
+        ALERTMANAGER_IP=$(getent ahosts alertmanager | tail -1 | awk '{print $1}')
         if [[ -n "$ALERTMANAGER_IP" ]]; then
             "$CEPH_BIN"/ceph dashboard set-alertmanager-api-host "http://$ALERTMANAGER_IP:$ALERTMANAGER_HOST_PORT"
 

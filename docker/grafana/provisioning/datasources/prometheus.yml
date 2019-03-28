@@ -9,5 +9,5 @@ datasources:
     type: prometheus
     access: proxy
     orgId: 1
-    url: http://prometheus.dev:9090
+    url: http://prometheus:9090
     editable: true

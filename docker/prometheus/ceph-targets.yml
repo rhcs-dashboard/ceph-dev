@@ -1,14 +1,14 @@
 [
     {
-        "targets": [ "ceph.dev:9283" ],
+        "targets": [ "ceph:9283" ],
         "labels": {}
     },
     {
-        "targets": [ "ceph2.dev:9283" ],
+        "targets": [ "ceph2:9283" ],
         "labels": {}
     },
     {
-        "targets": [ "ceph-rpm.dev:9283" ],
+        "targets": [ "ceph-rpm:9283" ],
         "labels": {}
     }
 ]
