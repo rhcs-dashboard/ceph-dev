@@ -37,10 +37,4 @@ RUN mkdir /ceph
 
 WORKDIR /ceph
 
-ENV PATH="/usr/libexec/python3-sphinx:$PATH" \
-    PYTHONDONTWRITEBYTECODE="1" \
-    # To increase ccache hit rate
-    SOURCE_DATE_EPOCH="358228200" \
-    BUILD_DATE="1981-05-09" \
-    # ceph specific:
-    CEPH_PORT=10000
+ENV PATH="/usr/libexec/python3-sphinx:$PATH"

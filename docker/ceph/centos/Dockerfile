@@ -52,10 +52,4 @@ RUN mkdir /ceph
 
 WORKDIR /ceph
 
-ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH" \
-    PYTHONDONTWRITEBYTECODE="1" \
-    # To increase ccache hit rate
-    SOURCE_DATE_EPOCH="358228200" \
-    BUILD_DATE="1981-05-09" \
-    # ceph specific:
-    CEPH_PORT=10000
+ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"

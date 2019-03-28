@@ -15,8 +15,6 @@ WITH_RBD:BOOL=ON
 ' > /ceph/build/CMakeCache.txt
 
 if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
-    export CEPH_PORT=10000
-
     ln -sf /ceph/dev/src/vstart.sh /ceph/src/vstart.sh
 fi
 
