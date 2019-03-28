@@ -29,10 +29,11 @@ services:
         command: /docker/start.sh
 
     ceph-rpm-base:
+        image: ${CEPH_RPM_IMAGE:-rhcsdashboard/nautilus:v14.2.0}
         domainname: dev
         volumes:
             - ./docker/ceph:/docker:ro
-            - ${CEPH_REPO_DIR}:/ceph/dev
+            - ${CEPH_RPM_REPO_DIR:-ceph_build_empty}:/ceph/dev
         environment:
             - CEPH_ASOK_DIR=/ceph/dev/build/ceph-rpm/out
             - CEPH_BIN=/usr/bin

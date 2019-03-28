@@ -11,9 +11,6 @@ echo "{\"cephx_secret\": \"$OSD_SECRET\"}" > /tmp/"$OSD_UUID".json
 
 readonly OSD_NUM=$("$CEPH_BIN"/ceph -k "$CEPH_CONF_PATH"/keyring osd new "$OSD_UUID" -i /tmp/"$OSD_UUID".json)
 
-#echo "[osd.$OSD_NUM]
-#        host = $(hostname -s)" >> "$CEPH_CONF"
-
 readonly OSD_DEV_DIR="$CEPH_DEV_DIR/osd$OSD_NUM"
 rm -rf "$OSD_DEV_DIR" && mkdir "$OSD_DEV_DIR"
 
