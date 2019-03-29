@@ -273,6 +273,11 @@ docker-compose up -d --scale ceph2=1 --scale ceph=0
 CEPH_RPM_IMAGE=rhcsdashboard/nautilus:v14.2.0
 # default: 11001
 CEPH_RPM_HOST_PORT=11001
+
+# Start ceph-rpm in dashboard development mode (experimental feature):
+CEPH_RPM_IMAGE=rhcsdashboard/ceph-rpm:fedora29
+CEPH_RPM_DEV=true
+CEPH_RPM_REPO_DIR=/path/to/your/local/ceph
 ```
 
 * Start ceph-rpm + ceph + ...:

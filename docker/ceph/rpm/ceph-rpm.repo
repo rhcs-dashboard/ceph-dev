@@ -1,0 +1,11 @@
+[ceph-rpm]
+name=Ceph RPM
+baseurl=https://2.chacra.ceph.com/r/ceph/master/a6d45216dd3550f5283bc4faedf152284b328261/centos/7/flavors/default/x86_64/
+enabled=1
+gpgcheck=0
+
+[ceph-rpm-noarch]
+name=Ceph RPM noarch
+baseurl=https://2.chacra.ceph.com/r/ceph/master/a6d45216dd3550f5283bc4faedf152284b328261/centos/7/flavors/default/noarch/
+enabled=1
+gpgcheck=0
