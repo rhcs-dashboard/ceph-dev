@@ -2,13 +2,8 @@
 
 set -e
 
-[[ -z "$CEPH_VERSION" ]] && export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
-[[ -z "$MGR" ]] && export MGR=1
-[[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH=/ceph/src/pybind/mgr
-[[ -z "$RGW" ]] && export RGW=1
-
 # Build frontend ('dist' dir required by dashboard module):
-if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
+if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && "$IS_UPSTREAM_LUMINOUS" == 0 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     run_npm_build() {
@@ -35,7 +30,7 @@ echo 'vstart.sh completed!'
 "$CEPH_BIN"/ceph mgr module enable prometheus
 
 # Upstream luminous start ends here
-if [[ ! -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
+if [[ "$IS_UPSTREAM_LUMINOUS" != 0 ]]; then
     exit 0
 fi
 

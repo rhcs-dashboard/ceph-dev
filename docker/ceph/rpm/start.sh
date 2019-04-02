@@ -18,19 +18,22 @@ if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
     ln -sf /ceph/dev/src/vstart.sh /ceph/src/vstart.sh
 fi
 
+source /docker/set-start-env.sh
 /docker/start-ceph.sh
 
 # Disable ssl
-if [[ -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
+readonly VSTART_HAS_SSL_FLAG=$(cat /ceph/src/vstart.sh | grep DASHBOARD_SSL | wc -l)
+if [[ "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_UPSTREAM_LUMINOUS" == 0 ]]; then
     echo "Disabling SSL..."
 
-    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/ssl false
+    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/ssl false --force
+    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/x/server_port $(($CEPH_PORT + 1000)) --force
     /docker/restart-dashboard.sh
 
     echo "SSL disabled."
 fi
 
-if [[ "$CEPH_RPM_DEV" == 'true' && -d "$MGR_PYTHON_PATH"/dashboard/frontend ]]; then
+if [[ "$CEPH_RPM_DEV" == 'true' && "$IS_UPSTREAM_LUMINOUS" == 0 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     exec npm run build -- --watch
