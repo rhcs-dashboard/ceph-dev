@@ -2,10 +2,6 @@
 
 set -e
 
-ln -s /ceph/venv/bin/node /usr/local/bin/node \
-    && ln -s /ceph/venv/bin/npm /usr/local/bin/npm \
-    && ln -s /ceph/venv/bin/npx /usr/local/bin/npx
-
 # Env. vars used in vstart
 export CEPH_LIB=/usr/lib64/ceph
 export EC_PATH="$CEPH_LIB"/erasure-code
