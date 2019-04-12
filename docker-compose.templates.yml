@@ -9,6 +9,8 @@ services:
             - CEPH_PORT=10000
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - PYTHONDONTWRITEBYTECODE=1
+            - RGW_MULTISITE=${RGW_MULTISITE:-0}
+        mem_limit: 3g
 
     ceph-build-base:
         extends:

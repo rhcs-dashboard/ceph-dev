@@ -23,7 +23,7 @@ source /docker/set-start-env.sh
 
 # Disable ssl
 readonly VSTART_HAS_SSL_FLAG=$(cat /ceph/src/vstart.sh | grep DASHBOARD_SSL | wc -l)
-if [[ "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_UPSTREAM_LUMINOUS" == 0 ]]; then
+if [[ "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]]; then
     echo "Disabling SSL..."
 
     "$CEPH_BIN"/ceph config set mgr mgr/dashboard/ssl false --force
@@ -33,7 +33,7 @@ if [[ "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_UPSTREAM_LUMINOUS" == 0 ]]; then
     echo "SSL disabled."
 fi
 
-if [[ "$CEPH_RPM_DEV" == 'true' && "$IS_UPSTREAM_LUMINOUS" == 0 ]]; then
+if [[ "$CEPH_RPM_DEV" == 'true' && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     exec npm run build -- --watch

@@ -209,6 +209,18 @@ https://localhost:$CEPH_HOST_PORT
 docker-compose exec ceph /docker/sso/sso-disable.sh
 ```
 
+## RGW Multi-Site
+
+* Set appropriate values in *.env*:
+```
+RGW_MULTISITE=1
+```
+
+* Start ceph (cluster 1) + ceph cluster 2:
+```
+docker-compose up -d --scale ceph-cluster2=1
+```
+
 ## Build and push an image to docker registry:
 
 If you want to update an image, you'll have to edit image's Dockerfile and then:

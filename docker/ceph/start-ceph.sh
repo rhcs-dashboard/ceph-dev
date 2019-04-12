@@ -3,7 +3,7 @@
 set -e
 
 # Build frontend ('dist' dir required by dashboard module):
-if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && "$IS_UPSTREAM_LUMINOUS" == 0 ]]; then
+if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     run_npm_build() {
@@ -34,16 +34,11 @@ if [[ "$IS_UPSTREAM_LUMINOUS" != 0 ]]; then
     exit 0
 fi
 
-# Enable the Object Gateway management frontend
-"$CEPH_BIN"/radosgw-admin user create --uid=dev --display-name=Dev --system
-"$CEPH_BIN"/ceph dashboard set-rgw-api-user-id dev
-readonly ACCESS_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].access_key | sed -e 's/^"//' -e 's/"$//')
-readonly SECRET_KEY=$("$CEPH_BIN"/radosgw-admin user info --uid=dev | jq .keys[0].secret_key | sed -e 's/^"//' -e 's/"$//')
-"$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$ACCESS_KEY"
-"$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$SECRET_KEY"
+# Configure Object Gateway:
+/docker/set-rgw.sh
 
 # Upstream mimic start ends here
-if [[ "$CEPH_VERSION" == '13' ]]; then
+if [[ "$CEPH_VERSION" == '13' || "$IS_FIRST_CLUSTER" == 0 ]]; then
     exit 0
 fi
 

@@ -7,3 +7,5 @@ set -e
 [[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH=/ceph/src/pybind/mgr
 [[ -d "$MGR_PYTHON_PATH"/dashboard/frontend ]] && export IS_UPSTREAM_LUMINOUS=0
 [[ -z "$RGW" ]] && export RGW=1
+
+export IS_FIRST_CLUSTER=$(hostname | grep -v cluster | wc -l)
