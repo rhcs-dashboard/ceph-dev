@@ -11,6 +11,7 @@ services:
             - PYTHONDONTWRITEBYTECODE=1
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
         mem_limit: 3g
+        scale: -1
 
     ceph-build-base:
         extends:
@@ -53,9 +54,8 @@ services:
             - CEPH_CONF_PATH=/ceph/dev/build/ceph-rpm
             - CEPH_DEV_DIR=/ceph/dev/build/ceph-rpm/dev
             - CEPH_OUT_DIR=/ceph/dev/build/ceph-rpm/out
-            - CEPH_RPM_DEV=${CEPH_RPM_DEV:-false}
+            - CEPH_RPM_DEV=${CEPH_RPM_DEV:-0}
             - CEPH_RPM_DEV_DIR=/ceph/dev
             - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
         entrypoint: /docker/rpm/entrypoint.sh
         command: /docker/rpm/start.sh
-        scale: -1

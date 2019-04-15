@@ -16,7 +16,7 @@ if [[ ! -d "$MGR_PYTHON_PATH" ]]; then
     export MGR_PYTHON_PATH="$CEPH_LIB"/mgr
 fi
 
-if [[ "$CEPH_RPM_DEV" == 'true' ]]; then
+if [[ "$CEPH_RPM_DEV" == 1 ]]; then
     export MGR_PYTHON_PATH="$CEPH_RPM_DEV_DIR"/src/pybind/mgr
     export PYTHONDONTWRITEBYTECODE=1
 fi

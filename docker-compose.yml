@@ -8,6 +8,7 @@ services:
         container_name: ceph
         hostname: ceph
         ports: ['${CEPH_PROXY_HOST_PORT:-4200}:4200','${CEPH_HOST_PORT:-11000}:11000']
+        scale: 1
 
     ceph-cluster2:
         extends:
@@ -21,7 +22,6 @@ services:
             - CEPH_CONF_PATH=/ceph/build/ceph-cluster2
             - CEPH_DEV_DIR=/ceph/build/ceph-cluster2/dev
             - CEPH_OUT_DIR=/ceph/build/ceph-cluster2/out
-        scale: -1
 
     ceph-host2:
         extends:
@@ -30,7 +30,6 @@ services:
         container_name: ceph-host2
         hostname: ceph-host2
         command: /docker/start-ceph-additional-host.sh
-        scale: -1
 
     ceph2:
         extends:
@@ -49,7 +48,6 @@ services:
             - CEPH_CONF_PATH=/ceph/build/ceph2
             - CEPH_DEV_DIR=/ceph/build/ceph2/dev
             - CEPH_OUT_DIR=/ceph/build/ceph2/out
-        scale: -1
 
     ceph-rpm:
         extends:

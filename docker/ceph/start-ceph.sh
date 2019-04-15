@@ -3,7 +3,7 @@
 set -e
 
 # Build frontend ('dist' dir required by dashboard module):
-if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 'true') && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]]; then
+if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 1) && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     run_npm_build() {
