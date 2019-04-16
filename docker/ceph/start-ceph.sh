@@ -19,7 +19,7 @@ if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 1) && "$IS_UPSTREAM_LUMINOUS" ==
     run_npm_build || (rm -rf node_modules && run_npm_build)
 fi
 
-rm -rf "$CEPH_CONF_PATH" && mkdir "$CEPH_CONF_PATH"
+rm -rf "$CEPH_CONF_PATH" && mkdir -p "$CEPH_CONF_PATH"
 
 cd /ceph/build
 ../src/vstart.sh -d -n
