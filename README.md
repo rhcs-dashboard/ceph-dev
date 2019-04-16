@@ -287,7 +287,7 @@ CEPH_RPM_IMAGE=rhcsdashboard/nautilus:v14.2.0
 CEPH_RPM_HOST_PORT=11001
 
 # Start ceph-rpm in dashboard development mode (experimental feature):
-CEPH_RPM_IMAGE=rhcsdashboard/ceph-rpm:fedora29
+CEPH_RPM_IMAGE=rhcsdashboard/ceph-rpm
 CEPH_RPM_DEV=1
 CEPH_RPM_REPO_DIR=/path/to/your/local/ceph
 ```
@@ -301,4 +301,25 @@ docker-compose up -d --scale ceph-rpm=1 --scale ceph=0
 
 # Start only ceph-rpm:
 docker-compose up -d --scale ceph-rpm=1 ceph-rpm
+```
+
+* Create ceph-rpm image:
+```
+# Master branch (repo url: lastest shaman centos7 x86_64 repo):
+docker build -t rhcsdashboard/ceph-rpm \
+--build-arg REPO_URL=https://2.chacra.ceph.com/r/ceph/master/0b0b89ee08c7c4e30fca748381a42e9c98adabc2/centos/7/flavors/default/x86_64/ \
+--build-arg VCS_BRANCH=master \
+-f ./docker/ceph/rpm/Dockerfile  ./docker/ceph
+
+# Nautilus branch (for backporting):
+docker build -t rhcsdashboard/nautilus \
+--build-arg REPO_URL=https://4.chacra.ceph.com/r/ceph/nautilus/5ce0d6822d529ec047933b3c3980eedcd97ec59c/centos/7/flavors/notcmalloc/x86_64/ \
+--build-arg VCS_BRANCH=nautilus \
+-f ./docker/ceph/rpm/Dockerfile  ./docker/ceph
+
+# Nautilus stable release (version tag has to be checked before running this):
+docker build -t rhcsdashboard/nautilus:v14.2.0 \
+--build-arg REPO_URL=https://download.ceph.com/rpm-nautilus/el7/x86_64/ \
+--build-arg VCS_BRANCH=v14.2.0 \
+-f ./docker/ceph/rpm/Dockerfile  ./docker/ceph
 ```
