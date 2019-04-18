@@ -6,11 +6,11 @@ services:
             - ./docker/ceph:/docker:ro
         environment:
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
+            - CEPH_DEBUG=${CEPH_DEBUG:-1}
             - CEPH_PORT=10000
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - PYTHONDONTWRITEBYTECODE=1
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
-        mem_limit: 3g
         scale: -1
 
     ceph-build-base:
@@ -30,6 +30,7 @@ services:
             - CEPH_DEV_DIR=/ceph/build/ceph/dev
             - CEPH_OUT_DIR=/ceph/build/ceph/out
             - DASHBOARD_SSL=${DASHBOARD_SSL:-1}
+            - FS
             - MDS
             - MGR
             - MON

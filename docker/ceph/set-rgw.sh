@@ -8,23 +8,21 @@ readonly RGW_REALM_ADMIN_ACCESS_KEY=DiPt4V7WWvy2njL1z6aC
 readonly RGW_REALM_ADMIN_SECRET_KEY=xSZUdYky0bTctAdCEEW8ikhfBVKsBV5LFYL82vvh
 
 if [[ "$RGW_MULTISITE" == 1 ]]; then
-    pkill radosgw
-
     if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
         "$CEPH_BIN"/radosgw-admin realm create --rgw-realm dev-realm --default
 
         # Create zonegroup & zone:
-        #"$CEPH_BIN"/radosgw-admin zonegroup create --rgw-zonegroup dev-zone-group --endpoints http://${HOSTNAME}:8000 --rgw-realm dev-realm --master --default
-        #"$CEPH_BIN"/radosgw-admin zone create --rgw-zone dev-zone-1 --rgw-zonegroup dev-zone-group \
-        #    --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY --master --default
+        "$CEPH_BIN"/radosgw-admin zonegroup create --rgw-zonegroup dev-zone-group --endpoints http://${HOSTNAME}:8000 --rgw-realm dev-realm --master --default
+        "$CEPH_BIN"/radosgw-admin zone create --rgw-zone dev-zone-1 --rgw-zonegroup dev-zone-group \
+            --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY --master --default
 
         # Migrate single-site to multi-site:
-        "$CEPH_BIN"/radosgw-admin zonegroup rename --rgw-zonegroup default --zonegroup-new-name=dev-zone-group
-        "$CEPH_BIN"/radosgw-admin zone rename --rgw-zone default --zone-new-name dev-zone-1 --rgw-zonegroup=dev-zone-group
-        "$CEPH_BIN"/radosgw-admin zonegroup modify --rgw-realm=dev-realm --rgw-zonegroup=dev-zone-group \
-            --endpoints http://${HOSTNAME}:8000 --master --default
-        "$CEPH_BIN"/radosgw-admin zone modify --rgw-realm=dev-realm --rgw-zonegroup=dev-zone-group --rgw-zone=dev-zone-1 \
-            --endpoints http://${HOSTNAME}:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY --master --default
+        #"$CEPH_BIN"/radosgw-admin zonegroup rename --rgw-zonegroup default --zonegroup-new-name=dev-zone-group
+        #"$CEPH_BIN"/radosgw-admin zone rename --rgw-zone default --zone-new-name dev-zone-1 --rgw-zonegroup=dev-zone-group
+        #"$CEPH_BIN"/radosgw-admin zonegroup modify --rgw-realm=dev-realm --rgw-zonegroup=dev-zone-group \
+        #    --endpoints http://${HOSTNAME}:8000 --master --default
+        #"$CEPH_BIN"/radosgw-admin zone modify --rgw-realm=dev-realm --rgw-zonegroup=dev-zone-group --rgw-zone=dev-zone-1 \
+        #    --endpoints http://${HOSTNAME}:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY --master --default
     else
         readonly FIRST_CLUSTER_HOSTNAME=$(hostname | sed -e 's/-cluster.//')
 
@@ -44,10 +42,10 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                         --secret $RGW_REALM_ADMIN_SECRET_KEY
 
                     # Delete default zone & pools:
-                    "$CEPH_BIN"/radosgw-admin zone delete --rgw-zone=default
-                    "$CEPH_BIN"/ceph osd pool rm default.rgw.control default.rgw.control --yes-i-really-really-mean-it
-                    "$CEPH_BIN"/ceph osd pool rm default.rgw.log default.rgw.log --yes-i-really-really-mean-it
-                    "$CEPH_BIN"/ceph osd pool rm default.rgw.meta default.rgw.meta --yes-i-really-really-mean-it
+                    #"$CEPH_BIN"/radosgw-admin zone delete --rgw-zone=default
+                    #"$CEPH_BIN"/ceph osd pool rm default.rgw.control default.rgw.control --yes-i-really-really-mean-it
+                    #"$CEPH_BIN"/ceph osd pool rm default.rgw.log default.rgw.log --yes-i-really-really-mean-it
+                    #"$CEPH_BIN"/ceph osd pool rm default.rgw.meta default.rgw.meta --yes-i-really-really-mean-it
 
                     break
                 fi
@@ -72,5 +70,5 @@ fi
 
 if [[ "$RGW_MULTISITE" == 1 ]]; then
     "$CEPH_BIN"/radosgw --log-file="$CEPH_OUT_DIR"/radosgw.8000.log --admin-socket="$CEPH_OUT_DIR"/radosgw.8000.asok \
-        --pid-file="$CEPH_OUT_DIR"/radosgw.8000.pid --debug-rgw=20 --debug-ms=1 -n client.rgw --rgw_frontends="beast port=8000"
+        --pid-file="$CEPH_OUT_DIR"/radosgw.8000.pid -n client.rgw --rgw_frontends="beast port=8000" ${RGW_DEBUG}
 fi

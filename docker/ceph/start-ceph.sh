@@ -22,12 +22,14 @@ fi
 rm -rf "$CEPH_CONF_PATH" && mkdir -p "$CEPH_CONF_PATH"
 
 cd /ceph/build
-../src/vstart.sh -d -n
+../src/vstart.sh ${VSTART_OPTIONS}
 
 echo 'vstart.sh completed!'
 
 # Enable prometheus module
-"$CEPH_BIN"/ceph mgr module enable prometheus
+if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
+    "$CEPH_BIN"/ceph mgr module enable prometheus
+fi
 
 # Upstream luminous start ends here
 if [[ "$IS_UPSTREAM_LUMINOUS" != 0 ]]; then
