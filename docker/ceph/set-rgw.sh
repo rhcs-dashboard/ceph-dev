@@ -11,7 +11,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
     if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
         "$CEPH_BIN"/radosgw-admin realm create --rgw-realm dev-realm --default
 
-        # Create zonegroup & zone:
+        # Create master zonegroup & master zone:
         "$CEPH_BIN"/radosgw-admin zonegroup create --rgw-zonegroup dev-zone-group --endpoints http://${HOSTNAME}:8000 --rgw-realm dev-realm --master --default
         "$CEPH_BIN"/radosgw-admin zone create --rgw-zone dev-zone-1 --rgw-zonegroup dev-zone-group \
             --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY --master --default
@@ -26,7 +26,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
     else
         readonly FIRST_CLUSTER_HOSTNAME=$(hostname | sed -e 's/-cluster.//')
 
-        set_secondary_zone() {
+        set_secondary_zones() {
             while true; do
                 IS_FIRST_GATEWAY_AVAILABLE=$(curl -LsS http://${FIRST_CLUSTER_HOSTNAME}:8000 2>&1 | grep "xml version" | wc -l)
                 if [[ $IS_FIRST_GATEWAY_AVAILABLE == 1 ]]; then
@@ -36,10 +36,16 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                     "$CEPH_BIN"/radosgw-admin period pull --url=http://${FIRST_CLUSTER_HOSTNAME}:8000 \
                         --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY
 
-                    # create zone:
+                    # create secondary zone:
                     "$CEPH_BIN"/radosgw-admin zone create --rgw-zone dev-zone-2 --rgw-zonegroup dev-zone-group \
                         --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY \
                         --secret $RGW_REALM_ADMIN_SECRET_KEY
+
+                    # create archive zone:
+                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zone dev-zone-archive --rgw-zonegroup dev-zone-group \
+                        --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY \
+                        --secret $RGW_REALM_ADMIN_SECRET_KEY \
+                        --tier-type=archive
 
                     # Delete default zone & pools:
                     #"$CEPH_BIN"/radosgw-admin zone delete --rgw-zone=default
@@ -53,7 +59,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                 sleep 3
             done
         }
-        set_secondary_zone
+        set_secondary_zones
     fi
 
     "$CEPH_BIN"/radosgw-admin period update --commit
