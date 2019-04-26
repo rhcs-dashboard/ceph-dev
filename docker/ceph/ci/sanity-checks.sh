@@ -120,7 +120,7 @@ run_frontend_e2e_tests() {
         /docker/start-ceph.sh
     fi
 
-    /docker/set-web-server-proxy.sh
+    /docker/set-dev-server-proxy.sh
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 

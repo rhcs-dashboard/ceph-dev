@@ -55,7 +55,7 @@ services:
             service: ceph-rpm-base
         container_name: ceph-rpm
         hostname: ceph-rpm
-        ports: ['${CEPH_RPM_HOST_PORT:-11001}:11000']
+        ports: ['${CEPH_RPM_PROXY_HOST_PORT:-4201}:4200','${CEPH_RPM_HOST_PORT:-11001}:11000']
 
     ceph-rpm-cluster2:
         extends:

@@ -8,7 +8,9 @@ services:
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
             - CEPH_DEBUG=${CEPH_DEBUG:-1}
             - CEPH_PORT=10000
+            - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
+            - MGR_PYTHON_PATH=/ceph/src/pybind/mgr
             - PYTHONDONTWRITEBYTECODE=1
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
         scale: -1

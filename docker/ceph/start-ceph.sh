@@ -3,7 +3,7 @@
 set -e
 
 # Build frontend ('dist' dir required by dashboard module):
-if [[ (-z "$CEPH_RPM_DEV" || "$CEPH_RPM_DEV" == 1) && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]]; then
+if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     run_npm_build() {
@@ -26,9 +26,13 @@ cd /ceph/build
 
 echo 'vstart.sh completed!'
 
+# Configure Object Gateway:
+/docker/set-rgw.sh
+
 # Enable prometheus module
 if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
     "$CEPH_BIN"/ceph mgr module enable prometheus
+    echo 'Prometheus mgr module enabled.'
 fi
 
 # Upstream luminous start ends here
@@ -36,8 +40,22 @@ if [[ "$IS_UPSTREAM_LUMINOUS" != 0 ]]; then
     exit 0
 fi
 
-# Configure Object Gateway:
-/docker/set-rgw.sh
+# Disable ssl (if selected)
+readonly VSTART_HAS_SSL_FLAG=$(cat /ceph/src/vstart.sh | grep DASHBOARD_SSL | wc -l)
+if [[ "$DASHBOARD_SSL" == 0 && "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_FIRST_CLUSTER" == 1 ]]; then
+    echo "Disabling SSL..."
+
+    SSL_OPTIONS='--force'
+    if [[ "$CEPH_VERSION" == 13 ]]; then
+        SSL_OPTIONS=''
+    fi
+
+    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/ssl false $SSL_OPTIONS
+    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/x/server_port $(($CEPH_PORT + 1000)) $SSL_OPTIONS
+    /docker/restart-dashboard.sh
+
+    echo "SSL disabled."
+fi
 
 # Upstream mimic start ends here
 if [[ "$CEPH_VERSION" == '13' || "$IS_FIRST_CLUSTER" == 0 ]]; then
