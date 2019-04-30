@@ -92,11 +92,12 @@ run_api_tests() {
     cd "$REPO_DIR"/build
 
     rm -rf "$CEPH_CONF_PATH" && mkdir "$CEPH_CONF_PATH"
-    rm vstart_runner.log
+    rm -f vstart_runner.log
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
 
     source ./run-backend-api-tests.sh \
+        && ln -sf "$CEPH_CONF_PATH"/* "$REPO_DIR"/build \
         && run_teuthology_tests "$@"
 
     echo 'API tests successfully finished! Congratulations!'
