@@ -3,6 +3,7 @@
 set -e
 
 [[ -z "$CEPH_VERSION" ]] && export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
+[[ "$CEPH_VERSION" == 'De' ]] && export CEPH_VERSION=1000000
 [[ -z "$MGR" ]] && export MGR=1
 [[ -d "$MGR_PYTHON_PATH"/dashboard/frontend ]] && export IS_UPSTREAM_LUMINOUS=0
 [[ -z "$RGW" ]] && export RGW=1
