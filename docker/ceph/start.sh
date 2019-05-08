@@ -21,7 +21,7 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     fi
 fi
 
-printf "*********\nAll done.\n*********"
+printf "\n*********\nAll done.\n*********\n"
 
 # Keep container running
 exec tail -f /dev/null
