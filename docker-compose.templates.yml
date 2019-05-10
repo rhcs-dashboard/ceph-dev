@@ -6,7 +6,7 @@ services:
             - ./docker/ceph:/docker:ro
         environment:
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
-            - CEPH_DEBUG=${CEPH_DEBUG:-1}
+            - CEPH_DEBUG=${CEPH_DEBUG:-0}
             - CEPH_PORT=10000
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
