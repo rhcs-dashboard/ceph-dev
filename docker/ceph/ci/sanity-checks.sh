@@ -37,6 +37,13 @@ run_jest() {
 }
 
 run_npm_i18n() {
+    cd "$REPO_DIR"
+
+    if [[ -n "$(git check-ignore $TRANSLATION_FILE)" ]]; then
+        echo 'SKIPPED: npm i18n'
+        return 0
+    fi
+
     echo 'Running "npm i18n"...'
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
