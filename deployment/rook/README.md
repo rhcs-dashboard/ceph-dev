@@ -1,6 +1,82 @@
 # Deploy Ceph on OpenShift with Rook
 
-## Fedora
+## Remote OpenShift 4.1 cluster
+
+* Download OpenShift Client:
+```
+sudo mkdir -p /opt/openshift-client
+sudo curl -LsS -o /opt/openshift-client/openshift-client.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux-4.1.0-rc.3.tar.gz
+sudo tar -xzvf /opt/openshift-client/openshift-client.tar.gz -C /opt/openshift-client
+sudo ln -sf /opt/openshift-client/oc /usr/local/bin/oc
+sudo ln -sf /opt/openshift-client/kubectl /usr/local/bin/kubectl
+```
+
+* Log in with admin user:
+```
+# Example: after 'cluster-bot' cluster is ready
+oc login -u kubeadmin https://api.ci-ln-67pkfcb-d5d6b.origin-ci-int-aws.dev.rhcloud.com:6443
+```
+
+* Create rook-ceph project and deploy it:
+```
+git clone git@github.com:rhcs-dashboard/ceph-dev.git
+cd ceph-dev
+oc create -f deployment/rook/common.yaml
+oc create -f deployment/rook/operator-openshift.yaml
+oc create -f deployment/rook/cluster.yaml
+```
+
+* Wait until all is up:
+```
+# Example:
+$ oc project rook-ceph
+
+$ oc get pods
+NAME                                          READY   STATUS      RESTARTS   AGE
+rook-ceph-agent-5qw8x                         1/1     Running     0          54m
+rook-ceph-agent-fjztt                         1/1     Running     0          54m
+rook-ceph-agent-j9d46                         1/1     Running     0          54m
+rook-ceph-mgr-a-574ff86dc6-hc44w              1/1     Running     0          53m
+rook-ceph-mon-a-7bb7d9d79d-bm2qs              1/1     Running     0          54m
+rook-ceph-mon-b-7dd7548f7b-fzg75              1/1     Running     0          53m
+rook-ceph-mon-c-66897b47ff-258cx              1/1     Running     0          53m
+rook-ceph-operator-699f75f566-kvgr4           1/1     Running     0          55m
+rook-ceph-osd-prepare-ip-10-0-134-158-cpq6v   0/2     Completed   0          52m
+rook-ceph-osd-prepare-ip-10-0-138-176-nbqvq   0/2     Completed   0          52m
+rook-ceph-osd-prepare-ip-10-0-146-129-l2fsm   0/2     Completed   0          52m
+rook-discover-mww52                           1/1     Running     0          54m
+rook-discover-qxj4x                           1/1     Running     0          54m
+rook-discover-tp7jl                           1/1     Running     0          54m
+
+$ oc get services
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+rook-ceph-mgr             ClusterIP   172.30.35.196    <none>        9283/TCP            52m
+rook-ceph-mgr-dashboard   ClusterIP   172.30.205.217   <none>        8443/TCP            52m
+rook-ceph-mon-a           ClusterIP   172.30.193.208   <none>        6789/TCP,3300/TCP   54m
+rook-ceph-mon-b           ClusterIP   172.30.50.1      <none>        6789/TCP,3300/TCP   53m
+rook-ceph-mon-c           ClusterIP   172.30.83.146    <none>        6789/TCP,3300/TCP   53m
+```
+
+* Make dashboard accessible from outside:
+```
+oc expose service rook-ceph-mgr-dashboard
+
+# Example:
+$ oc get route
+NAME                      HOST/PORT                                                                                      PATH   SERVICES                  PORT              TERMINATION   WILDCARD
+rook-ceph-mgr-dashboard   rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-kj3t5ck-d5d6b.origin-ci-int-aws.dev.rhcloud.com          rook-ceph-mgr-dashboard   https-dashboard                 None
+```
+
+* Get dashboard **admin** user password and access the dashboard (SSL is disabled in this cluster CRD):
+```
+# Password:
+echo $(oc get secret rook-ceph-dashboard-password -o yaml | grep "password:" | awk '{print $2}' | base64 --decode)
+
+# Example: dashboard URL
+http://rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-kj3t5ck-d5d6b.origin-ci-int-aws.dev.rhcloud.com
+```
+
+## Local OpenShift 3.11 cluster on Fedora
 
 * Install [OpenShift](https://developer.fedoraproject.org/deployment/openshift/about.html):
 ```
