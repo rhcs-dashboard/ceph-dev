@@ -99,3 +99,18 @@ set_alertmanager_api_host() {
     done
 }
 set_alertmanager_api_host &
+
+# Configure prometheus
+set_prometheus_api_host() {
+    while true; do
+        PROMETHEUS_IP=$(getent ahosts prometheus | tail -1 | awk '{print $1}')
+        if [[ -n "$PROMETHEUS_IP" ]]; then
+            "$CEPH_BIN"/ceph dashboard set-prometheus-api-host "http://$PROMETHEUS_IP:$PROMETHEUS_HOST_PORT"
+
+            break
+        fi
+
+        sleep 3
+    done
+}
+set_prometheus_api_host &
