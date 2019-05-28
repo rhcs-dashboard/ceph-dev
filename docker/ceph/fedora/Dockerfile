@@ -32,7 +32,8 @@ RUN dnf debuginfo-install -y python3 && dnf clean all
 RUN dnf remove -y dnf-yum && dnf clean all
 # Required in order for build-doc to run successfully:
 RUN pip3 install -U Cython==0.29.3
-
+# Sanity checks:
+RUN pip3 install mypy
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 RUN dnf install -y google-chrome-stable && dnf clean all
 

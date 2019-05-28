@@ -26,7 +26,7 @@ readonly NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUX
 readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.html" | wc -l)
 readonly SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.scss" | tr '\n' ' ')
 readonly TS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.ts" | tr '\n' ' ')
-readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.py" | wc -l)
+readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.py" | tr '\n' ' ')
 readonly DOC_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "doc/*.rst" | wc -l)
 
 if [[ "$NPM_PACKAGE_FILES" > 0 || -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
@@ -58,8 +58,9 @@ if [[ "$HTML_FILES" > 0 || -n "$TS_FILES" ]]; then
         && git add "$TRANSLATION_FILE")
 fi
 
-if [[ "$PY_FILES" > 0 ]]; then
+if [[ -n "$PY_FILES" ]]; then
     run_tox
+    run_mypy "$PY_FILES"
 fi
 
 if [[ "$DOC_FILES" > 0 ]]; then

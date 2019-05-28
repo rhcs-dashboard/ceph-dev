@@ -93,6 +93,26 @@ run_tox() {
     find . -iname "*.pyc" -delete
 }
 
+run_mypy() {
+    cd "$REPO_DIR"
+
+    if [[ "$PYTHON_VERSION" != '3' || "$CHECK_MYPY" == '0' ]]; then
+        echo 'SKIPPED: mypy'
+        return 0
+    fi
+
+    echo 'Running mypy...'
+
+    MYPY_CONFIG_FILE="$REPO_DIR"/src/mypy.ini
+    if [[ ! -e "$MYPY_CONFIG_FILE" ]]; then
+        echo 'Using FALLBACK mypy.ini'
+
+        MYPY_CONFIG_FILE=/docker/ci/mypy.ini
+    fi
+
+    mypy --config-file="$MYPY_CONFIG_FILE" --cache-dir=src/.mypy_cache --follow-imports=skip $@
+}
+
 run_api_tests() {
     echo 'Running API tests...'
 

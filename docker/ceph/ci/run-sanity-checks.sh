@@ -13,6 +13,7 @@ run_npm_lint
 run_jest
 run_npm_i18n
 run_tox
+run_mypy "$REPO_DIR"/src/pybind/mgr/dashboard
 run_api_tests
 run_frontend_e2e_tests
 run_build_doc
