@@ -2,6 +2,11 @@
 
 set -e
 
+source /docker/set-start-env.sh
+
+# Always run this (needed to run e2e tests through 'docker-compose run ...'):
+/docker/set-dev-server-proxy.sh
+
 # Build frontend ('dist' dir required by dashboard module):
 if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
@@ -17,6 +22,13 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     }
 
     run_npm_build || (rm -rf node_modules && run_npm_build)
+
+    # Start dev server
+    if [[ "$DASHBOARD_DEV_SERVER" == 1 ]]; then
+        npm run start &
+    else
+        npm run build -- --watch --deleteOutputPath=false &
+    fi
 fi
 
 rm -rf "$CEPH_CONF_PATH" && mkdir -p "$CEPH_CONF_PATH"

@@ -88,7 +88,9 @@ https://localhost:$CEPH_HOST_PORT
 
 Access dev. server dashboard when you see in container logs something like this:
 ```
-ceph    | ℹ ｢wdm｣: Compiled successfully.
+ceph                 | *********
+ceph                 | All done.
+ceph                 | *********
 ```
 
 http://localhost:$CEPH_PROXY_HOST_PORT

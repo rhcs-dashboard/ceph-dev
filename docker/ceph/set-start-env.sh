@@ -39,3 +39,4 @@ if [[ "$DASHBOARD_SSL" == 1 ]]; then
     HTTP_PROTO='https'
 fi
 export HTTP_PROTO
+export CEPH_MGR_DASHBOARD_PORT=$(($CEPH_PORT + 1000))

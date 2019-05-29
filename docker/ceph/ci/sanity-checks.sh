@@ -137,9 +137,12 @@ run_api_tests() {
 run_frontend_e2e_tests() {
     echo 'Running frontend E2E tests...'
 
-    if [[ $(ps -ef | grep -v grep | grep "ng serve" | wc -l) > 0 ]]; then
+    if [[ $(netstat -an | grep 4200 | wc -l) > 0 ]]; then
         ARGS="--dev-server-target"
+    elif [[ $(netstat -an | grep 11000 | wc -l) > 0 ]]; then
+        ARGS="--host=0.0.0.0"
     else
+        export DASHBOARD_DEV_SERVER=0
         ARGS="--host=0.0.0.0"
 
         cd "$REPO_DIR"/build
@@ -147,8 +150,6 @@ run_frontend_e2e_tests() {
 
         /docker/start-ceph.sh
     fi
-
-    /docker/set-dev-server-proxy.sh
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 

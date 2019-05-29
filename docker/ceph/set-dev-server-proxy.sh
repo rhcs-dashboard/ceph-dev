@@ -2,7 +2,7 @@
 
 set -e
 
-readonly DASHBOARD_URL="\"$HTTP_PROTO://localhost:$(($CEPH_PORT + 1000))\""
+readonly DASHBOARD_URL="\"$HTTP_PROTO://localhost:$CEPH_MGR_DASHBOARD_PORT\""
 
 cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
