@@ -19,10 +19,10 @@ metadata:
 spec:
   tls:
    - hosts:
-     - rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-67pkfcb-d5d6b.origin-ci-int-aws.dev.rhcloud.com
-     secretName: rook-ceph-mgr-dashboard-secret
+     - rook-ceph.example.com
+     secretName: rook-ceph.example.com
   rules:
-  - host: rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-67pkfcb-d5d6b.origin-ci-int-aws.dev.rhcloud.com
+  - host: rook-ceph.example.com
     http:
       paths:
       - path: /

@@ -110,9 +110,14 @@ oc login -u kubeadmin https://api.ci-ln-67pkfcb-d5d6b.origin-ci-int-aws.dev.rhcl
 ```
 git clone git@github.com:rhcs-dashboard/ceph-dev.git
 cd ceph-dev
-oc create -f deployment/rook/common.yaml
-oc create -f deployment/rook/operator-openshift.yaml
-oc create -f deployment/rook/cluster.yaml
+oc create -f deployment/rook/common.yaml -f deployment/rook/operator-openshift.yaml
+
+# Choose HTTP or HTTPS:
+# HTTP:
+oc create -f deployment/rook/cluster-openshift-http.yaml
+
+# HTTPS:
+oc create -f deployment/rook/cluster-openshift-https.yaml
 ```
 
 * Wait until all is up:
@@ -120,7 +125,7 @@ oc create -f deployment/rook/cluster.yaml
 # Example:
 $ oc project rook-ceph
 
-$ oc get pods
+$ oc get pod
 NAME                                          READY   STATUS      RESTARTS   AGE
 rook-ceph-agent-5qw8x                         1/1     Running     0          54m
 rook-ceph-agent-fjztt                         1/1     Running     0          54m
@@ -137,7 +142,7 @@ rook-discover-mww52                           1/1     Running     0          54m
 rook-discover-qxj4x                           1/1     Running     0          54m
 rook-discover-tp7jl                           1/1     Running     0          54m
 
-$ oc get services
+$ oc get svc
 NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
 rook-ceph-mgr             ClusterIP   172.30.35.196    <none>        9283/TCP            52m
 rook-ceph-mgr-dashboard   ClusterIP   172.30.205.217   <none>        8443/TCP            52m
@@ -148,21 +153,41 @@ rook-ceph-mon-c           ClusterIP   172.30.83.146    <none>        6789/TCP,33
 
 * Make dashboard accessible from outside:
 ```
+# HTTP:
 oc expose service rook-ceph-mgr-dashboard
 
 # Example:
 $ oc get route
 NAME                      HOST/PORT                                                                                      PATH   SERVICES                  PORT              TERMINATION   WILDCARD
 rook-ceph-mgr-dashboard   rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-kj3t5ck-d5d6b.origin-ci-int-aws.dev.rhcloud.com          rook-ceph-mgr-dashboard   https-dashboard                 None
+
+
+# HTTPS:
+oc create -f deployment/rook/dashboard-external-https-openshift.yaml
+
+# Example:
+$ oc get svc
+NAME                                     TYPE           CLUSTER-IP       EXTERNAL-IP                                                               PORT(S)             AGE
+rook-ceph-mgr                            ClusterIP      172.30.187.212   <none>                                                                    9283/TCP            64m
+rook-ceph-mgr-dashboard                  ClusterIP      172.30.107.238   <none>                                                                    8443/TCP            64m
+rook-ceph-mgr-dashboard-external-https   LoadBalancer   172.30.214.229   af1f7d97b82d811e9acb0129043356ed-1688131122.us-east-1.elb.amazonaws.com   8443:32265/TCP      5s
+rook-ceph-mon-a                          ClusterIP      172.30.113.207   <none>                                                                    6789/TCP,3300/TCP   66m
+rook-ceph-mon-b                          ClusterIP      172.30.213.172   <none>                                                                    6789/TCP,3300/TCP   66m
+rook-ceph-mon-c                          ClusterIP      172.30.167.71    <none>                                                                    6789/TCP,3300/TCP   65m
 ```
 
-* Get dashboard **admin** user password and access the dashboard (SSL is disabled in this cluster CRD):
+* Access dashboard:
 ```
-# Password:
-echo $(oc get secret rook-ceph-dashboard-password -o yaml | grep "password:" | awk '{print $2}' | base64 --decode)
-
-# Example: dashboard URL
+# HTTP example:
 http://rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-kj3t5ck-d5d6b.origin-ci-int-aws.dev.rhcloud.com
+
+# HTTPS example:
+https://af1f7d97b82d811e9acb0129043356ed-1688131122.us-east-1.elb.amazonaws.com:8443
+```
+
+* Get dashboard **admin** user password:
+```
+echo $(kubectl get secret rook-ceph-dashboard-password -o yaml | grep "password:" | awk '{print $2}' | base64 --decode)
 ```
 
 ## Local OpenShift 3.11 cluster on Fedora
@@ -269,4 +294,4 @@ https://172.30.18.215:8443/#/login
 
 ## Troubleshooting
 
-Check Rook [Common Issues](https://rook.io/docs/rook/v0.9/common-issues.html).
+Check [Rook Ceph Common Issues](https://rook.io/docs/rook/master/ceph-common-issues.html).
