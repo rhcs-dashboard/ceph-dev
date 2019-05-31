@@ -1,5 +1,9 @@
 # Deploy Ceph on Kubernetes with Rook
 
+## Troubleshooting
+
+Check [Rook Ceph Common Issues](https://rook.io/docs/rook/master/ceph-common-issues.html).
+
 ## Minikube cluster
 
 * Install Minikube:
@@ -139,10 +143,10 @@ oc create -f deployment/rook/common.yaml -f deployment/rook/operator-openshift.y
 
 # Choose HTTP or HTTPS:
 # HTTP:
-oc create -f deployment/rook/cluster-openshift-http.yaml
+oc create -f deployment/rook/cluster-test-openshift-http.yaml
 
 # HTTPS:
-oc create -f deployment/rook/cluster-openshift-https.yaml
+oc create -f deployment/rook/cluster-test-openshift-https.yaml
 ```
 
 * Wait until all is up:
@@ -152,28 +156,27 @@ $ oc project rook-ceph
 
 $ oc get pod
 NAME                                          READY   STATUS      RESTARTS   AGE
-rook-ceph-agent-5qw8x                         1/1     Running     0          54m
-rook-ceph-agent-fjztt                         1/1     Running     0          54m
-rook-ceph-agent-j9d46                         1/1     Running     0          54m
-rook-ceph-mgr-a-574ff86dc6-hc44w              1/1     Running     0          53m
-rook-ceph-mon-a-7bb7d9d79d-bm2qs              1/1     Running     0          54m
-rook-ceph-mon-b-7dd7548f7b-fzg75              1/1     Running     0          53m
-rook-ceph-mon-c-66897b47ff-258cx              1/1     Running     0          53m
-rook-ceph-operator-699f75f566-kvgr4           1/1     Running     0          55m
-rook-ceph-osd-prepare-ip-10-0-134-158-cpq6v   0/2     Completed   0          52m
-rook-ceph-osd-prepare-ip-10-0-138-176-nbqvq   0/2     Completed   0          52m
-rook-ceph-osd-prepare-ip-10-0-146-129-l2fsm   0/2     Completed   0          52m
-rook-discover-mww52                           1/1     Running     0          54m
-rook-discover-qxj4x                           1/1     Running     0          54m
-rook-discover-tp7jl                           1/1     Running     0          54m
+rook-ceph-agent-r67zt                         1/1     Running     0          3m1s
+rook-ceph-agent-vkqs8                         1/1     Running     0          3m1s
+rook-ceph-agent-z8lkm                         1/1     Running     0          3m1s
+rook-ceph-mgr-a-6f89574945-h7z78              1/1     Running     0          68s
+rook-ceph-mon-a-5b7f8c74b8-r2tsn              1/1     Running     0          87s
+rook-ceph-operator-86554dcbfc-mcbdm           1/1     Running     0          3m46s
+rook-ceph-osd-0-7f6db68447-hxfp5              1/1     Running     0          28s
+rook-ceph-osd-1-67864f4cc7-dfv58              1/1     Running     0          25s
+rook-ceph-osd-2-6774cdc8ff-xxfxn              1/1     Running     0          25s
+rook-ceph-osd-prepare-ip-10-0-129-139-xccn4   0/2     Completed   0          39s
+rook-ceph-osd-prepare-ip-10-0-132-164-wmmts   0/2     Completed   0          39s
+rook-ceph-osd-prepare-ip-10-0-148-37-hvhnh    0/2     Completed   0          39s
+rook-discover-j8nzq                           1/1     Running     0          3m1s
+rook-discover-t2lt4                           1/1     Running     0          3m1s
+rook-discover-t5qgb                           1/1     Running     0          3m1s
 
 $ oc get svc
 NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
-rook-ceph-mgr             ClusterIP   172.30.35.196    <none>        9283/TCP            52m
-rook-ceph-mgr-dashboard   ClusterIP   172.30.205.217   <none>        8443/TCP            52m
-rook-ceph-mon-a           ClusterIP   172.30.193.208   <none>        6789/TCP,3300/TCP   54m
-rook-ceph-mon-b           ClusterIP   172.30.50.1      <none>        6789/TCP,3300/TCP   53m
-rook-ceph-mon-c           ClusterIP   172.30.83.146    <none>        6789/TCP,3300/TCP   53m
+rook-ceph-mgr             ClusterIP   172.30.11.40     <none>        9283/TCP            79s
+rook-ceph-mgr-dashboard   ClusterIP   172.30.203.185   <none>        8443/TCP            80s
+rook-ceph-mon-a           ClusterIP   172.30.45.236    <none>        6789/TCP,3300/TCP   2m9s
 ```
 
 * Optionally, deploy Rook Ceph Toolbox:
@@ -188,8 +191,29 @@ oc exec -it $(oc get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metada
 
 * Optionally, create an Object Store and a user:
 ```
-oc create -f deployment/rook/object-openshift.yaml
+oc create -f deployment/rook/object-test-openshift.yaml
 oc create -f deployment/rook/object-user.yaml
+
+# Example:
+$ oc get pod
+NAME                                          READY   STATUS      RESTARTS   AGE
+rook-ceph-agent-r67zt                         1/1     Running     0          5m52s
+rook-ceph-agent-vkqs8                         1/1     Running     0          5m52s
+rook-ceph-agent-z8lkm                         1/1     Running     0          5m52s
+rook-ceph-mgr-a-6f89574945-h7z78              1/1     Running     0          3m59s
+rook-ceph-mon-a-5b7f8c74b8-r2tsn              1/1     Running     0          4m18s
+rook-ceph-operator-86554dcbfc-mcbdm           1/1     Running     0          6m37s
+rook-ceph-osd-0-7f6db68447-hxfp5              1/1     Running     0          3m19s
+rook-ceph-osd-1-67864f4cc7-dfv58              1/1     Running     0          3m16s
+rook-ceph-osd-2-6774cdc8ff-xxfxn              1/1     Running     0          3m16s
+rook-ceph-osd-prepare-ip-10-0-129-139-xccn4   0/2     Completed   0          3m30s
+rook-ceph-osd-prepare-ip-10-0-132-164-wmmts   0/2     Completed   0          3m30s
+rook-ceph-osd-prepare-ip-10-0-148-37-hvhnh    0/2     Completed   0          3m30s
+rook-ceph-rgw-my-store-684ff5cfcd-lgp6c       1/1     Running     0          45s
+rook-ceph-tools-5bc8b8f97-7qlln               1/1     Running     0          105s
+rook-discover-j8nzq                           1/1     Running     0          5m52s
+rook-discover-t2lt4                           1/1     Running     0          5m52s
+rook-discover-t5qgb                           1/1     Running     0          5m52s
 ```
 
 * Make dashboard accessible from outside:
@@ -209,12 +233,11 @@ oc create -f deployment/rook/dashboard-external-https-openshift.yaml
 # Example:
 $ oc get svc
 NAME                                     TYPE           CLUSTER-IP       EXTERNAL-IP                                                               PORT(S)             AGE
-rook-ceph-mgr                            ClusterIP      172.30.187.212   <none>                                                                    9283/TCP            64m
-rook-ceph-mgr-dashboard                  ClusterIP      172.30.107.238   <none>                                                                    8443/TCP            64m
-rook-ceph-mgr-dashboard-external-https   LoadBalancer   172.30.214.229   af1f7d97b82d811e9acb0129043356ed-1688131122.us-east-1.elb.amazonaws.com   8443:32265/TCP      5s
-rook-ceph-mon-a                          ClusterIP      172.30.113.207   <none>                                                                    6789/TCP,3300/TCP   66m
-rook-ceph-mon-b                          ClusterIP      172.30.213.172   <none>                                                                    6789/TCP,3300/TCP   66m
-rook-ceph-mon-c                          ClusterIP      172.30.167.71    <none>                                                                    6789/TCP,3300/TCP   65m
+rook-ceph-mgr                            ClusterIP      172.30.11.40     <none>                                                                    9283/TCP            4m37s
+rook-ceph-mgr-dashboard                  ClusterIP      172.30.203.185   <none>                                                                    8443/TCP            4m38s
+rook-ceph-mgr-dashboard-external-https   LoadBalancer   172.30.27.242    a7f23e8e2839511e9b7a5122b08f2038-1251669398.us-east-1.elb.amazonaws.com   8443:32747/TCP      4s
+rook-ceph-mon-a                          ClusterIP      172.30.45.236    <none>                                                                    6789/TCP,3300/TCP   5m27s
+rook-ceph-rgw-my-store                   ClusterIP      172.30.18.97     <none>                                                                    8080/TCP            2m16s                                                                   6789/TCP,3300/TCP   65m
 ```
 
 * Access dashboard:
@@ -223,15 +246,15 @@ rook-ceph-mon-c                          ClusterIP      172.30.167.71    <none> 
 http://rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-kj3t5ck-d5d6b.origin-ci-int-aws.dev.rhcloud.com
 
 # HTTPS example:
-https://af1f7d97b82d811e9acb0129043356ed-1688131122.us-east-1.elb.amazonaws.com:8443
+https://a7f23e8e2839511e9b7a5122b08f2038-1251669398.us-east-1.elb.amazonaws.com:8443
 ```
 
 * Get dashboard **admin** user password:
 ```
-echo $(kubectl get secret rook-ceph-dashboard-password -o yaml | grep "password:" | awk '{print $2}' | base64 --decode)
+echo $(oc get secret rook-ceph-dashboard-password -o yaml | grep "password:" | awk '{print $2}' | base64 --decode)
 ```
 
-## Local OpenShift 3.11 cluster on Fedora
+## (Outdated) Local OpenShift 3.11 cluster on Fedora
 
 * Install [OpenShift](https://developer.fedoraproject.org/deployment/openshift/about.html):
 ```
@@ -332,7 +355,3 @@ echo $(oc get secret rook-ceph-dashboard-password -o yaml | grep "password:" | a
 # Example:
 https://172.30.18.215:8443/#/login
 ```
-
-## Troubleshooting
-
-Check [Rook Ceph Common Issues](https://rook.io/docs/rook/master/ceph-common-issues.html).
