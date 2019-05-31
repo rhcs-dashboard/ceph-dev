@@ -32,7 +32,7 @@ kubectl config use-context minikube
 git clone git@github.com:rhcs-dashboard/ceph-dev.git
 cd ceph-dev
 kubectl create -f deployment/rook/common.yaml -f deployment/rook/operator.yaml
-kubectl create -f deployment/rook/cluster-minikube.yaml
+kubectl create -f deployment/rook/cluster-test-minikube.yaml
 ```
 
 * Wait until all is up:
@@ -42,22 +42,48 @@ $ kubectl config set-context $(kubectl config current-context) --namespace=rook-
 
 $ kubectl get pod
 NAME                                   READY   STATUS      RESTARTS   AGE
-rook-ceph-agent-897kl                  1/1     Running     0          2m28s
-rook-ceph-mgr-a-65975568f6-ng84v       1/1     Running     0          75s
-rook-ceph-mon-a-68969fbc5c-qhw96       1/1     Running     0          118s
-rook-ceph-mon-b-5d6cdfdc59-92dk7       1/1     Running     0          109s
-rook-ceph-mon-c-7bdfd58b8c-78tkf       1/1     Running     0          95s
-rook-ceph-operator-9f96df596-shbnw     1/1     Running     0          2m30s
-rook-ceph-osd-prepare-minikube-mdjn4   0/2     Completed   1          40s
-rook-discover-wqrtl                    1/1     Running     0          2m28s
+rook-ceph-agent-qrxt6                  1/1     Running     0          3m6s
+rook-ceph-mgr-a-9cd77c86d-l44rq        1/1     Running     0          85s
+rook-ceph-mon-a-9bb9c767f-g8b6h        1/1     Running     0          97s
+rook-ceph-operator-5d4dff848d-4fvcc    1/1     Running     0          3m7s
+rook-ceph-osd-0-5776f54578-2rkgh       1/1     Running     0          53s
+rook-ceph-osd-prepare-minikube-lvj4b   0/2     Completed   1          61s
+rook-discover-t2thc                    1/1     Running     0          3m6s
 
 $ kubectl get svc
 NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
-rook-ceph-mgr             ClusterIP   10.102.89.171    <none>        9283/TCP            50s
-rook-ceph-mgr-dashboard   ClusterIP   10.101.145.207   <none>        8443/TCP            50s
-rook-ceph-mon-a           ClusterIP   10.99.136.137    <none>        6789/TCP,3300/TCP   2m9s
-rook-ceph-mon-b           ClusterIP   10.107.195.233   <none>        6789/TCP,3300/TCP   2m1s
-rook-ceph-mon-c           ClusterIP   10.105.102.217   <none>        6789/TCP,3300/TCP   111s
+rook-ceph-mgr             ClusterIP   10.108.255.209   <none>        9283/TCP            92s
+rook-ceph-mgr-dashboard   ClusterIP   10.108.207.52    <none>        8443/TCP            92s
+rook-ceph-mon-a           ClusterIP   10.105.226.195   <none>        6789/TCP,3300/TCP   2m10s
+```
+
+* Optionally, deploy Rook Ceph Toolbox:
+```
+kubectl create -f deployment/rook/toolbox.yaml
+
+# Access toolbox CLI:
+kubectl -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
+
+# Then you can run commands like: ceph -s
+```
+
+* Optionally, create an Object Store and a user:
+```
+kubectl create -f deployment/rook/object-test.yaml
+kubectl create -f deployment/rook/object-user.yaml
+
+# Example:
+$ kc get pod
+NAME                                      READY   STATUS      RESTARTS   AGE
+rook-ceph-agent-qrxt6                     1/1     Running     0          5m39s
+rook-ceph-mgr-a-9cd77c86d-l44rq           1/1     Running     0          3m58s
+rook-ceph-mon-a-9bb9c767f-g8b6h           1/1     Running     0          4m10s
+rook-ceph-operator-5d4dff848d-4fvcc       1/1     Running     0          5m40s
+rook-ceph-osd-0-5776f54578-2rkgh          1/1     Running     0          3m26s
+rook-ceph-osd-prepare-minikube-lvj4b      0/2     Completed   1          3m34s
+rook-ceph-rgw-my-store-75b476866d-9s2xg   1/1     Running     0          18s
+rook-ceph-tools-b8c679f95-rhkjs           1/1     Running     0          94s
+rook-discover-t2thc                       1/1     Running     0          5m39s
 ```
 
 * Make dashboard accessible from outside:
@@ -67,12 +93,11 @@ kubectl create -f deployment/rook/dashboard-external-https.yaml
 # Example:
 $ kubectl get svc
 NAME                                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
-rook-ceph-mgr                            ClusterIP   10.102.89.171    <none>        9283/TCP            107s
-rook-ceph-mgr-dashboard                  ClusterIP   10.101.145.207   <none>        8443/TCP            107s
-rook-ceph-mgr-dashboard-external-https   NodePort    10.107.18.216    <none>        8443:31942/TCP      4s
-rook-ceph-mon-a                          ClusterIP   10.99.136.137    <none>        6789/TCP,3300/TCP   3m6s
-rook-ceph-mon-b                          ClusterIP   10.107.195.233   <none>        6789/TCP,3300/TCP   2m58s
-rook-ceph-mon-c                          ClusterIP   10.105.102.217   <none>        6789/TCP,3300/TCP   2m48s
+rook-ceph-mgr                            ClusterIP   10.108.255.209   <none>        9283/TCP            4m42s
+rook-ceph-mgr-dashboard                  ClusterIP   10.108.207.52    <none>        8443/TCP            4m42s
+rook-ceph-mgr-dashboard-external-https   NodePort    10.106.127.150   <none>        8443:32361/TCP      7s
+rook-ceph-mon-a                          ClusterIP   10.105.226.195   <none>        6789/TCP,3300/TCP   5m20s
+rook-ceph-rgw-my-store                   ClusterIP   10.104.24.38     <none>        80/TCP              110s
 ```
 
 * Obtain Minikube IP and access the dashboard using the **rook-ceph-mgr-dashboard-external-https** service opened port:
@@ -81,7 +106,7 @@ rook-ceph-mon-c                          ClusterIP   10.105.102.217   <none>    
 minikube ip
 
 # Example: dashboard URL
-https://192.168.99.101:31942
+https://192.168.99.101:32361
 ```
 
 * Get dashboard **admin** user password:
@@ -149,6 +174,22 @@ rook-ceph-mgr-dashboard   ClusterIP   172.30.205.217   <none>        8443/TCP   
 rook-ceph-mon-a           ClusterIP   172.30.193.208   <none>        6789/TCP,3300/TCP   54m
 rook-ceph-mon-b           ClusterIP   172.30.50.1      <none>        6789/TCP,3300/TCP   53m
 rook-ceph-mon-c           ClusterIP   172.30.83.146    <none>        6789/TCP,3300/TCP   53m
+```
+
+* Optionally, deploy Rook Ceph Toolbox:
+```
+oc create -f deployment/rook/toolbox.yaml
+
+# Access toolbox CLI:
+oc exec -it $(oc get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
+
+# Then you can run commands like: ceph -s
+```
+
+* Optionally, create an Object Store and a user:
+```
+oc create -f deployment/rook/object-openshift.yaml
+oc create -f deployment/rook/object-user.yaml
 ```
 
 * Make dashboard accessible from outside:
