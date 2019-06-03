@@ -71,23 +71,39 @@ kubectl -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-t
 # Then you can run commands like: ceph -s
 ```
 
-* Optionally, create an Object Store and a user:
+* Optionally, create an Object Store and wait until the service is up:
 ```
 kubectl create -f deployment/rook/object-test.yaml
-kubectl create -f deployment/rook/object-user.yaml
 
 # Example:
-$ kc get pod
-NAME                                      READY   STATUS      RESTARTS   AGE
-rook-ceph-agent-qrxt6                     1/1     Running     0          5m39s
-rook-ceph-mgr-a-9cd77c86d-l44rq           1/1     Running     0          3m58s
-rook-ceph-mon-a-9bb9c767f-g8b6h           1/1     Running     0          4m10s
-rook-ceph-operator-5d4dff848d-4fvcc       1/1     Running     0          5m40s
-rook-ceph-osd-0-5776f54578-2rkgh          1/1     Running     0          3m26s
-rook-ceph-osd-prepare-minikube-lvj4b      0/2     Completed   1          3m34s
-rook-ceph-rgw-my-store-75b476866d-9s2xg   1/1     Running     0          18s
-rook-ceph-tools-b8c679f95-rhkjs           1/1     Running     0          94s
-rook-discover-t2thc                       1/1     Running     0          5m39s
+$ kc get svc
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+rook-ceph-mgr             ClusterIP   10.108.255.209   <none>        9283/TCP            2d23h
+rook-ceph-mgr-dashboard   ClusterIP   10.108.207.52    <none>        8443/TCP            2d23h
+rook-ceph-mon-a           ClusterIP   10.105.226.195   <none>        6789/TCP,3300/TCP   2d23h
+rook-ceph-rgw-my-store    ClusterIP   10.97.57.19      <none>        80/TCP              19s
+```
+
+* Optionally, create an Object Store user and provide the user credentials to the dashboard:
+```
+kubectl create -f deployment/rook/object-user.yaml
+
+# Access key:
+echo $(kubectl -n rook-ceph get secret rook-ceph-object-user-my-store-my-user -o yaml | grep AccessKey | awk '{print $2}' | base64 --decode)
+
+# Secret key:
+echo $(kubectl -n rook-ceph get secret rook-ceph-object-user-my-store-my-user -o yaml | grep SecretKey | awk '{print $2}' | base64 --decode)
+
+# Access toolbox CLI:
+kubectl -n rook-ceph exec -it $(kubectl -n rook-ceph get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
+
+# Enable system flag on the user (required for dashboard Object Gateway management):
+radosgw-admin user modify --uid=my-user --system
+
+# Provide the user credentials to the dashboard:
+ceph dashboard set-rgw-api-user-id my-user
+ceph dashboard set-rgw-api-access-key <access-key>
+ceph dashboard set-rgw-api-secret-key <secret-key>
 ```
 
 * Make dashboard accessible from outside:
@@ -179,42 +195,7 @@ rook-ceph-mgr-dashboard   ClusterIP   172.30.203.185   <none>        8443/TCP   
 rook-ceph-mon-a           ClusterIP   172.30.45.236    <none>        6789/TCP,3300/TCP   2m9s
 ```
 
-* Optionally, deploy Rook Ceph Toolbox:
-```
-oc create -f deployment/rook/toolbox.yaml
-
-# Access toolbox CLI:
-oc exec -it $(oc get pod -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') bash
-
-# Then you can run commands like: ceph -s
-```
-
-* Optionally, create an Object Store and a user:
-```
-oc create -f deployment/rook/object-test-openshift.yaml
-oc create -f deployment/rook/object-user.yaml
-
-# Example:
-$ oc get pod
-NAME                                          READY   STATUS      RESTARTS   AGE
-rook-ceph-agent-r67zt                         1/1     Running     0          5m52s
-rook-ceph-agent-vkqs8                         1/1     Running     0          5m52s
-rook-ceph-agent-z8lkm                         1/1     Running     0          5m52s
-rook-ceph-mgr-a-6f89574945-h7z78              1/1     Running     0          3m59s
-rook-ceph-mon-a-5b7f8c74b8-r2tsn              1/1     Running     0          4m18s
-rook-ceph-operator-86554dcbfc-mcbdm           1/1     Running     0          6m37s
-rook-ceph-osd-0-7f6db68447-hxfp5              1/1     Running     0          3m19s
-rook-ceph-osd-1-67864f4cc7-dfv58              1/1     Running     0          3m16s
-rook-ceph-osd-2-6774cdc8ff-xxfxn              1/1     Running     0          3m16s
-rook-ceph-osd-prepare-ip-10-0-129-139-xccn4   0/2     Completed   0          3m30s
-rook-ceph-osd-prepare-ip-10-0-132-164-wmmts   0/2     Completed   0          3m30s
-rook-ceph-osd-prepare-ip-10-0-148-37-hvhnh    0/2     Completed   0          3m30s
-rook-ceph-rgw-my-store-684ff5cfcd-lgp6c       1/1     Running     0          45s
-rook-ceph-tools-5bc8b8f97-7qlln               1/1     Running     0          105s
-rook-discover-j8nzq                           1/1     Running     0          5m52s
-rook-discover-t2lt4                           1/1     Running     0          5m52s
-rook-discover-t5qgb                           1/1     Running     0          5m52s
-```
+* Optionally, deploy Rook Ceph Toolbox and create an Object Store following the Minikube cluster steps.
 
 * Make dashboard accessible from outside:
 ```
@@ -228,14 +209,14 @@ rook-ceph-mgr-dashboard   rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-kj3t5ck-d
 
 
 # HTTPS:
-oc create -f deployment/rook/dashboard-external-https-openshift.yaml
+oc create -f deployment/rook/dashboard-loadbalancer.yaml
 
 # Example:
 $ oc get svc
 NAME                                     TYPE           CLUSTER-IP       EXTERNAL-IP                                                               PORT(S)             AGE
 rook-ceph-mgr                            ClusterIP      172.30.11.40     <none>                                                                    9283/TCP            4m37s
 rook-ceph-mgr-dashboard                  ClusterIP      172.30.203.185   <none>                                                                    8443/TCP            4m38s
-rook-ceph-mgr-dashboard-external-https   LoadBalancer   172.30.27.242    a7f23e8e2839511e9b7a5122b08f2038-1251669398.us-east-1.elb.amazonaws.com   8443:32747/TCP      4s
+rook-ceph-mgr-dashboard-loadbalancer     LoadBalancer   172.30.27.242    a7f23e8e2839511e9b7a5122b08f2038-1251669398.us-east-1.elb.amazonaws.com   8443:32747/TCP      4s
 rook-ceph-mon-a                          ClusterIP      172.30.45.236    <none>                                                                    6789/TCP,3300/TCP   5m27s
 rook-ceph-rgw-my-store                   ClusterIP      172.30.18.97     <none>                                                                    8080/TCP            2m16s                                                                   6789/TCP,3300/TCP   65m
 ```
@@ -249,10 +230,7 @@ http://rook-ceph-mgr-dashboard-rook-ceph.apps.ci-ln-kj3t5ck-d5d6b.origin-ci-int-
 https://a7f23e8e2839511e9b7a5122b08f2038-1251669398.us-east-1.elb.amazonaws.com:8443
 ```
 
-* Get dashboard **admin** user password:
-```
-echo $(oc get secret rook-ceph-dashboard-password -o yaml | grep "password:" | awk '{print $2}' | base64 --decode)
-```
+* Get dashboard **admin** user password following the Minikube cluster step.
 
 ## (Outdated) Local OpenShift 3.11 cluster on Fedora
 
@@ -347,11 +325,10 @@ rook-ceph-mon-b           ClusterIP   172.30.244.112   <none>        6790/TCP   
 rook-ceph-mon-c           ClusterIP   172.30.45.124    <none>        6790/TCP   3m
 ```
 
-* Get password for dashboard user *admin* and use *rook-ceph-mgr-dashboard* service IP:PORT to access dashboard:
+* Access dashboard through *rook-ceph-mgr-dashboard* service IP:PORT:
 ```
-# Password:
-echo $(oc get secret rook-ceph-dashboard-password -o yaml | grep "password:" | awk '{print $2}' | base64 --decode)
-
 # Example:
 https://172.30.18.215:8443/#/login
 ```
+
+* Get dashboard **admin** user password following the Minikube cluster step.
