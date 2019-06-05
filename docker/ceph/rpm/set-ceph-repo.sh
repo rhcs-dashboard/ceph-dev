@@ -2,6 +2,10 @@
 
 set -e
 
+if [[ -z "$REPO_URL" ]]; then
+    REPO_URL=$(curl -s 'https://shaman.ceph.com/api/search/?project=ceph&distros=centos/7&flavor=default&ref=master&sha1=latest' | jq -a '.[0] | .url' | sed -e 's/"//g')/x86_64/
+fi
+
 echo "
 [ceph-rpm]
 name=Ceph RPM

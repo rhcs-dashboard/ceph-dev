@@ -307,11 +307,9 @@ docker-compose up -d --scale ceph-rpm=1 ceph-rpm
 
 * Create ceph-rpm image:
 ```
-# Fedora-based master branch (repo url: lastest shaman centos7 x86_64 repo):
+# Fedora-based master branch:
 docker build -t rhcsdashboard/ceph-rpm \
 -f ./docker/ceph/rpm/Dockerfile ./docker/ceph \
---build-arg REPO_URL=https://2.chacra.ceph.com/r/ceph/master/0b0b89ee08c7c4e30fca748381a42e9c98adabc2/centos/7/flavors/default/x86_64/ \
---build-arg VCS_BRANCH=master \
 --network=host
 
 # Fedora-based nautilus branch (for backporting):

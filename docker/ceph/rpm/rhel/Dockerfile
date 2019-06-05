@@ -25,7 +25,7 @@ RUN rm -rf /var/cache/dnf/*
 
 RUN mkdir -p /ceph/build /ceph/src
 
-ARG VCS_BRANCH
+ARG VCS_BRANCH=master
 RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/src/vstart.sh \
     -o /ceph/src/vstart.sh \
     && chmod +x /ceph/src/vstart.sh
