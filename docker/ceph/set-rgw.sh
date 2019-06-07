@@ -13,20 +13,60 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
             --pid-file="$CEPH_OUT_DIR"/radosgw.8000.pid -n client.rgw --rgw_frontends="beast port=8000" ${RGW_DEBUG}
     }
 
-    REALM=dev-realm
-    MASTER_ZONEGROUP=master-zonegroup
-
     if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
-        # Create default realm, its master zonegroup & its master zone:
-        "$CEPH_BIN"/radosgw-admin realm create --rgw-realm "$REALM" \
-            --default
-        "$CEPH_BIN"/radosgw-admin zonegroup create --rgw-realm "$REALM" --rgw-zonegroup "$MASTER_ZONEGROUP" \
-            --endpoints http://${HOSTNAME}:8000 \
-            --master --default
-        MASTER_ZONE=master-zone
-        "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$MASTER_ZONEGROUP" --rgw-zone "$MASTER_ZONE" \
-            --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY \
-            --master --default
+        # Add realms:
+        for REALM_NUM in 1 2; do
+            REALM_NAME=realm"$REALM_NUM"
+            REALM_OPTIONS=''
+            [[ "$REALM_NUM" == 1 ]] && REALM_OPTIONS='--default'
+            "$CEPH_BIN"/radosgw-admin realm create --rgw-realm "$REALM_NAME" ${REALM_OPTIONS}
+
+            # Add zonegroups:
+            for ZONEGROUP_NUM in 1 2; do
+                ZONEGROUP_NAME=zonegroup"$ZONEGROUP_NUM"-"$REALM_NAME"
+                ZONEGROUP_OPTIONS=''
+                [[ "$ZONEGROUP_NUM" == 1 ]] && ZONEGROUP_OPTIONS='--master --default'
+                "$CEPH_BIN"/radosgw-admin zonegroup create --rgw-realm "$REALM_NAME" --rgw-zonegroup "$ZONEGROUP_NAME" \
+                    --endpoints http://${HOSTNAME}:8000 ${ZONEGROUP_OPTIONS}
+
+                # Add zones:
+                for ZONE_NUM in 1 2; do
+                    ZONE_NAME=zone"$ZONE_NUM"-"$ZONEGROUP_NAME"
+                    ZONE_OPTIONS=''
+                    [[ "$ZONE_NUM" == 1 && "$ZONEGROUP_NUM" == 1 ]] && ZONE_OPTIONS='--master --default'
+                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
+                        --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY \
+                        --secret $RGW_REALM_ADMIN_SECRET_KEY ${ZONE_OPTIONS}
+                done
+
+                # Add placement targets:
+                for PT_NUM in 1 2; do
+                    PT_NAME=pt"$PT_NUM"-"$ZONE_NAME"
+                    "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$ZONEGROUP_NAME" \
+                        --placement-id "$PT_NAME"
+
+                    "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
+                        --placement-id "$PT_NAME" \
+                        --data-pool "$ZONEGROUP_NAME".rgw.dev.data \
+                        --index-pool "$ZONEGROUP_NAME".rgw.dev.index
+                done
+
+                # Add cold storage class:
+                if [[ "$CEPH_VERSION" -ge '14' ]]; then
+                    COLD_STORAGE_CLASS=COLD
+                    "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$ZONEGROUP_NAME" \
+                        --placement-id "$PT_NAME" \
+                        --storage-class "$COLD_STORAGE_CLASS"
+
+                    "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
+                        --placement-id "$PT_NAME" \
+                        --storage-class "$COLD_STORAGE_CLASS" \
+                        --data-pool "$ZONEGROUP_NAME".rgw.cold.data
+                fi
+            done
+
+            "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$REALM_NAME" --commit
+        done
 
         # Migrate single-site to multi-site:
         #"$CEPH_BIN"/radosgw-admin zonegroup rename --rgw-zonegroup default --zonegroup-new-name="$MASTER_ZONEGROUP"
@@ -38,70 +78,36 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
         #    --endpoints http://${HOSTNAME}:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY \
         #    --master --default
 
-        # Add placement target(s):
-        DEV_PLACEMENT_TARGET=dev-placement
-        "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$MASTER_ZONEGROUP" \
-            --placement-id "$DEV_PLACEMENT_TARGET"
-        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zone "$MASTER_ZONE" \
-            --placement-id "$DEV_PLACEMENT_TARGET" \
-            --data-pool "$MASTER_ZONEGROUP".rgw.dev.data \
-            --index-pool "$MASTER_ZONEGROUP".rgw.dev.index
-
-        # Add storage class(es):
-        if [[ "$CEPH_VERSION" -ge '14' ]]; then
-            COLD_STORAGE_CLASS=COLD
-            "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$MASTER_ZONEGROUP" \
-                --placement-id "$DEV_PLACEMENT_TARGET" \
-                --storage-class "$COLD_STORAGE_CLASS"
-            "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zone "$MASTER_ZONE" \
-                --placement-id "$DEV_PLACEMENT_TARGET" \
-                --storage-class "$COLD_STORAGE_CLASS" \
-                --data-pool "$MASTER_ZONEGROUP".rgw.cold.data
-        fi
-
-        "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$REALM" --commit
-
-        # Create 2nd realm, its master zonegroup & its master zone:
-        REALM_2=dev-realm2
-        "$CEPH_BIN"/radosgw-admin realm create --rgw-realm "$REALM_2"
-        REALM_2_ZONEGROUP="$REALM_2"-zonegroup
-        "$CEPH_BIN"/radosgw-admin zonegroup create --rgw-realm "$REALM_2" --rgw-zonegroup "$REALM_2_ZONEGROUP" \
-            --endpoints http://${HOSTNAME}:8000 \
-            --master --default
-        REALM_2_ZONE="$REALM_2"-zone
-        "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$REALM_2_ZONEGROUP" --rgw-zone "$REALM_2_ZONE" \
-            --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY \
-            --master --default
-        "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$REALM_2" --commit
-
         start_rgw_daemon
     else
         readonly FIRST_CLUSTER_HOSTNAME=$(hostname | sed -e 's/-cluster.//')
-        readonly ZONE_2=zone-2
-        readonly ARCHIVE_ZONE=archive-zone
+        readonly CLUSTER2_PULL_REALM=realm1
+        readonly CLUSTER2_ZONEGROUP=zonegroup1-realm1
+        readonly CLUSTER2_ZONE=zone3-"$CLUSTER2_ZONEGROUP"
+        readonly CLUSTER2_ARCHIVE_ZONE=zone4-"$CLUSTER2_ZONEGROUP"
 
         set_secondary_zones() {
             while true; do
                 IS_FIRST_GATEWAY_AVAILABLE=$(curl -LsS http://${FIRST_CLUSTER_HOSTNAME}:8000 2>&1 | grep "xml version" | wc -l)
                 if [[ $IS_FIRST_GATEWAY_AVAILABLE == 1 ]]; then
-                    "$CEPH_BIN"/radosgw-admin realm pull --rgw-realm "$REALM" --url http://${FIRST_CLUSTER_HOSTNAME}:8000 \
+                    "$CEPH_BIN"/radosgw-admin realm pull --rgw-realm "$CLUSTER2_PULL_REALM" --url http://${FIRST_CLUSTER_HOSTNAME}:8000 \
                         --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY \
                         --default
                     "$CEPH_BIN"/radosgw-admin period pull --url=http://${FIRST_CLUSTER_HOSTNAME}:8000 \
                         --access-key $RGW_REALM_ADMIN_ACCESS_KEY --secret $RGW_REALM_ADMIN_SECRET_KEY
 
-                    # create secondary zone:
-                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$MASTER_ZONEGROUP" --rgw-zone "$ZONE_2" \
+                    # Add secondary zone:
+                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup zonegroup1-realm1 --rgw-zone "$CLUSTER2_ZONE" \
                         --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY \
                         --secret $RGW_REALM_ADMIN_SECRET_KEY
 
-                    # create archive zone:
-                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$MASTER_ZONEGROUP" --rgw-zone "$ARCHIVE_ZONE" \
+                    # Add archive zone:
+                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$CLUSTER2_ZONEGROUP" --rgw-zone "$CLUSTER2_ARCHIVE_ZONE" \
                         --endpoints http://$HOSTNAME:8000 --access-key $RGW_REALM_ADMIN_ACCESS_KEY \
                         --secret $RGW_REALM_ADMIN_SECRET_KEY \
                         --tier-type=archive
 
-                    "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$REALM" --commit
+                    "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$CLUSTER2_PULL_REALM" --commit
 
                     # Delete default zone & pools:
                     #"$CEPH_BIN"/radosgw-admin zone delete --rgw-zone=default
