@@ -154,6 +154,11 @@ docker-compose exec ceph /docker/e2e/run-frontend-e2e-tests.sh
 docker-compose run --rm ceph /docker/e2e/run-frontend-e2e-tests.sh
 ```
 
+* Check dashboard python code with **mypy**:
+```
+docker-compose run --rm ceph bash -c ". /docker/ci/sanity-checks.sh && run_mypy"
+```
+
 * Run sanity checks:
 ```
 docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh

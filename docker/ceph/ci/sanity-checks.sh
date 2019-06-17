@@ -110,7 +110,12 @@ run_mypy() {
         MYPY_CONFIG_FILE=/docker/ci/mypy.ini
     fi
 
-    mypy --config-file="$MYPY_CONFIG_FILE" --cache-dir=src/.mypy_cache --follow-imports=skip $@
+    MYPY_ARGS="$@"
+    if [[ -z "$MYPY_ARGS" ]]; then
+        MYPY_ARGS="$REPO_DIR"/src/pybind/mgr/dashboard
+    fi
+
+    mypy --config-file="$MYPY_CONFIG_FILE" --cache-dir=src/.mypy_cache --follow-imports=skip ${MYPY_ARGS}
 }
 
 run_api_tests() {
