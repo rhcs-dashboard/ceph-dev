@@ -47,8 +47,8 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
 
                     "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
                         --placement-id "$PT_NAME" \
-                        --data-pool "$ZONEGROUP_NAME".rgw.dev.data \
-                        --index-pool "$ZONEGROUP_NAME".rgw.dev.index
+                        --data-pool "$PT_NAME".rgw.buckets.data \
+                        --index-pool "$PT_NAME".rgw.buckets.index
                 done
 
                 # Add cold storage class:
@@ -61,7 +61,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                     "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
                         --placement-id "$PT_NAME" \
                         --storage-class "$COLD_STORAGE_CLASS" \
-                        --data-pool "$ZONEGROUP_NAME".rgw.cold.data
+                        --data-pool "$PT_NAME"-cold.rgw.buckets.data
                 fi
             done
 
