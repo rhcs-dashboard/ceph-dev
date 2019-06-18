@@ -1,4 +1,6 @@
 # RHCS Dashboard Dev. Env.
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frhcs-dashboard%2Fceph-dev.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Frhcs-dashboard%2Fceph-dev?ref=badge_shield)
+
 
 ## Installation
 
@@ -338,3 +340,7 @@ docker build -t rhcsdashboard/rhcs4 \
 --build-arg VCS_BRANCH={ceph-release-version-tag-that-rhcs4-is-based-on} \
 --network=host
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frhcs-dashboard%2Fceph-dev.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Frhcs-dashboard%2Fceph-dev?ref=badge_large)
