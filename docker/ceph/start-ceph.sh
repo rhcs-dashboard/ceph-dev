@@ -63,7 +63,7 @@ if [[ "$DASHBOARD_SSL" == 0 && "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_FIRST_CLUSTER
     fi
 
     "$CEPH_BIN"/ceph config set mgr mgr/dashboard/ssl false $SSL_OPTIONS
-    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/x/server_port $(($CEPH_PORT + 1000)) $SSL_OPTIONS
+    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/x/server_port "$CEPH_MGR_DASHBOARD_PORT" $SSL_OPTIONS
     /docker/restart-dashboard.sh
 
     echo "SSL disabled."
