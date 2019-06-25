@@ -3,17 +3,20 @@ FROM centos:7
 RUN yum install -y bind-utils centos-release-scl curl epel-release iputils net-tools yum yum-utils \
     && yum clean all
 
-RUN yum install -y ant apache-commons-cli batik boost-random btrfs-progs bzip2 ccache cmake cmake3 \
-    cryptsetup CUnit-devel Cython \
-    devtoolset-7-gcc-c++ doxygen expat-devel fuse-devel gcc-c++ git gperf gperftools-devel graphviz \
+RUN yum install -y ant apache-commons-cli batik blender-rpm-macros blis-srpm-macros boost-random btrfs-progs bzip2 \
+    ccache cmake cmake3 cryptsetup CUnit-devel Cython \
+    devtoolset-8-gcc-c++ doxygen epel-rpm-macros erlang-rpm-macros expat-devel \
+    fuse-devel gcc-c++ ghc-rpm-macros git gperf gperftools-devel graphviz \
     iproute java-1.8.0-openjdk-devel \
-    jq junit keyutils-libs-devel leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
-    libcurl-devel liboath-devel librabbitmq-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel \
-    lttng-ust-devel lz4-devel mailcap ncurses-devel nss-devel openldap-devel openssl-devel parted \
+    jq junit keyutils-libs-devel kf5-rpm-macros leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
+    libcurl-devel libnl3-devel liboath-devel librabbitmq-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel \
+    lttng-ust-devel lz4-devel mailcap ncurses-devel nss-devel \
+    ocaml-srpm-macros openblas-srpm-macros openldap-devel openssl-devel parted \
     python-cherrypy python-coverage python-devel python-jwt python-nose python-pecan \
-    python-prettytable python-requests python-routes python-sphinx python-tox \
-    python-virtualenv python-werkzeug python2-bcrypt python2-pip python34-Cython \
-    python34-devel python34-setuptools \
+    python-prettytable python-qt5-rpm-macros python-requests python-routes python-sphinx python-tox \
+    python-virtualenv python-werkzeug python2-bcrypt python2-pip python36-Cython \
+    python36-devel python36-setuptools \
+    qt5-rpm-macros \
     rdma-core-devel redhat-lsb-core redhat-rpm-config selinux-policy-devel \
     selinux-policy-doc sharutils snappy-devel socat \
     systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlsec1 xmlsec1-devel xmlsec1-nss \
