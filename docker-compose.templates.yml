@@ -9,10 +9,16 @@ services:
             - CEPH_DEBUG=${CEPH_DEBUG:-0}
             - CEPH_PORT=10000
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
+            - FS
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
+            - MDS
+            - MGR
             - MGR_PYTHON_PATH=/ceph/src/pybind/mgr
+            - MON
+            - OSD
             - PROMETHEUS_HOST_PORT=${PROMETHEUS_HOST_PORT}
             - PYTHONDONTWRITEBYTECODE=1
+            - RGW
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
         scale: -1
 
@@ -34,12 +40,6 @@ services:
             - CEPH_OUT_DIR=/ceph/build/ceph/out
             - CHECK_MYPY=${CHECK_MYPY:-0}
             - DASHBOARD_SSL=${DASHBOARD_SSL:-1}
-            - FS
-            - MDS
-            - MGR
-            - MON
-            - OSD
-            - RGW
             - SOURCE_DATE_EPOCH=358228200
         cap_add:
             - ALL
