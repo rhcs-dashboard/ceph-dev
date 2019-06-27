@@ -8,15 +8,42 @@ readonly RGW_REALM_ADMIN_ACCESS_KEY=DiPt4V7WWvy2njL1z6aC
 readonly RGW_REALM_ADMIN_SECRET_KEY=xSZUdYky0bTctAdCEEW8ikhfBVKsBV5LFYL82vvh
 RGW_DAEMON_PORT=8000
 
-if [[ "$RGW_MULTISITE" == 1 ]]; then
-    start_rgw_daemon() {
-        "$CEPH_BIN"/radosgw --log-file="$CEPH_OUT_DIR"/radosgw."$1".log --admin-socket="$CEPH_OUT_DIR"/radosgw."$1".asok \
-            --pid-file="$CEPH_OUT_DIR"/radosgw."$1".pid --rgw_frontends="beast port=$1" -n client.rgw ${RGW_DEBUG}
-    }
+add_placement_targets_and_storage_classes() {
+    # Add placement targets:
+    for PT_NUM in 1 2; do
+        PT_NAME=pt"$PT_NUM"-"$ZONE_NAME"
+        "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$ZONEGROUP_NAME" \
+            --placement-id "$PT_NAME"
 
+        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
+            --placement-id "$PT_NAME" \
+            --data-pool "$PT_NAME".rgw.buckets.data \
+            --index-pool "$PT_NAME".rgw.buckets.index
+    done
+
+    # Add cold storage class:
+    if [[ "$CEPH_VERSION" -ge '14' ]]; then
+        COLD_STORAGE_CLASS=COLD
+        "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$ZONEGROUP_NAME" \
+            --placement-id "$PT_NAME" \
+            --storage-class "$COLD_STORAGE_CLASS"
+
+        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
+            --placement-id "$PT_NAME" \
+            --storage-class "$COLD_STORAGE_CLASS" \
+            --data-pool "$PT_NAME".rgw.cold.data
+    fi
+}
+
+start_rgw_daemon() {
+    "$CEPH_BIN"/radosgw --log-file="$CEPH_OUT_DIR"/radosgw."$1".log --admin-socket="$CEPH_OUT_DIR"/radosgw."$1".asok \
+        --pid-file="$CEPH_OUT_DIR"/radosgw."$1".pid --rgw_frontends="beast port=$1" -n client.rgw ${RGW_DEBUG}
+}
+
+if [[ "$RGW_MULTISITE" == 1 ]]; then
     if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
         # Add realms:
-        for REALM_NUM in 1; do
+        for REALM_NUM in 1 2; do
             REALM_NAME=realm"$REALM_NUM"
             REALM_OPTIONS=''
             [[ "$REALM_NUM" == 1 ]] && REALM_OPTIONS='--default'
@@ -24,7 +51,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
 
             # Add zonegroups:
             for ZONEGROUP_NUM in 1 2; do
-                ZONEGROUP_NAME=zonegroup"$ZONEGROUP_NUM"-"$REALM_NAME"
+                ZONEGROUP_NAME=zg"$ZONEGROUP_NUM"-"$REALM_NAME"
                 ZONEGROUP_OPTIONS=''
                 [[ "$ZONEGROUP_NUM" == 1 ]] && ZONEGROUP_OPTIONS='--master --default'
                 "$CEPH_BIN"/radosgw-admin zonegroup create --rgw-realm "$REALM_NAME" --rgw-zonegroup "$ZONEGROUP_NAME" \
@@ -39,30 +66,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                         --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key $RGW_REALM_ADMIN_ACCESS_KEY \
                         --secret $RGW_REALM_ADMIN_SECRET_KEY ${ZONE_OPTIONS}
 
-                    # Add placement targets:
-                    for PT_NUM in 1 2; do
-                        PT_NAME=pt"$PT_NUM"-"$ZONE_NAME"
-                        "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$ZONEGROUP_NAME" \
-                            --placement-id "$PT_NAME"
-
-                        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
-                            --placement-id "$PT_NAME" \
-                            --data-pool "$PT_NAME".rgw.buckets.data \
-                            --index-pool "$PT_NAME".rgw.buckets.index
-                    done
-
-                    # Add cold storage class:
-                    if [[ "$CEPH_VERSION" -ge '14' ]]; then
-                        COLD_STORAGE_CLASS=COLD
-                        "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$ZONEGROUP_NAME" \
-                            --placement-id "$PT_NAME" \
-                            --storage-class "$COLD_STORAGE_CLASS"
-
-                        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
-                            --placement-id "$PT_NAME" \
-                            --storage-class "$COLD_STORAGE_CLASS" \
-                            --data-pool "$PT_NAME"-cold.rgw.buckets.data
-                    fi
+                    add_placement_targets_and_storage_classes
                 done
             done
 
@@ -128,6 +132,14 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
         }
         set_secondary_zones
     fi
+else
+    ZONEGROUP_NAME=default
+    ZONE_NAME=default
+    add_placement_targets_and_storage_classes
+
+    pkill radosgw
+    sleep 2 # avoid locked pidfile by killed process.
+    start_rgw_daemon "$RGW_DAEMON_PORT"
 fi
 
 if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
