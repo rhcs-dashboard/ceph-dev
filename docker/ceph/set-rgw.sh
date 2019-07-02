@@ -138,7 +138,7 @@ else
     add_placement_targets_and_storage_classes
 
     pkill radosgw
-    sleep 2 # avoid locked pidfile by killed process.
+    sleep 3 # avoid locked pidfile by killed process.
     start_rgw_daemon "$RGW_DAEMON_PORT"
 fi
 
