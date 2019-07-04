@@ -125,6 +125,9 @@ docker-compose run --rm ceph /docker/ci/run-tox.sh tests/test_rest_client.py tes
 
 # Only 1 test:
 docker-compose run --rm ceph /docker/ci/run-tox.sh tests/test_rgw_client.py::RgwClientTest::test_ssl_verify
+
+# Run doctests in 1 file:
+docker-compose run --rm ceph /docker/ci/run-tox.sh py3-run -- pytest --doctest-modules tools.py
 ```
 
 * Run backend lint:
@@ -137,7 +140,7 @@ docker-compose run --rm ceph /docker/ci/run-tox.sh py3-run -- pylint controllers
 docker-compose run --rm ceph /docker/ci/run-tox.sh py3-run -- pycodestyle controllers/health.py
 ```
 
-* Run API tests (based on Teuthology: Ceph integration test framework):
+* Run integration tests (based on [Teuthology](https://github.com/ceph/teuthology)):
 ```
 docker-compose run --rm ceph /docker/ci/run-api-tests.sh
 
