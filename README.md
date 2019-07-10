@@ -316,19 +316,20 @@ docker-compose up -d --scale ceph-rpm=1 ceph-rpm
 ```
 # Fedora-based master branch:
 docker build -t rhcsdashboard/ceph-rpm \
--f ./docker/ceph/rpm/Dockerfile ./docker/ceph \
+-f ./docker/ceph/rpm/fedora/Dockerfile ./docker/ceph \
+--build-arg REPO_URL=''
 --network=host
 
 # Fedora-based nautilus branch (for backporting):
 docker build -t rhcsdashboard/nautilus \
--f ./docker/ceph/rpm/Dockerfile ./docker/ceph \
+-f ./docker/ceph/rpm/fedora/Dockerfile ./docker/ceph \
 --build-arg REPO_URL=https://4.chacra.ceph.com/r/ceph/nautilus/5ce0d6822d529ec047933b3c3980eedcd97ec59c/centos/7/flavors/notcmalloc/x86_64/ \
 --build-arg VCS_BRANCH=nautilus \
 --network=host
 
 # Fedora-based nautilus stable release (version tag has to be checked before running this):
 docker build -t rhcsdashboard/nautilus:v14.2.1 \
--f ./docker/ceph/rpm/Dockerfile ./docker/ceph \
+-f ./docker/ceph/rpm/fedora/Dockerfile ./docker/ceph \
 --build-arg REPO_URL=https://download.ceph.com/rpm-nautilus/el7/x86_64/ \
 --build-arg VCS_BRANCH=v14.2.1 \
 --network=host

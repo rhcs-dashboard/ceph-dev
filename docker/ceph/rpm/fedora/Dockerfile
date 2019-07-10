@@ -12,19 +12,22 @@ RUN ln -s /venv/bin/node /usr/local/bin/node \
     && ln -s /venv/bin/npm /usr/local/bin/npm \
     && ln -s /venv/bin/npx /usr/local/bin/npx
 
-ARG REPO_URL
-COPY rpm/set-ceph-repo.sh /root
-RUN /root/set-ceph-repo.sh
-
-RUN dnf install -y ceph ceph-mgr-dashboard ceph-radosgw \
-    && dnf clean all
+# For dev. mode: run integration tests.
+RUN yum install -y python2-devel python2-pip \
+    && yum clean all
+RUN ln -sf /usr/bin/pip2 /usr/local/bin/pip
 
 RUN dnf remove -y python-unversioned-command \
     && dnf clean all
 
-RUN rm -rf /var/cache/dnf/*
+ARG REPO_URL
+COPY rpm/set-ceph-repo.sh /root
+RUN /root/set-ceph-repo.sh
 
-RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN dnf install -y ceph ceph-fuse ceph-mgr-dashboard ceph-radosgw \
+    && dnf clean all
+
+RUN rm -rf /var/cache/dnf/*
 
 RUN mkdir -p /ceph/build /ceph/src
 
