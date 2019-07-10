@@ -125,11 +125,26 @@ run_api_tests() {
 
     rm -rf "$CEPH_CONF_PATH" && mkdir "$CEPH_CONF_PATH"
     rm -f vstart_runner.log
+    ln -sf "$CEPH_DEV_DIR" /ceph/build/dev
+    ln -sf "$CEPH_OUT_DIR" /ceph/build/out
+    ln -sf "$CEPH_CONF" /ceph/build/ceph.conf
+    ln -sf "$CEPH_CONF_PATH"/keyring /ceph/build/keyring
+
+    if [[ -n "$CEPH_RPM_REPO_DIR" ]]; then
+        ln -s "$CEPH_BIN" /ceph/build/bin
+        ln -s "$CEPH_LIB" /ceph/build/lib
+        export TEUTHOLOGY_PYTHON_BIN=/usr/bin/python2
+        echo '
+ceph_SOURCE_DIR:STATIC=/ceph
+WITH_MGR_DASHBOARD_FRONTEND:BOOL=ON
+WITH_RBD:BOOL=ON
+MGR_PYTHON_VERSION:STRING=2
+' > /ceph/build/CMakeCache.txt
+    fi
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
 
     source ./run-backend-api-tests.sh \
-        && ln -sf "$CEPH_CONF_PATH"/* "$REPO_DIR"/build \
         && run_teuthology_tests "$@"
 
     echo 'API tests successfully finished! Congratulations!'

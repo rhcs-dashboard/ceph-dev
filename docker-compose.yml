@@ -64,11 +64,11 @@ services:
         container_name: ceph-rpm-cluster2
         hostname: ceph-rpm-cluster2
         environment:
-            - CEPH_ASOK_DIR=/ceph/dev/build/ceph-rpm-cluster2/out
-            - CEPH_CONF=/ceph/dev/build/ceph-rpm-cluster2/ceph.conf
-            - CEPH_CONF_PATH=/ceph/dev/build/ceph-rpm-cluster2
-            - CEPH_DEV_DIR=/ceph/dev/build/ceph-rpm-cluster2/dev
-            - CEPH_OUT_DIR=/ceph/dev/build/ceph-rpm-cluster2/out
+            - CEPH_ASOK_DIR=/ceph/build.ceph-rpm-cluster2/out
+            - CEPH_CONF=/ceph/build.ceph-rpm-cluster2/ceph.conf
+            - CEPH_CONF_PATH=/ceph/build.ceph-rpm-cluster2
+            - CEPH_DEV_DIR=/ceph/build.ceph-rpm-cluster2/dev
+            - CEPH_OUT_DIR=/ceph/build.ceph-rpm-cluster2/out
 
     ceph-rpm-host2:
         extends:

@@ -51,16 +51,17 @@ services:
             service: ceph-base
         image: ${CEPH_RPM_IMAGE:-rhcsdashboard/nautilus:v14.2.0}
         volumes:
-            - ${CEPH_RPM_REPO_DIR:-empty_volume}:/ceph/dev
+            - ${CEPH_RPM_REPO_DIR:-empty_volume}:/ceph
+            - /ceph/build
         environment:
-            - CEPH_ASOK_DIR=/ceph/dev/build/ceph-rpm/out
+            - CEPH_ASOK_DIR=/ceph/build.ceph-rpm/out
             - CEPH_BIN=/usr/bin
-            - CEPH_CONF=/ceph/dev/build/ceph-rpm/ceph.conf
-            - CEPH_CONF_PATH=/ceph/dev/build/ceph-rpm
-            - CEPH_DEV_DIR=/ceph/dev/build/ceph-rpm/dev
-            - CEPH_OUT_DIR=/ceph/dev/build/ceph-rpm/out
-            - CEPH_RPM_DEV=${CEPH_RPM_DEV:-0}
-            - CEPH_RPM_DEV_DIR=/ceph/dev
+            - CEPH_CONF=/ceph/build.ceph-rpm/ceph.conf
+            - CEPH_CONF_PATH=/ceph/build.ceph-rpm
+            - CEPH_DEV_DIR=/ceph/build.ceph-rpm/dev
+            - CEPH_LIB=/usr/lib64/ceph
+            - CEPH_OUT_DIR=/ceph/build.ceph-rpm/out
+            - CEPH_RPM_REPO_DIR
             - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
         entrypoint: /docker/rpm/entrypoint.sh
         command: /docker/rpm/start.sh

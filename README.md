@@ -298,7 +298,6 @@ CEPH_RPM_HOST_PORT=11001
 
 # Start ceph-rpm in dashboard development mode (experimental feature):
 CEPH_RPM_IMAGE=rhcsdashboard/ceph-rpm
-CEPH_RPM_DEV=1
 CEPH_RPM_REPO_DIR=/path/to/your/local/ceph
 ```
 
