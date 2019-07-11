@@ -134,12 +134,6 @@ run_api_tests() {
         ln -s "$CEPH_BIN" /ceph/build/bin
         ln -s "$CEPH_LIB" /ceph/build/lib
         export TEUTHOLOGY_PYTHON_BIN=/usr/bin/python2
-        echo '
-ceph_SOURCE_DIR:STATIC=/ceph
-WITH_MGR_DASHBOARD_FRONTEND:BOOL=ON
-WITH_RBD:BOOL=ON
-MGR_PYTHON_VERSION:STRING=2
-' > /ceph/build/CMakeCache.txt
     fi
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard

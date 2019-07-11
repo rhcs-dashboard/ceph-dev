@@ -20,6 +20,7 @@ services:
             - PYTHONDONTWRITEBYTECODE=1
             - RGW
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
+        command: /docker/start.sh
         scale: -1
 
     ceph-build-base:
@@ -44,7 +45,6 @@ services:
         cap_add:
             - ALL
         entrypoint: /docker/entrypoint.sh
-        command: /docker/start.sh
 
     ceph-rpm-base:
         extends:
@@ -64,4 +64,3 @@ services:
             - CEPH_RPM_REPO_DIR
             - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
         entrypoint: /docker/rpm/entrypoint.sh
-        command: /docker/rpm/start.sh

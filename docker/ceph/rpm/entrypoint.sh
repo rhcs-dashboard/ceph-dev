@@ -17,4 +17,12 @@ if [[ -z "$CEPH_RPM_REPO_DIR" ]]; then
     fi
 fi
 
+# Set cmake vars checked by vstart (enable dashboard module, ...):
+echo '
+ceph_SOURCE_DIR:STATIC=/ceph
+WITH_MGR_DASHBOARD_FRONTEND:BOOL=ON
+WITH_RBD:BOOL=ON
+MGR_PYTHON_VERSION:STRING=2
+' > /ceph/build/CMakeCache.txt
+
 exec "$@"

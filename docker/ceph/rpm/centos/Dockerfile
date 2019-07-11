@@ -18,6 +18,11 @@ RUN ln -s /venv/bin/node /usr/local/bin/node \
 RUN yum install -y python2-devel \
     && yum clean all
 
+# For dev. mode: run e2e tests.
+COPY e2e/google-chrome.repo /etc/yum.repos.d
+RUN yum install -y google-chrome-stable \
+    && yum clean all
+
 ARG REPO_URL
 COPY rpm/set-ceph-repo.sh /root
 RUN /root/set-ceph-repo.sh
