@@ -14,8 +14,8 @@ RUN yum install -y ant apache-commons-cli batik blender-rpm-macros blis-srpm-mac
     ocaml-srpm-macros openblas-srpm-macros openldap-devel openssl-devel parted \
     python-cherrypy python-coverage python-devel python-jwt python-nose python-pecan \
     python-prettytable python-qt5-rpm-macros python-requests python-routes python-sphinx python-tox \
-    python-virtualenv python-werkzeug python2-bcrypt python2-pip python36-Cython \
-    python36-devel python36-setuptools \
+    python-virtualenv python-werkzeug python2-bcrypt python2-pip python2-rpm-macros \
+    python3-other-rpm-macros python36-Cython python36-devel python36-setuptools \
     qt5-rpm-macros \
     rdma-core-devel redhat-lsb-core redhat-rpm-config selinux-policy-devel \
     selinux-policy-doc sharutils snappy-devel socat \
@@ -55,4 +55,4 @@ RUN mkdir /ceph
 
 WORKDIR /ceph
 
-ENV PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
+ENV PATH="/opt/rh/devtoolset-8/root/usr/bin:$PATH"
