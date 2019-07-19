@@ -31,7 +31,7 @@ run_jest() {
         cp 'src/unit-test-configuration.ts.sample' 'src/unit-test-configuration.ts'
     fi
 
-    npm run test:ci -- --no-cache
+    npm run test:ci --if-present -- --no-cache
 
     echo 'All tests passed: OK'
 }

@@ -11,7 +11,7 @@ run_npm_lint_html() {
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
-    npm run lint:html
+    npm run lint:html --if-present && npm run lint:htmlhint --if-present
 }
 
 run_npm_fix() {
@@ -19,7 +19,7 @@ run_npm_fix() {
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
-    npm run fix
+    npm run fix --if-present
 }
 
 readonly NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E "package(-lock){0,1}.json" | wc -l)
