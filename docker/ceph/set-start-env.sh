@@ -13,6 +13,7 @@ export IS_FIRST_CLUSTER=$(hostname | grep -v cluster | wc -l)
 
 [[ ("$IS_CEPH_RPM" == 0 || -n "$CEPH_RPM_REPO_DIR") && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]] \
     && export FRONTEND_BUILD_REQUIRED=1
+FRONTEND_BUILD_OPTIONS=${FRONTEND_BUILD_OPTIONS:-"--deleteOutputPath=false"}
 
 if [[ "$RGW_MULTISITE" == 1 ]]; then
     export RGW=0

@@ -4,12 +4,13 @@ set -e
 
 source /docker/set-start-env.sh
 
-# Always run this (needed to run e2e tests through 'docker-compose run ...'):
-/docker/set-dev-server-proxy.sh
-
-# Build frontend ('dist' dir required by dashboard module):
+# Build frontend:
 if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
+
+    # Set dev server proxy:
+    readonly DASHBOARD_URL="\"$HTTP_PROTO://localhost:$CEPH_MGR_DASHBOARD_PORT\""
+    jq '.["/api/"].target'="$DASHBOARD_URL" proxy.conf.json.sample | jq '.["/ui-api/"].target'="$DASHBOARD_URL" > proxy.conf.json
 
     run_npm_build() {
         if [[ "$CEPH_VERSION" == '13' ]]; then
@@ -18,17 +19,17 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
         fi
 
         npm install -f
-        npm run build
+        npm run build -- ${FRONTEND_BUILD_OPTIONS} # Required to run dashboard module.
+
+        # Start dev server
+        if [[ "$DASHBOARD_DEV_SERVER" == 1 ]]; then
+            npm run start &
+        elif [[ "$FRONTEND_BUILD_OPTIONS" != *'--prod'* ]]; then
+            npm run build -- ${FRONTEND_BUILD_OPTIONS} --watch &
+        fi
     }
 
     run_npm_build || (rm -rf node_modules && run_npm_build)
-
-    # Start dev server
-    if [[ "$DASHBOARD_DEV_SERVER" == 1 ]]; then
-        npm run start &
-    else
-        npm run build -- --watch --deleteOutputPath=false &
-    fi
 fi
 
 rm -rf "$CEPH_CONF_PATH" && mkdir -p "$CEPH_CONF_PATH"

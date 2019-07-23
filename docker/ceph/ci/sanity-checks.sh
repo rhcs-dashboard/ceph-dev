@@ -151,23 +151,25 @@ run_api_tests() {
 run_frontend_e2e_tests() {
     echo 'Running frontend E2E tests...'
 
-    if [[ $(netstat -an | grep 4200 | wc -l) > 0 ]]; then
-        ARGS="--dev-server-target"
-    elif [[ $(netstat -an | grep 11000 | wc -l) > 0 ]]; then
-        ARGS="--host=0.0.0.0"
-    else
-        export DASHBOARD_DEV_SERVER=0
-        ARGS="--host=0.0.0.0"
+    ARGS="--dev-server-target"
+    if [[ "$DASHBOARD_DEV_SERVER" != 1 ]]; then
+        readonly BASE_URL=$(jq -r '.["/api/"].target' "$REPO_DIR"/src/pybind/mgr/dashboard/frontend/proxy.conf.json)
+        ARGS="$ARGS --baseUrl=$BASE_URL"
 
-        cd "$REPO_DIR"/build
-        ../src/stop.sh
+        if [[ $(ps -ef | grep -v grep | grep "ng build" | wc -l) == 0 ]]; then
+            export DASHBOARD_DEV_SERVER=0
+            export FRONTEND_BUILD_OPTIONS="--deleteOutputPath=false --prod"
 
-        /docker/start-ceph.sh
+            cd "$REPO_DIR"/build
+            ../src/stop.sh
+
+            /docker/start-ceph.sh
+        fi
     fi
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
-    npm run e2e -- "$ARGS"
+    npm run e2e -- ${ARGS}
 }
 
 run_build_doc() {
