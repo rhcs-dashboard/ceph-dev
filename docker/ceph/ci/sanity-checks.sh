@@ -153,9 +153,6 @@ run_frontend_e2e_tests() {
 
     ARGS="--dev-server-target"
     if [[ "$DASHBOARD_DEV_SERVER" != 1 ]]; then
-        readonly BASE_URL=$(jq -r '.["/api/"].target' "$REPO_DIR"/src/pybind/mgr/dashboard/frontend/proxy.conf.json)
-        ARGS="$ARGS --baseUrl=$BASE_URL"
-
         if [[ $(ps -ef | grep -v grep | grep "ng build" | wc -l) == 0 ]]; then
             export DASHBOARD_DEV_SERVER=0
             export FRONTEND_BUILD_OPTIONS="--deleteOutputPath=false --prod"
@@ -165,6 +162,9 @@ run_frontend_e2e_tests() {
 
             /docker/start-ceph.sh
         fi
+
+        readonly BASE_URL=$(jq -r '.["/api/"].target' "$REPO_DIR"/src/pybind/mgr/dashboard/frontend/proxy.conf.json)
+        ARGS="$ARGS --baseUrl=$BASE_URL"
     fi
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
