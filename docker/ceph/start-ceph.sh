@@ -12,24 +12,20 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     readonly DASHBOARD_URL="\"$HTTP_PROTO://localhost:$CEPH_MGR_DASHBOARD_PORT\""
     jq '.["/api/"].target'="$DASHBOARD_URL" proxy.conf.json.sample | jq '.["/ui-api/"].target'="$DASHBOARD_URL" > proxy.conf.json
 
-    run_npm_build() {
-        if [[ "$CEPH_VERSION" == '13' ]]; then
-            rm -rf package-lock.json node_modules/@angular/cli
-            npm update @angular/cli
-        fi
+    if [[ "$CEPH_VERSION" == '13' ]]; then
+        rm -rf package-lock.json node_modules/@angular/cli
+        npm update @angular/cli
+    fi
 
-        npm install -f
-        npm run build -- ${FRONTEND_BUILD_OPTIONS} # Required to run dashboard module.
+    npm install || { rm -rf node_modules && npm install; }
+    npm run build -- ${FRONTEND_BUILD_OPTIONS} # Required to run dashboard module.
 
-        # Start dev server
-        if [[ "$DASHBOARD_DEV_SERVER" == 1 ]]; then
-            npm run start &
-        elif [[ "$FRONTEND_BUILD_OPTIONS" != *'--prod'* ]]; then
-            npm run build -- ${FRONTEND_BUILD_OPTIONS} --watch &
-        fi
-    }
-
-    run_npm_build || (rm -rf node_modules && run_npm_build)
+    # Start dev server
+    if [[ "$DASHBOARD_DEV_SERVER" == 1 ]]; then
+        npm run start &
+    elif [[ "$FRONTEND_BUILD_OPTIONS" != *'--prod'* ]]; then
+        npm run build -- ${FRONTEND_BUILD_OPTIONS} --watch &
+    fi
 fi
 
 rm -rf "$CEPH_CONF_PATH" && mkdir -p "$CEPH_CONF_PATH"
