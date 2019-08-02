@@ -78,6 +78,23 @@ services:
         hostname: ceph-rpm-host2
         command: /docker/start-ceph-additional-host.sh
 
+    ceph-rpm2:
+        extends:
+            file: docker-compose.templates.yml
+            service: ceph-rpm-base
+        image: ${CEPH_RPM2_IMAGE:-rhcsdashboard/ceph-rpm:centos7}
+        container_name: ceph-rpm2
+        hostname: ceph-rpm2
+        ports: ['${CEPH_RPM2_PROXY_HOST_PORT:-4212}:4200','${CEPH_RPM2_HOST_PORT:-11012}:11000']
+        volumes:
+            - ${CEPH_RPM2_REPO_DIR:-empty_volume}:/ceph
+        environment:
+            - CEPH_ASOK_DIR=/ceph/build.ceph-rpm2/out
+            - CEPH_CONF=/ceph/build.ceph-rpm2/ceph.conf
+            - CEPH_CONF_PATH=/ceph/build.ceph-rpm2
+            - CEPH_DEV_DIR=/ceph/build.ceph-rpm2/dev
+            - CEPH_OUT_DIR=/ceph/build.ceph-rpm2/out
+
     grafana:
         image: rhcsdashboard/grafana
         container_name: grafana

@@ -16,6 +16,10 @@ route:
         instance: "ceph-rpm:9283"
       receiver: 'ceph-rpm'
 
+    - match:
+        instance: "ceph-rpm2:9283"
+      receiver: 'ceph-rpm2'
+
 receivers:
   - name: 'default'
   - name: 'ceph'
@@ -27,3 +31,6 @@ receivers:
   - name: 'ceph-rpm'
     webhook_configs:
     - url: 'http://ceph-rpm:11000/api/prometheus_receiver'
+  - name: 'ceph-rpm2'
+    webhook_configs:
+    - url: 'http://ceph-rpm2:11000/api/prometheus_receiver'

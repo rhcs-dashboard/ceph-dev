@@ -49,7 +49,7 @@ services:
     ceph-rpm-base:
         extends:
             service: ceph-base
-        image: ${CEPH_RPM_IMAGE:-rhcsdashboard/nautilus:v14.2.0}
+        image: ${CEPH_RPM_IMAGE:-rhcsdashboard/ceph-rpm:centos7}
         volumes:
             - ${CEPH_RPM_REPO_DIR:-empty_volume}:/ceph
             - /ceph/build
