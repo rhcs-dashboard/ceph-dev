@@ -36,9 +36,12 @@ add_placement_targets_and_storage_classes() {
 }
 
 start_rgw_daemon() {
+    RGW_DAEMON_PID_FILE="$CEPH_OUT_DIR"/radosgw."$1".pid
+    rm -f "$RGW_DAEMON_PID_FILE"
+
     RGW_DAEMON_NAME=$(grep "\[client.rgw" "$CEPH_CONF" | head -1 | sed 's/[][]//g')
     "$CEPH_BIN"/radosgw --log-file="$CEPH_OUT_DIR"/radosgw."$1".log --admin-socket="$CEPH_OUT_DIR"/radosgw."$1".asok \
-        --pid-file="$CEPH_OUT_DIR"/radosgw."$1".pid --rgw_frontends="beast port=$1" \
+        --pid-file="$RGW_DAEMON_PID_FILE" --rgw_frontends="beast port=$1" \
         -n "$RGW_DAEMON_NAME" ${RGW_DEBUG}
 }
 
@@ -140,7 +143,6 @@ else
     add_placement_targets_and_storage_classes
 
     pkill radosgw
-    sleep 3 # avoid locked pidfile by killed process.
     start_rgw_daemon "$RGW_DAEMON_PORT"
 fi
 
