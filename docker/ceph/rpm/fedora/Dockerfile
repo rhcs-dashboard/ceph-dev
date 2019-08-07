@@ -7,7 +7,7 @@ RUN dnf install -y bind-utils curl dnf dnf-plugins-core hostname iputils jq lsof
 RUN dnf install -y gcc-c++ git \
     && dnf clean all
 RUN pip3 install -U nodeenv pip tox \
-    && nodeenv venv -n 10.13.0
+    && nodeenv venv -n 10.16.0
 RUN ln -s /venv/bin/node /usr/local/bin/node \
     && ln -s /venv/bin/npm /usr/local/bin/npm \
     && ln -s /venv/bin/npx /usr/local/bin/npx
