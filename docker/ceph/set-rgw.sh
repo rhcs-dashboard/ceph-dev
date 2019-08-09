@@ -36,12 +36,21 @@ add_placement_targets_and_storage_classes() {
 }
 
 start_rgw_daemon() {
-    RGW_DAEMON_PID_FILE="$CEPH_OUT_DIR"/radosgw."$1".pid
+    RGW_DAEMON_PORT=$1
+    RGW_DAEMON_PID_FILE="$CEPH_OUT_DIR"/radosgw."$RGW_DAEMON_PORT".pid
     rm -f "$RGW_DAEMON_PID_FILE"
 
-    RGW_DAEMON_NAME=$(grep "\[client.rgw" "$CEPH_CONF" | head -1 | sed 's/[][]//g')
-    "$CEPH_BIN"/radosgw --log-file="$CEPH_OUT_DIR"/radosgw."$1".log --admin-socket="$CEPH_OUT_DIR"/radosgw."$1".asok \
-        --pid-file="$RGW_DAEMON_PID_FILE" --rgw_frontends="beast port=$1" \
+    RGW_DAEMON_NAME="client.rgw.$RGW_DAEMON_PORT"
+    if [[ $(grep "\[$RGW_DAEMON_NAME\]" "$CEPH_CONF" | grep -v grep | wc -l) == 0 ]]; then
+        "$CEPH_BIN"/ceph -c "$CEPH_CONF" auth get-or-create "$RGW_DAEMON_NAME" \
+            mon 'allow rw' osd 'allow rwx' mgr 'allow rw' \
+            >> "$CEPH_CONF_PATH"/keyring
+    fi
+
+    "$CEPH_BIN"/radosgw -c "$CEPH_CONF" \
+        --log-file="$CEPH_OUT_DIR"/radosgw."$RGW_DAEMON_PORT".log \
+        --admin-socket="$CEPH_OUT_DIR"/radosgw."$RGW_DAEMON_PORT".asok \
+        --pid-file="$RGW_DAEMON_PID_FILE" --rgw_frontends="beast port=$RGW_DAEMON_PORT" \
         -n "$RGW_DAEMON_NAME" ${RGW_DEBUG}
 }
 
