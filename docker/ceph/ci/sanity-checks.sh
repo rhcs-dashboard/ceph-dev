@@ -2,9 +2,9 @@
 
 set -e
 
-readonly REPO_DIR="$PWD"
-readonly PYTHON_VERSION=$(grep MGR_PYTHON_VERSION:STRING "$REPO_DIR"/build/CMakeCache.txt | cut -d '=' -f 2)
-readonly TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
+REPO_DIR="$PWD"
+PYTHON_VERSION=$(grep MGR_PYTHON_VERSION:STRING "$REPO_DIR"/build/CMakeCache.txt | cut -d '=' -f 2)
+TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
 
 run_npm_ci() {
     echo 'Running "npm ci"...'
@@ -118,8 +118,8 @@ run_mypy() {
     mypy --config-file="$MYPY_CONFIG_FILE" --cache-dir=src/.mypy_cache --follow-imports=skip ${MYPY_ARGS}
 }
 
-run_api_tests() {
-    echo 'Running API tests...'
+setup_api_tests_env() {
+    echo 'Setting up API tests environment...'
 
     cd "$REPO_DIR"/build
 
@@ -136,16 +136,31 @@ run_api_tests() {
         export TEUTHOLOGY_PYTHON_BIN=/usr/bin/python2
     fi
 
+    echo 'API tests environment setup finished!'
+}
+
+create_api_tests_cluster() {
+    echo 'Creating API tests cluster...'
+
+    setup_api_tests_env
+
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard
+    set +e # TODO: delete this line when run-backend-api-tests.sh refactor is merged in master.
+    source ./run-backend-api-tests.sh
+
+    echo 'API tests cluster created!'
+}
+
+run_api_tests() {
+    echo 'Running API tests...'
+
+    setup_api_tests_env
+
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
 
-    source ./run-backend-api-tests.sh \
-        && run_teuthology_tests "$@"
+    ./run-backend-api-tests.sh "$@"
 
     echo 'API tests successfully finished! Congratulations!'
-
-    cleanup_teuthology
-
-    echo 'API tests cleanup finished!'
 }
 
 run_frontend_e2e_tests() {

@@ -140,12 +140,20 @@ docker-compose run --rm ceph /docker/ci/run-tox.sh py3-run -- pylint controllers
 docker-compose run --rm ceph /docker/ci/run-tox.sh py3-run -- pycodestyle controllers/health.py
 ```
 
-* Run integration tests (based on [Teuthology](https://github.com/ceph/teuthology)):
+* Run API tests (integration tests based on [Teuthology](https://github.com/ceph/teuthology)):
 ```
+# All tests:
 docker-compose run --rm ceph /docker/ci/run-api-tests.sh
 
 # Only specific tests:
 docker-compose run --rm ceph /docker/ci/run-api-tests.sh tasks.mgr.dashboard.test_health tasks.mgr.dashboard.test_pool
+
+# Run tests interactively:
+docker-compose run --rm ceph bash
+source /docker/ci/sanity-checks.sh && create_api_tests_cluster
+run_teuthology_tests tasks.mgr.dashboard.test_health
+run_teuthology_tests {moreTests}
+cleanup_teuthology
 ```
 
 * Run frontend E2E tests:
