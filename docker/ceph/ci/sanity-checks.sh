@@ -3,7 +3,7 @@
 set -e
 
 REPO_DIR="$PWD"
-PYTHON_VERSION=$(grep MGR_PYTHON_VERSION:STRING "$REPO_DIR"/build/CMakeCache.txt | cut -d '=' -f 2)
+PYTHON_VERSION=$(grep MGR_PYTHON_VERSION:STRING /ceph/build/CMakeCache.txt | cut -d '=' -f 2)
 TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
 
 run_npm_ci() {
