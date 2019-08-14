@@ -178,8 +178,13 @@ run_frontend_e2e_tests() {
             /docker/start-ceph.sh
         fi
 
-        readonly BASE_URL=$(jq -r '.["/api/"].target' "$REPO_DIR"/src/pybind/mgr/dashboard/frontend/proxy.conf.json)
-        ARGS="$ARGS --baseUrl=$BASE_URL"
+        export BASE_URL=$(jq -r '.["/api/"].target' "$REPO_DIR"/src/pybind/mgr/dashboard/frontend/proxy.conf.json)
+        cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+        ANGULAR_VERSION=$(npm run ng version | grep 'Angular: ' | awk '{ print substr($2,1,1) }')
+        # In nautilus angular version this flag is not deprecated.
+        if [[ "$ANGULAR_VERSION" -le 7 ]]; then
+            ARGS="$ARGS --baseUrl=$BASE_URL"
+        fi
     fi
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
