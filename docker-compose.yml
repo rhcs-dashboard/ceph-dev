@@ -94,6 +94,7 @@ services:
             - CEPH_CONF_PATH=/ceph/build.ceph-rpm2
             - CEPH_DEV_DIR=/ceph/build.ceph-rpm2/dev
             - CEPH_OUT_DIR=/ceph/build.ceph-rpm2/out
+            - CEPH_RPM_REPO_DIR=${CEPH_RPM2_REPO_DIR}
 
     grafana:
         image: rhcsdashboard/grafana
