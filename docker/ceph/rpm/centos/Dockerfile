@@ -14,6 +14,10 @@ RUN ln -s /venv/bin/node /usr/local/bin/node \
     && ln -s /venv/bin/npm /usr/local/bin/npm \
     && ln -s /venv/bin/npx /usr/local/bin/npx
 
+# For dev. mode: run backend unit tests.
+RUN yum install -y libtool-ltdl-devel python36-devel xmlsec1-devel xmlsec1-openssl-devel \
+    && yum clean all
+
 # For dev. mode: run integration tests.
 RUN yum install -y python2-devel \
     && yum clean all
