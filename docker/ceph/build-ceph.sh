@@ -28,6 +28,6 @@ rm -rf node_modules
 
 cd $CEPH_DIR/build
 
-make -j $(nproc --ignore=2)
+make -j $(nproc --ignore=2) vstart mgr-dashboard-frontend-deps mgr-dashboard-frontend-build
 
 echo "Ceph successfully built!!!"
