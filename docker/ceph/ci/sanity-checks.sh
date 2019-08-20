@@ -89,6 +89,9 @@ run_tox() {
             echo 'Python 2 build detected: switching to python 2 tox env.'
             TOX_ARGS=${TOX_ARGS//py3-/py27-}
         fi
+        if [[ -n "$CEPH_RPM_REPO_DIR" ]]; then
+            TOX_OPTIONS='--sitepackages'
+        fi
     else # Master env list.
         if [[ -z "$TOX_ARGS" ]]; then
             # Default behaviour (pre-commit)
@@ -99,7 +102,7 @@ run_tox() {
         fi
     fi
 
-    tox -e $TOX_ARGS
+    tox "${TOX_OPTIONS}" -e $TOX_ARGS
 
     # Cleanup
     find .tox -maxdepth 1 -iname "py*" -type d -exec chmod -R 777 {} \;

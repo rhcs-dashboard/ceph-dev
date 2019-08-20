@@ -3,7 +3,11 @@
 set -e
 
 if [[ -z "$REPO_URL" ]]; then
-    REPO_URL=$(curl -s 'https://shaman.ceph.com/api/search/?project=ceph&distros=centos/7&flavor=default&ref=master&sha1=latest' | jq -a '.[0] | .url' | sed -e 's/"//g')/x86_64/
+    if [[ -z "$CEPH_RELEASE" ]]; then
+        CEPH_RELEASE=master
+    fi
+
+    REPO_URL=$(curl -s "https://shaman.ceph.com/api/search/?project=ceph&distros=centos/7&flavor=default&ref=$CEPH_RELEASE&sha1=latest" | jq -a '.[0] | .url' | sed -e 's/"//g')/x86_64/
 fi
 
 echo "
