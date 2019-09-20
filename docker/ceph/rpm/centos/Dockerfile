@@ -31,7 +31,7 @@ ARG REPO_URL
 COPY rpm/set-ceph-repo.sh /root
 RUN /root/set-ceph-repo.sh
 
-RUN yum install -y ceph ceph-fuse ceph-mgr-dashboard ceph-radosgw \
+RUN yum install -y ceph ceph-mgr-dashboard ceph-radosgw \
     && yum clean all
 
 RUN rm -rf /var/cache/yum/*
