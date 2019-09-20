@@ -102,7 +102,7 @@ run_tox() {
         fi
     fi
 
-    tox "${TOX_OPTIONS}" -e $TOX_ARGS
+    tox ${TOX_OPTIONS} -e $TOX_ARGS
 
     # Cleanup
     find .tox -maxdepth 1 -iname "py*" -type d -exec chmod -R 777 {} \;
@@ -162,7 +162,6 @@ create_api_tests_cluster() {
     setup_api_tests_env
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
-    set +e # TODO: delete this line when run-backend-api-tests.sh refactor is merged in master.
     source ./run-backend-api-tests.sh
 
     echo 'API tests cluster created!'
