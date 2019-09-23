@@ -115,32 +115,37 @@ docker-compose down
 docker-compose run --rm ceph /docker/build-dashboard-frontend.sh
 ```
 
-* Run backend unit tests:
+* Run backend unit tests and/or lint:
 ```
+# All tests + lint:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox
+
+# Tests
+
 # All tests:
-docker-compose run --rm ceph /docker/ci/run-tox.sh
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox py3
+# All tests in nautilus branch:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox py3-cov
 
 # Only specific tests:
-docker-compose run --rm ceph /docker/ci/run-tox.sh tests/test_rest_client.py tests/test_grafana.py
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox tests/test_rest_client.py tests/test_grafana.py
 
 # Only 1 test:
-docker-compose run --rm ceph /docker/ci/run-tox.sh tests/test_rgw_client.py::RgwClientTest::test_ssl_verify
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox tests/test_rgw_client.py::RgwClientTest::test_ssl_verify
 
 # Run doctests in 1 file:
-docker-compose run --rm ceph /docker/ci/run-tox.sh run -- pytest --doctest-modules tools.py
-```
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pytest --doctest-modules tools.py
 
-* Run backend lint:
-```
+# Lint
+
 # All files:
-docker-compose run --rm ceph /docker/ci/run-tox.sh lint
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox lint
 
 # Only 1 file:
-docker-compose run --rm ceph /docker/ci/run-tox.sh lint controllers/health.py
-
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox lint controllers/health.py
 # Only 1 file in nautilus branch:
-docker-compose run --rm ceph /docker/ci/run-tox.sh run -- pylint controllers/health.py
-docker-compose run --rm ceph /docker/ci/run-tox.sh run -- pycodestyle controllers/health.py
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pylint controllers/health.py
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pycodestyle controllers/health.py
 ```
 
 * Run API tests (integration tests based on [Teuthology](https://github.com/ceph/teuthology)):
@@ -157,6 +162,25 @@ source /docker/ci/sanity-checks.sh && create_api_tests_cluster
 run_teuthology_tests tasks.mgr.dashboard.test_health
 run_teuthology_tests {moreTests}
 cleanup_teuthology
+```
+
+* Run frontend unit tests or lint:
+```
+# Tests
+
+# All tests:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_jest
+
+# Only specific tests:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_jest health.component.spec.ts
+
+# Only 1 test:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_jest health.component.spec.ts -t "^HealthComponent should create$"
+
+# Lint
+
+# All files:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_npm_lint
 ```
 
 * Run frontend E2E tests:

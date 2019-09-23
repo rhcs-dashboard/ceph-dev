@@ -27,11 +27,12 @@ run_jest() {
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
-    if [ ! -e 'src/unit-test-configuration.ts' ]; then
-        cp 'src/unit-test-configuration.ts.sample' 'src/unit-test-configuration.ts'
+    if [[ -n "$@" ]]; then
+        npm run test:config
+        npx jest "$@"
+    else
+        npm run test:ci -- --no-cache --maxWorkers=$(nproc --ignore=2)
     fi
-
-    npm run test:ci --if-present -- --no-cache
 
     echo 'All tests passed: OK'
 }
@@ -217,3 +218,9 @@ run_build_doc() {
 
   admin/build-doc
 }
+
+# End of sourced section. Do not exit shell when the script has been sourced.
+return 2> /dev/null || true
+
+# Execute what has been passed by argument.
+"${@}"

@@ -26,6 +26,7 @@ readonly NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUX
 readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.html" | wc -l)
 readonly SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.scss" | tr '\n' ' ')
 readonly TS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.ts" | tr '\n' ' ')
+readonly JEST_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.spec.ts" | grep -v "/e2e/" | tr '\n' ' ')
 readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.py" | tr '\n' ' ')
 readonly DOC_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "doc/*.rst" | wc -l)
 
@@ -47,8 +48,8 @@ if [[ -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
     run_npm_lint
 fi
 
-if [[ -n "$TS_FILES" ]]; then
-    run_jest
+if [[ -n "$JEST_FILES" ]]; then
+    run_jest ${JEST_FILES}
 fi
 
 if [[ "$HTML_FILES" > 0 || -n "$TS_FILES" ]]; then
