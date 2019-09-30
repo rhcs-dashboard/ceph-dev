@@ -31,7 +31,7 @@ run_jest() {
         npm run test:config
         npx jest "$@"
     else
-        npm run test:ci -- --no-cache --maxWorkers=$(nproc --ignore=2)
+        npm run test:ci -- --maxWorkers=$(nproc --ignore=2)
     fi
 
     echo 'All tests passed: OK'
@@ -189,8 +189,8 @@ run_frontend_e2e_tests() {
             export DASHBOARD_DEV_SERVER=0
             export FRONTEND_BUILD_OPTIONS="--deleteOutputPath=false --prod"
 
-            cd "$REPO_DIR"/build
-            ../src/stop.sh
+            cd "$CEPH_CONF_PATH"
+            "$REPO_DIR"/src/stop.sh
 
             /docker/start-ceph.sh
         fi
