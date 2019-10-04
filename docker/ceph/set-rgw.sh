@@ -163,3 +163,8 @@ if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
     "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$RGW_REALM_ADMIN_ACCESS_KEY"
     "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "$RGW_REALM_ADMIN_SECRET_KEY"
 fi
+
+if [[ -f "/root/.aws/credentials" ]]; then
+    echo "aws_access_key_id = $RGW_REALM_ADMIN_ACCESS_KEY
+aws_secret_access_key = $RGW_REALM_ADMIN_SECRET_KEY" >> /root/.aws/credentials
+fi

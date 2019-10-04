@@ -40,12 +40,11 @@ COPY e2e/google-chrome.repo /etc/yum.repos.d
 
 RUN yum install -y google-chrome-stable && yum clean all
 
-#RUN curl -LsS -o nodejs.tar.xz \
-#    https://nodejs.org/dist/v10.13.0/node-v10.13.0-linux-x64.tar.xz \
-#    && mkdir /opt/nodejs \
-#    && tar -xJvf nodejs.tar.xz --strip 1 -C /opt/nodejs \
-#    && rm nodejs.tar.xz \
-#    && ln -s /opt/nodejs/bin/node /usr/bin/node && ln -s /opt/nodejs/bin/npm /usr/bin/npm
+# AWS CLI.
+RUN yum install -y awscli \
+    && yum clean all
+COPY aws/aws-cli-configure.sh /root
+RUN /root/aws-cli-configure.sh
 
 RUN yum-config-manager --save --setopt=\*.skip_if_unavailable=true \*
 

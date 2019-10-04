@@ -37,6 +37,12 @@ RUN pip3 install mypy
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 RUN dnf install -y google-chrome-stable && dnf clean all
 
+# AWS CLI.
+RUN dnf install -y awscli \
+    && dnf clean all
+COPY aws/aws-cli-configure.sh /root
+RUN /root/aws-cli-configure.sh
+
 RUN dnf config-manager --save --setopt=\*.skip_if_unavailable=true \*
 
 RUN rm -rf /var/cache/dnf/*
