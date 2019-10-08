@@ -24,7 +24,7 @@ ARG REPO_URL
 COPY rpm/set-ceph-repo.sh /root
 RUN /root/set-ceph-repo.sh
 
-RUN dnf install -y ceph ceph-fuse ceph-mgr-dashboard ceph-radosgw \
+RUN dnf install -y ceph ceph-mgr-dashboard ceph-radosgw \
     && dnf clean all
 
 RUN rm -rf /var/cache/dnf/*

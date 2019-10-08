@@ -2,7 +2,7 @@
 
 set -e
 
-REPO_DIR="$PWD"
+REPO_DIR=/ceph
 PYTHON_VERSION=$(grep MGR_PYTHON_VERSION:STRING /ceph/build/CMakeCache.txt | cut -d '=' -f 2)
 TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
 
