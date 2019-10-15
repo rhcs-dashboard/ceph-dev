@@ -188,6 +188,10 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_npm_lint
 # If ceph is running:
 docker-compose exec ceph /docker/e2e/run-frontend-e2e-tests.sh
 
+# If ceph is running (using e2e image):
+cd /path/to/your/local/ceph
+docker run --rm -v "$PWD"/src:/ceph/src -e BASE_URL=https://localhost:$CEPH_HOST_PORT --network=host docker.io/rhcsdashboard/e2e:nautilus
+
 # If ceph is not running:
 docker-compose run --rm ceph /docker/e2e/run-frontend-e2e-tests.sh
 ```
