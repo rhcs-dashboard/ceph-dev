@@ -28,7 +28,7 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     fi
 fi
 
-rm -rf "$CEPH_CONF_PATH" && mkdir -p "$CEPH_CONF_PATH"
+mkdir -p "$CEPH_CONF_PATH" && rm -rf "$CEPH_CONF_PATH"/*
 
 cd /ceph/build
 ../src/vstart.sh ${VSTART_OPTIONS}

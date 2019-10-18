@@ -1,4 +1,4 @@
-.env
+*.env
 .idea
-
+cluster
 openshift.local.clusterup

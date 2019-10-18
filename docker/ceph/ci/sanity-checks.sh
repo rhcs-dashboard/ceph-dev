@@ -141,7 +141,7 @@ setup_api_tests_env() {
 
     cd "$REPO_DIR"/build
 
-    rm -rf "$CEPH_CONF_PATH" && mkdir "$CEPH_CONF_PATH"
+    mkdir -p "$CEPH_CONF_PATH" && rm -rf "$CEPH_CONF_PATH"/*
     rm -f vstart_runner.log
     ln -sf "$CEPH_DEV_DIR" /ceph/build/dev
     ln -sf "$CEPH_OUT_DIR" /ceph/build/out
