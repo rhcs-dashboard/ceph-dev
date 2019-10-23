@@ -38,6 +38,9 @@ sudo podman run --rm -d -v "$PWD"/docker/ceph:/docker:z \
 
 * Run E2E tests:
 ```
+sudo podman build -t docker.io/rhcsdashboard/e2e:nautilus \
+    ./docker/ceph/e2e
+
 sudo podman run --rm -v "$PWD"/../ceph/src:/ceph/src:z \
     -e BASE_URL=http://localhost:11000 \
     --name=e2e --network=host \
