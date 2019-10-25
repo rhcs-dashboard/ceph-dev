@@ -18,6 +18,7 @@ if [[ -z "$CEPH_RPM_REPO_DIR" ]]; then
 fi
 
 # Set cmake vars checked by vstart (enable dashboard module, ...):
+mkdir -p /ceph/build
 echo '
 ceph_SOURCE_DIR:STATIC=/ceph
 WITH_MGR_DASHBOARD_FRONTEND:BOOL=ON
