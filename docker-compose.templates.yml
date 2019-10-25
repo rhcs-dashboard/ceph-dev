@@ -13,7 +13,6 @@ services:
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - MDS
             - MGR
-            - MGR_PYTHON_PATH=/ceph/src/pybind/mgr
             - MON
             - NG_CLI_ANALYTICS=false
             - NODE_EXPORTER_HOST_PORT=${NODE_EXPORTER_HOST_PORT}
