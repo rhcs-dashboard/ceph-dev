@@ -2,6 +2,7 @@ version: '2.2'
 
 services:
     ceph-base:
+        tty: true
         volumes:
             - ./docker/ceph:/docker:ro
         environment:
