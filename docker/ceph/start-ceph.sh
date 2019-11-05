@@ -35,6 +35,10 @@ cd /ceph/build
 
 echo 'vstart.sh completed!'
 
+# Create rbd pool:
+"$CEPH_BIN"/ceph osd pool create rbd-pool 8 8 replicated
+"$CEPH_BIN"/ceph osd pool application enable rbd-pool rbd
+
 # Configure Object Gateway:
 /docker/set-rgw.sh
 
