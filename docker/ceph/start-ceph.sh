@@ -18,13 +18,16 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     fi
 
     npm install || { rm -rf node_modules && npm install; }
-    npm run build -- ${FRONTEND_BUILD_OPTIONS} # Required to run dashboard module.
+
+    NPM_BUILD_SCRIPT='build'
+    [[ "$CEPH_VERSION" -ge '15' ]] && NPM_BUILD_SCRIPT=${NPM_BUILD_SCRIPT}':en-US -- '
+    npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} # Required to run dashboard module.
 
     # Start dev server
     if [[ "$DASHBOARD_DEV_SERVER" == 1 ]]; then
         npm run start &
     elif [[ "$FRONTEND_BUILD_OPTIONS" != *'--prod'* ]]; then
-        npm run build -- ${FRONTEND_BUILD_OPTIONS} --watch &
+        npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} --watch &
     fi
 fi
 
