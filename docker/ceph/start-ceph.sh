@@ -45,6 +45,13 @@ echo 'vstart.sh completed!'
 # Configure Object Gateway:
 /docker/set-rgw.sh
 
+# Create CephFS filesystem
+if [[ "$MDS" -gt 0 ]]; then
+  "$CEPH_BIN"/ceph osd pool create cephfs_data 8
+  "$CEPH_BIN"/ceph osd pool create cephfs_metadata 8
+  "$CEPH_BIN"/ceph fs new cephfs cephfs_metadata cephfs_data
+fi
+
 # Enable prometheus module
 if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
     "$CEPH_BIN"/ceph mgr module enable prometheus
