@@ -11,7 +11,7 @@ run_npm_lint_html() {
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
-    npm run lint:html --if-present && npm run lint:htmlhint --if-present
+    npm run lint:html --if-present
 }
 
 run_npm_fix() {
