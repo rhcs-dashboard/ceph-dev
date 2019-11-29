@@ -6,22 +6,6 @@ echo 'Running pre-commit hook...'
 
 source /docker/ci/sanity-checks.sh
 
-run_npm_lint_html() {
-    echo 'Running "npm lint:html"...'
-
-    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
-
-    npm run lint:html --if-present
-}
-
-run_npm_fix() {
-    echo 'Running "npm fix"...'
-
-    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
-
-    npm run fix --if-present
-}
-
 readonly NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E "package(-lock){0,1}.json" | wc -l)
 readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.html" | wc -l)
 readonly SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.scss" | tr '\n' ' ')

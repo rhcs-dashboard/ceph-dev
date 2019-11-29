@@ -14,6 +14,22 @@ run_npm_ci() {
     npm ci
 }
 
+run_npm_lint_html() {
+    echo 'Running "npm lint:html"...'
+
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+
+    npm run lint:html --if-present
+}
+
+run_npm_fix() {
+    echo 'Running "npm fix"...'
+
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+
+    npm run fix --if-present
+}
+
 run_npm_lint() {
     echo 'Running "npm lint"...'
 
