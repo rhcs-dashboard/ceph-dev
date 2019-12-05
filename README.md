@@ -270,6 +270,18 @@ RGW_MULTISITE=1
 docker-compose up -d --scale ceph-cluster2=1
 ```
 
+## Access local dashboard connected to remote cluster
+
+* Set appropriate values in *.env*:
+```
+REMOTE_DASHBOARD_URL=http://remote.ceph.cluster.com:8443
+```
+
+* Start only ceph:
+```
+docker-compose up -d ceph
+```
+
 ## Build and push an image to docker registry:
 
 If you want to update an image, you'll have to edit image's Dockerfile and then:

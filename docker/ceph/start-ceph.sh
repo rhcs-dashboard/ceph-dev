@@ -9,7 +9,8 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     # Set dev server proxy:
-    readonly DASHBOARD_URL="\"$HTTP_PROTO://localhost:$CEPH_MGR_DASHBOARD_PORT\""
+    DASHBOARD_URL="\"$HTTP_PROTO://localhost:$CEPH_MGR_DASHBOARD_PORT\""
+    [[ -n "$REMOTE_DASHBOARD_URL" ]] && DASHBOARD_URL="\"$REMOTE_DASHBOARD_URL\""
     jq '.["/api/"].target'="$DASHBOARD_URL" proxy.conf.json.sample | jq '.["/ui-api/"].target'="$DASHBOARD_URL" > proxy.conf.json
 
     if [[ "$CEPH_VERSION" == '13' ]]; then
@@ -23,14 +24,21 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     if [[ "$CEPH_VERSION" -gt '14' || ("$CEPH_VERSION" -eq '14' && "$CEPH_PATCH_VERSION" -gt '4') ]]; then
         NPM_BUILD_SCRIPT=${NPM_BUILD_SCRIPT}':en-US -- '
     fi
-    npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} # Required to run dashboard module.
+    if [[ -z "$REMOTE_DASHBOARD_URL" ]]; then
+        npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} # Required to run dashboard module.
+    fi
 
     # Start dev server
-    if [[ "$DASHBOARD_DEV_SERVER" == 1 ]]; then
+    if [[ "$DASHBOARD_DEV_SERVER" == 1 || -n "$REMOTE_DASHBOARD_URL" ]]; then
         npm run start &
     elif [[ "$FRONTEND_BUILD_OPTIONS" != *'--prod'* ]]; then
         npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} --watch &
     fi
+fi
+
+if [[ -n "$REMOTE_DASHBOARD_URL" ]]; then
+    [[ "$FRONTEND_BUILD_REQUIRED" != 1 ]] && echo 'ERROR: ceph repo not found.' && exit 1
+    exit 0
 fi
 
 mkdir -p "$CEPH_CONF_PATH" && rm -rf "$CEPH_CONF_PATH"/*

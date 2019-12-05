@@ -19,6 +19,7 @@ services:
             - OSD
             - PROMETHEUS_HOST_PORT=${PROMETHEUS_HOST_PORT}
             - PYTHONDONTWRITEBYTECODE=1
+            - REMOTE_DASHBOARD_URL
             - RGW
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
         command: /docker/start.sh
