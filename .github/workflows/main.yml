@@ -1,0 +1,21 @@
+name: Publish Docker
+on:
+  push:
+    branches: 
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        base: [fedora, centos]
+    steps:
+    - uses: actions/checkout@master
+    - uses: whoan/docker-build-with-cache-action@v2
+      with:
+        image_name: rhcsdashboard/ceph
+        image_tag: ${{ matrix.base }}
+        dockerfile: docker/ceph/${{ matrix.base }}/Dockerfile
+        context: docker/ceph/${{ matrix.base }}/
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
