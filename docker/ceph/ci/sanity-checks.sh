@@ -179,6 +179,7 @@ create_api_tests_cluster() {
     setup_api_tests_env
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
+    set +e
     source ./run-backend-api-tests.sh
 
     echo 'API tests cluster created!'
