@@ -1,3 +1,5 @@
+![](https://github.com/rhcs-dashboard/ceph-dev/workflows/.github/workflows/main.yml/badge.svg)
+
 # RHCS Dashboard Dev. Env.
 
 ## Installation
