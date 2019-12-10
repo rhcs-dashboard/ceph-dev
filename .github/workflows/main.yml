@@ -1,6 +1,6 @@
 name: Publish Docker
 on:
-  push: &push_settings
+  push:
     branches: 
       - master    
     paths:
@@ -8,7 +8,14 @@ on:
     - docker/ceph/centos/Dockerfile
     - docker/ceph/e2e/google-chrome.repo
     - docker/ceph/aws/aws-cli-configure.sh
-  pull_request: *push_settings
+  pull_request:
+    branches: 
+      - master    
+    paths:
+    - docker/ceph/fedora/Dockerfile
+    - docker/ceph/centos/Dockerfile
+    - docker/ceph/e2e/google-chrome.repo
+    - docker/ceph/aws/aws-cli-configure.sh
 jobs:
   build:
     runs-on: ubuntu-latest
