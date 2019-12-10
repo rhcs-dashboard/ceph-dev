@@ -89,7 +89,8 @@ if [[ "$CEPH_VERSION" == '13' || "$IS_FIRST_CLUSTER" == 0 ]]; then
 fi
 
 # Create dashboard "test" user:
-"$CEPH_BIN"/ceph dashboard ac-user-create test test
+[[ "$CEPH_VERSION" -gt '14' ]] && DASHBOARD_USER_CREATE_OPTIONS='--force-password'
+"$CEPH_BIN"/ceph dashboard ac-user-create ${DASHBOARD_USER_CREATE_OPTIONS} test test
 
 # Configure grafana
 set_grafana_api_url() {
