@@ -9,7 +9,7 @@ RUN yum install -y ant apache-commons-cli batik blender-rpm-macros blis-srpm-mac
     fuse-devel gcc-c++ ghc-rpm-macros git gperf gperftools-devel graphviz \
     iproute java-1.8.0-openjdk-devel \
     jq junit keyutils-libs-devel kf5-rpm-macros leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
-    libcurl-devel libnl3-devel liboath-devel librabbitmq-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel \
+    libcurl-devel libnl3-devel liboath-devel librabbitmq-devel librdkafka librdkafka-devel libtool libtool-ltdl-devel libuuid-devel libxml2-devel \
     lttng-ust-devel lz4-devel mailcap ncurses-devel nss-devel \
     ocaml-srpm-macros openblas-srpm-macros openldap-devel openssl-devel parted \
     python-cherrypy python-coverage python-devel python-jwt python-nose python-pecan \

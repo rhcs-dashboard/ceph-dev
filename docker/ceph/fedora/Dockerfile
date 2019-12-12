@@ -10,7 +10,7 @@ RUN dnf install -y ant apache-commons-cli batik blender-rpm-macros blis-srpm-mac
     jericho-html iproute java-1.8.0-openjdk-devel junit \
     kde-apps-rpm-macros kernel-rpm-macros keyutils-libs-devel kf5-rpm-macros \
     leveldb-devel libaio-devel libbabeltrace-devel libblkid-devel \
-    libcurl-devel liboath-devel librabbitmq-devel libtool libtool-ltdl-devel \
+    libcurl-devel liboath-devel librabbitmq-devel librdkafka librdkafka-devel libtool libtool-ltdl-devel \
     libuuid-devel libxml2-devel lttng-ust-devel lz4-devel mailcap ncurses-devel \
     nss-devel openldap-devel openssl-devel parted perl postgresql-test-rpm-macros \
     python-qt5-rpm-macros \
