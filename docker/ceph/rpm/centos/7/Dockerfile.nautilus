@@ -27,6 +27,12 @@ COPY e2e/google-chrome.repo /etc/yum.repos.d
 RUN yum install -y google-chrome-stable \
     && yum clean all
 
+# AWS CLI.
+RUN yum install -y awscli \
+    && yum clean all
+COPY aws/aws-cli-configure.sh /root
+RUN /root/aws-cli-configure.sh
+
 ARG REPO_URL
 ARG CEPH_RELEASE=nautilus
 COPY rpm/set-ceph-repo.sh /root
