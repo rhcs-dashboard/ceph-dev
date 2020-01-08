@@ -4,7 +4,7 @@ set -eo pipefail
 
 cd /ceph/src/pybind/mgr/dashboard/frontend
 
-npm install
+npm install --no-shrinkwrap
 npx webdriver-manager update --versions.chrome=$(google-chrome --version | awk '{ print $3 }')
 
 ARGS="--dev-server-target --webdriverUpdate=false"
