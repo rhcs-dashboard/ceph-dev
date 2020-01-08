@@ -1,5 +1,0 @@
-[fedora-28]
-name=Fedora 28 $basearch
-metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-28&arch=$basearch
-enabled=1
-gpgcheck=0

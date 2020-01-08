@@ -1,4 +1,6 @@
-FROM centos:7
+ARG CENTOS_VERSION=7
+FROM centos:$CENTOS_VERSION
+ARG CENTOS_VERSION
 
 RUN yum install -y bind-utils centos-release-scl curl epel-release iputils net-tools yum yum-utils \
     && yum clean all
