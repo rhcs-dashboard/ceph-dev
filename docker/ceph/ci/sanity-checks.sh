@@ -119,6 +119,8 @@ run_tox() {
         fi
     fi
 
+    find . -name ".coverage" -exec rm -f {} \;
+
     tox ${TOX_OPTIONS} -e $TOX_ARGS
 
     # Cleanup

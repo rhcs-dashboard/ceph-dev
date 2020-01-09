@@ -27,12 +27,14 @@ RUN ln -s /venv/bin/node /usr/local/bin/node \
     && ln -s /venv/bin/npx /usr/local/bin/npx
 
 # For dev. mode: run backend unit tests.
-#RUN dnf install -y libtool-ltdl-devel python36-devel xmlsec1-devel xmlsec1-openssl-devel \
-#    && dnf clean all
+# Fedora provide missing dependencies for backend unit tests until epel provide all dependencies.
+COPY rpm/centos/${CENTOS_VERSION}/fedora.repo /etc/yum.repos.d
+RUN dnf install -y libtool-ltdl-devel libxml2-devel python36-devel xmlsec1-devel xmlsec1-openssl-devel \
+    && dnf clean all
 
-# For dev. mode: run integration tests.
-#RUN dnf install -y python2-devel \
-#    && dnf clean all
+# For dev. mode: py2 is needed to run API tests until teuthology is py3 compatible.
+RUN dnf install -y python2-devel \
+    && dnf clean all
 
 RUN mkdir -p /ceph/build /ceph/src
 
