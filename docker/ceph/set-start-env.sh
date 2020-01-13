@@ -3,7 +3,7 @@
 set -e
 
 [[ -z "$CEPH_VERSION" ]] && export CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
-[[ -z "$CEPH_PATCH_VERSION" ]] && export CEPH_PATCH_VERSION=$("$CEPH_BIN"/ceph -v | sed -r 's/.*\.(.*)\-.*/\1/')
+[[ -z "$CEPH_PATCH_VERSION" ]] && export CEPH_PATCH_VERSION=$("$CEPH_BIN"/ceph -v | sed -r 's/.*\.([0-9]*)\-.*/\1/')
 [[ "$CEPH_VERSION" == 'De' ]] && export CEPH_VERSION=1000000
 [[ -z "$MGR" ]] && export MGR=1
 [[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH=/ceph/src/pybind/mgr
