@@ -7,9 +7,13 @@ RUN dnf install -y bind-utils curl dnf dnf-plugins-core hostname iputils jq lsof
 
 RUN dnf config-manager --save --setopt=\*.skip_if_unavailable=true \*
 
+RUN pip3 install -U pip
+
+# Sanity checks:
+RUN pip3 install mypy tox
+
 # AWS CLI.
-RUN pip3 install awscli \
-    && dnf clean all
+RUN pip3 install awscli
 COPY aws/aws-cli-configure.sh /root
 RUN /root/aws-cli-configure.sh
 
@@ -20,8 +24,7 @@ RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_curre
 # For dev mode: compile frontend app into 'dist' directory.
 RUN dnf install -y gcc-c++ git \
     && dnf clean all
-RUN pip3 install -U pip \
-    && pip3 install -U nodeenv tox \
+RUN pip3 install -U nodeenv \
     && nodeenv venv -n 10.16.0
 RUN ln -s /venv/bin/node /usr/local/bin/node \
     && ln -s /venv/bin/npm /usr/local/bin/npm \
@@ -29,7 +32,7 @@ RUN ln -s /venv/bin/node /usr/local/bin/node \
 
 # For dev. mode: run backend unit tests.
 # Fedora provide missing dependencies for backend unit tests until epel provide all dependencies.
-COPY rpm/centos/${CENTOS_VERSION}/fedora.repo /etc/yum.repos.d
+COPY fedora/fedora.repo /etc/yum.repos.d
 RUN dnf install -y libtool-ltdl-devel libxml2-devel python36-devel xmlsec1-devel xmlsec1-openssl-devel \
     && dnf clean all
 

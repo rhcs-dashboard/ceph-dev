@@ -1,5 +1,5 @@
-[fedora-30]
-name=Fedora 30 $basearch
+[fedora]
+name=Fedora $basearch
 metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-30&arch=$basearch
 enabled=1
 gpgcheck=0
