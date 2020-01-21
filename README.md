@@ -47,6 +47,12 @@ ALERTMANAGER_HOST_PORT=9093
 ```
 # Fedora:
 sudo bash ./scripts/docker/install-docker-compose-fedora.sh
+# If Fedora >= 31 and docker version does not support Control Group V2, run the following:
+sudo dnf install -y grubby \
+&& sudo grubby \
+    --update-kernel=ALL \
+    --args="systemd.unified_cgroup_hierarchy=0" \
+&& reboot
 
 # CentOS/RHEL:
 sudo bash ./scripts/docker/install-docker-compose-centos-rhel.sh
