@@ -43,10 +43,10 @@ NODE_EXPORTER_HOST_PORT=9100
 ALERTMANAGER_HOST_PORT=9093
 ```
 
-* Install [Docker Compose](https://docs.docker.com/compose/install/). If your OS is Fedora/CentOS/RHEL, you can run:
+* Install [Docker Compose](https://docs.docker.com/compose/install/). You can run the following, depending on your OS:
 ```
 # Fedora:
-sudo bash ./scripts/docker/install-docker-compose-fedora.sh
+sudo bash ./docker/scripts/install-docker-compose-fedora.sh
 # If Fedora >= 31 and docker version does not support Control Group V2, run the following:
 sudo dnf install -y grubby \
 && sudo grubby \
@@ -54,8 +54,8 @@ sudo dnf install -y grubby \
     --args="systemd.unified_cgroup_hierarchy=0" \
 && reboot
 
-# CentOS/RHEL:
-sudo bash ./scripts/docker/install-docker-compose-centos-rhel.sh
+# CentOS 7 / RHEL 7:
+sudo bash ./docker/scripts/install-docker-compose-centos-rhel.sh
 ```
 
 If you ran the above script, then you can run *docker* and *docker-compose* without *sudo* if you log out and log in.
