@@ -54,4 +54,8 @@ ARG FOR_MAKE_CHECK=1
 RUN /ceph/install-deps.sh \
     && dnf clean all
 
+# @TODO: remove this when https://github.com/ceph/ceph/pull/32798 is merged.
+RUN dnf install -y python3-cherrypy python3-pecan python3-routes python3-scipy \
+    && dnf clean all
+
 RUN rm -rf /var/cache/dnf/*
