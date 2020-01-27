@@ -2,8 +2,10 @@
 
 set -e
 
+source /docker/set-env.sh
+
 REPO_DIR=/ceph
-PYTHON_VERSION=$(grep MGR_PYTHON_VERSION:STRING /ceph/build/CMakeCache.txt | cut -d '=' -f 2)
+[[ "$IS_UPSTREAM" == 1 && "$CEPH_VERSION" -le '14' ]] && PYTHON_VERSION=2 || PYTHON_VERSION=3
 TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
 
 run_npm_ci() {
@@ -99,10 +101,10 @@ run_tox() {
         else
             TOX_ARGS="py3-$TOX_ARGS"
         fi
-        if [[ "$TOX_ARGS" == *'py27-'* && "$PYTHON_VERSION" == '3' ]]; then
+        if [[ "$TOX_ARGS" == *'py27-'* && "$PYTHON_VERSION" == 3 ]]; then
             echo 'Python 3 build detected: switching to python 3 tox env.'
             TOX_ARGS=${TOX_ARGS//py27-/py3-}
-        elif [[ "$TOX_ARGS" == *'py3-'* && "$PYTHON_VERSION" != '3' ]]; then
+        elif [[ "$TOX_ARGS" == *'py3-'* && "$PYTHON_VERSION" != 3 ]]; then
             echo 'Python 2 build detected: switching to python 2 tox env.'
             TOX_ARGS=${TOX_ARGS//py3-/py27-}
         fi
@@ -132,7 +134,7 @@ run_tox() {
 run_mypy() {
     cd "$REPO_DIR"
 
-    if [[ "$PYTHON_VERSION" != '3' || "$CHECK_MYPY" == '0' ]]; then
+    if [[ "$PYTHON_VERSION" != 3 || "$CHECK_MYPY" == '0' ]]; then
         echo 'SKIPPED: mypy'
         return 0
     fi
@@ -235,7 +237,19 @@ run_build_doc() {
 
   rm -rf "$REPO_DIR/build-doc/virtualenv"
 
+  alternatives --set python /usr/bin/python3
+
   admin/build-doc
+}
+
+run_serve_doc() {
+  echo 'Running "serve-doc"...'
+
+  cd "$REPO_DIR"
+
+  alternatives --set python /usr/bin/python2
+
+  admin/serve-doc
 }
 
 # End of sourced section. Do not exit shell when the script has been sourced.

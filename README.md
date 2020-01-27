@@ -206,7 +206,7 @@ docker-compose run --rm ceph /docker/e2e/run-frontend-e2e-tests.sh
 
 * Check dashboard python code with **mypy**:
 ```
-docker-compose run --rm ceph bash -c ". /docker/ci/sanity-checks.sh && run_mypy"
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_mypy
 ```
 
 * Run sanity checks:
@@ -216,12 +216,12 @@ docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh
 
 * Build Ceph documentation:
 ```
-docker-compose run --rm ceph /docker/build-doc.sh
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_build_doc
 ```
 
 * Display Ceph documentation:
 ```
-docker-compose run --rm -p 11001:8080 ceph admin/serve-doc
+docker-compose run --rm -p 11001:8080 ceph /docker/ci/sanity-checks.sh run_serve_doc
 
 # Access here: http://localhost:11001
 ```
