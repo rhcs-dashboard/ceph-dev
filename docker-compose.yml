@@ -35,7 +35,7 @@ services:
         extends:
             file: docker-compose.templates.yml
             service: ceph-build-base
-        image: rhcsdashboard/ceph:${CEPH2_IMAGE_TAG:-fedora29}
+        image: rhcsdashboard/ceph:${CEPH2_IMAGE_TAG:-master}
         container_name: ceph2
         hostname: ceph2
         ports: ['${CEPH2_PROXY_HOST_PORT:-4202}:4200','${CEPH2_HOST_PORT:-11002}:11000']

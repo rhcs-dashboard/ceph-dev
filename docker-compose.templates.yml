@@ -28,7 +28,7 @@ services:
     ceph-build-base:
         extends:
             service: ceph-base
-        image: rhcsdashboard/ceph:${CEPH_IMAGE_TAG:-fedora29}
+        image: rhcsdashboard/ceph:${CEPH_IMAGE_TAG:-master}
         volumes:
             - ${HOST_CCACHE_DIR}:/root/.ccache
             - ${CEPH_REPO_DIR}:/ceph
