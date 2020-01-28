@@ -348,12 +348,10 @@ docker-compose up -d --scale ceph2=1 --scale ceph=0
 
 * Set appropriate values in *.env*:
 ```
-CEPH_RPM_IMAGE=rhcsdashboard/nautilus:v14.2.0
+CEPH_RPM_IMAGE=rhcsdashboard/ceph-rpm:master
 # default: 11001
 CEPH_RPM_HOST_PORT=11001
-
-# Start ceph-rpm in dashboard development mode (experimental feature):
-CEPH_RPM_IMAGE=rhcsdashboard/ceph-rpm
+# Start ceph-rpm in dashboard development mode:
 CEPH_RPM_REPO_DIR=/path/to/your/local/ceph
 ```
 
@@ -372,19 +370,19 @@ docker-compose up -d --scale ceph-rpm=1 ceph-rpm
 ```
 # From master branch:
 docker build -t rhcsdashboard/ceph-rpm:master \
--f ./docker/ceph/rpm/centos/8/Dockerfile ./docker/ceph \
+-f ./docker/ceph/rpm/master/Dockerfile ./docker/ceph \
 --build-arg REPO_URL=$(curl -s "https://shaman.ceph.com/api/search/?project=ceph&distros=centos/8&flavor=default&ref=master&sha1=latest" | jq -r '.[0] | .url')x86_64/ \
 --network=host
 
 # From nautilus branch (for backporting):
 docker build -t rhcsdashboard/ceph-rpm:nautilus \
--f ./docker/ceph/rpm/centos/7/Dockerfile.nautilus ./docker/ceph \
+-f ./docker/ceph/rpm/nautilus/Dockerfile ./docker/ceph \
 --build-arg REPO_URL=$(curl -s "https://shaman.ceph.com/api/search/?project=ceph&distros=centos/7&flavor=default&ref=nautilus&sha1=latest" | jq -r '.[0] | .url')x86_64/ \
 --network=host
 
 # From nautilus stable release (version tag has to be checked before running this):
 docker build -t rhcsdashboard/ceph-rpm:nautilus-v14.2.5 \
--f ./docker/ceph/rpm/centos/7/Dockerfile.nautilus ./docker/ceph \
+-f ./docker/ceph/rpm/nautilus/Dockerfile ./docker/ceph \
 --build-arg REPO_URL=https://download.ceph.com/rpm-nautilus/el7/x86_64/ \
 --build-arg VCS_BRANCH=v14.2.5 \
 --network=host
