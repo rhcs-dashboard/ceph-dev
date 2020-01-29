@@ -1,34 +1,50 @@
-name: Publish Docker
+name: Publish ceph images
+
 on:
   push:
     branches: 
-      - master    
+      - master
     paths:
-    - docker/ceph/fedora/Dockerfile
-    - docker/ceph/centos/Dockerfile
-    - docker/ceph/e2e/google-chrome.repo
+    - .github/workflows/main.yml
     - docker/ceph/aws/aws-cli-configure.sh
+    - docker/ceph/master/Dockerfile
+    - docker/ceph/nautilus/Dockerfile
+    - docker/ceph/rpm/master/Dockerfile
+    - docker/ceph/rpm/nautilus/Dockerfile
+    - docker/ceph/rpm/set-ceph-repo.sh
   pull_request:
-    branches: 
-      - master    
+    branches:
+      - master
     paths:
-    - docker/ceph/fedora/Dockerfile
-    - docker/ceph/centos/Dockerfile
-    - docker/ceph/e2e/google-chrome.repo
+    - .github/workflows/main.yml
     - docker/ceph/aws/aws-cli-configure.sh
+    - docker/ceph/master/Dockerfile
+    - docker/ceph/nautilus/Dockerfile
+    - docker/ceph/rpm/master/Dockerfile
+    - docker/ceph/rpm/nautilus/Dockerfile
+    - docker/ceph/rpm/set-ceph-repo.sh
+  schedule:
+    - cron:  '0 2 * * *'
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        base: [fedora, centos]
+        branch: [master, nautilus]
+        name: [ceph, ceph-rpm]
+        include:
+          - name: ceph
+            dir: ceph
+          - name: ceph-rpm
+            dir: ceph/rpm
     steps:
     - name: Checkout
       uses: actions/checkout@master
     - name: Build
-      run: docker build -t rhcsdashboard/ceph:${{ matrix.base }} -f docker/ceph/${{ matrix.base }}/Dockerfile ./docker/ceph
+      run: docker build -t docker.io/rhcsdashboard/${{ matrix.name }}:${{ matrix.branch }} -f docker/${{ matrix.dir }}/${{ matrix.branch }}/Dockerfile ./docker/ceph
     - name: Push
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker push rhcsdashboard/ceph:${{ matrix.base }}
+        docker push docker.io/rhcsdashboard/${{ matrix.name }}:${{ matrix.branch }}
         docker logout

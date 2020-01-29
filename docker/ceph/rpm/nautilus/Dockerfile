@@ -3,32 +3,32 @@ FROM centos:$CENTOS_VERSION
 ARG CENTOS_VERSION
 
 RUN yum install -y bind-utils centos-release-scl curl epel-release iputils net-tools yum yum-utils \
-    && yum clean all
+    && yum clean packages
 RUN yum install -y jq \
-    && yum clean all
+    && yum clean packages
 
 # AWS CLI.
 RUN yum install -y awscli \
-    && yum clean all
+    && yum clean packages
 COPY aws/aws-cli-configure.sh /root
 RUN /root/aws-cli-configure.sh
 
 # For dev. mode: run e2e tests.
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 RUN yum install -y google-chrome-stable \
-    && yum clean all
+    && yum clean packages
 
 # For dev. mode: run integration tests.
 RUN yum install -y python2-devel python2-pip \
-    && yum clean all
+    && yum clean packages
 
 # For dev. mode: run backend unit tests.
 RUN yum install -y libtool-ltdl-devel libxml2-devel xmlsec1-devel xmlsec1-openssl-devel \
-    && yum clean all
+    && yum clean packages
 
 # For dev mode: compile frontend app into 'dist' directory.
 RUN yum install -y devtoolset-8-gcc-c++ git \
-    && yum clean all
+    && yum clean packages
 ENV PATH="/opt/rh/devtoolset-8/root/usr/bin:$PATH"
 RUN pip install -U pip \
     && pip install -U nodeenv tox \

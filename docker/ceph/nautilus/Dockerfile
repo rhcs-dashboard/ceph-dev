@@ -1,7 +1,7 @@
 FROM centos:7
 
 RUN yum install -y bind-utils centos-release-scl curl epel-release iputils net-tools yum yum-utils \
-    && yum clean all
+    && yum clean packages
 
 RUN yum install -y ant apache-commons-cli batik blender-rpm-macros blis-srpm-macros boost-random btrfs-progs bzip2 \
     ccache cmake cmake3 cryptsetup CUnit-devel Cython \
@@ -21,10 +21,10 @@ RUN yum install -y ant apache-commons-cli batik blender-rpm-macros blis-srpm-mac
     selinux-policy-doc sharutils snappy-devel socat \
     systemd-devel sudo valgrind-devel xfsprogs xfsprogs-devel xmlsec1 xmlsec1-devel xmlsec1-nss \
     xmlsec1-openssl xmlsec1-openssl-devel xmlstarlet yasm wget \
-    && yum clean all
+    && yum clean packages
 
 # Required to enable debug repos and install python debug packages
-RUN debuginfo-install -y python && yum clean all
+RUN debuginfo-install -y python && yum clean packages
 
 # Install doc-build deps
 RUN wget "https://kojipkgs.fedoraproject.org//packages/jericho-html/3.2/5.fc19/noarch/jericho-html-3.2-5.fc19.noarch.rpm" \
@@ -38,7 +38,7 @@ RUN pip install -U pip \
 
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 
-RUN yum install -y google-chrome-stable && yum clean all
+RUN yum install -y google-chrome-stable && yum clean packages
 
 # AWS CLI.
 RUN yum install -y awscli \
