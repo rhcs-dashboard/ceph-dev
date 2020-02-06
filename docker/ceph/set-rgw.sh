@@ -161,6 +161,7 @@ if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
 
     # Create MFA TOTP token.
     "$CEPH_BIN"/radosgw-admin mfa create --uid=dev --totp-serial=1 --totp-seed=23456723 --totp-seed-type=base32
+    "$CEPH_BIN"/radosgw-admin mfa create --uid=testid --totp-serial=1 --totp-seed=23456723 --totp-seed-type=base32
 
     "$CEPH_BIN"/ceph dashboard set-rgw-api-user-id "$RGW_REALM_ADMIN_UID"
     "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "$RGW_REALM_ADMIN_ACCESS_KEY"
