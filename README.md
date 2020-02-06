@@ -2,7 +2,21 @@
 
 # RHCS Dashboard Dev. Env.
 
-## Installation
+## Quick Install (RPM-based)
+1. Clone this repo: `git clone https://github.com/rhcs-dashboard/ceph-dev.git`
+1. Enter `ceph-dev` directory
+1. To install `docker`, `podman` and `docker-compose`, if you're using:
+   * Fedora: `sudo bash ./docker/scripts/install-docker-compose-fedora.sh`
+   * CentOS/RHEL: `sudo bash ./docker/scripts/install-docker-compose-centos-rhel.sh`
+   * Other OSes: please check [this doc](https://docs.docker.com/compose/install/)
+1. Use `.env.example` template for ceph-dev configuration: `cp .env.example .env`
+1. Download the container images: `docker-compose pull`
+1. Launch everything: `docker-compose up -d --scale ceph-rpm=1 ceph-rpm prometheus node-exporter grafana alertmanager`
+1. You may have a coffee/tea until everything is up and running
+   * You may check how things are going with `docker-compose logs -f ceph-rpm`. It'll finally print `All done`
+1. The dashboard will be available at: `https://localhost:11012` with user/password `admin/admin`
+
+## Advanced Installation
 
 * If it doesn't exist, create a local directory for **ccache**:
 ```
