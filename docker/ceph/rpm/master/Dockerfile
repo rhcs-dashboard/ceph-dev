@@ -55,7 +55,7 @@ RUN sed -i 's/gpgcheck=1/gpgcheck=0/' /etc/dnf/dnf.conf
 ARG REPO_URL
 COPY rpm/set-ceph-repo.sh /root
 RUN /root/set-ceph-repo.sh
-RUN dnf install -y ceph ceph-mgr-dashboard ceph-mgr-diskprediction-local ceph-radosgw rbd-mirror \
+RUN dnf install -y ceph ceph-mgr-dashboard ceph-mgr-diskprediction-local ceph-mgr-rook ceph-radosgw rbd-mirror \
     && dnf clean all
 
 RUN rm -rf /var/cache/dnf/*
