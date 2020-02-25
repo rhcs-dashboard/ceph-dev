@@ -97,7 +97,7 @@ services:
             - CEPH_RPM_REPO_DIR=${CEPH_RPM2_REPO_DIR}
 
     grafana:
-        image: rhcsdashboard/grafana
+        image: ${GRAFANA_IMAGE:-rhcsdashboard/grafana}
         container_name: grafana
         hostname: grafana
         ports: ['${GRAFANA_HOST_PORT:-3000}:3000']
@@ -108,7 +108,7 @@ services:
             - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:ro
 
     prometheus:
-        image: prom/prometheus:v2.5.0
+        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.5.0}
         container_name: prometheus
         hostname: prometheus
         ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
@@ -116,7 +116,7 @@ services:
             - ./docker/prometheus:/etc/prometheus:ro
 
     node-exporter:
-        image: prom/node-exporter:v0.17.0
+        image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v0.17.0}
         container_name: node-exporter
         hostname: node-exporter
         ports: ['${NODE_EXPORTER_HOST_PORT:-9100}:9100']
@@ -129,7 +129,7 @@ services:
             - '--no-collector.timex'
 
     alertmanager:
-        image: prom/alertmanager:v0.16.1
+        image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.16.1}
         container_name: alertmanager
         hostname: alertmanager
         ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']
