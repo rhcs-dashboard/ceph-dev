@@ -206,7 +206,7 @@ run_frontend_e2e_tests() {
 
     ARGS="--dev-server-target"
     if [[ "$DASHBOARD_DEV_SERVER" != 1 ]]; then
-        if [[ $(ps -ef | grep -v grep | grep "ng build" | wc -l) == 0 ]]; then
+        if [[ $(ps -ef | grep -v grep | grep "ceph-mgr -i" | wc -l) == 0 ]]; then
             export DASHBOARD_DEV_SERVER=0
             export FRONTEND_BUILD_OPTIONS="--deleteOutputPath=false --prod"
 
