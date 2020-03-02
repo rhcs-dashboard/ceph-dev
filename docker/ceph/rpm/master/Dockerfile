@@ -29,6 +29,10 @@ RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_curre
 RUN dnf install -y python2-devel \
     && dnf clean packages
 
+COPY nfs-ganesha/nfs-ganesha.repo /etc/yum.repos.d
+RUN dnf install -y nfs-ganesha-ceph nfs-ganesha-rados-grace \
+    && dnf clean packages
+
 # For dev mode: compile frontend app into 'dist' directory.
 RUN dnf install -y gcc-c++ \
     && dnf clean packages

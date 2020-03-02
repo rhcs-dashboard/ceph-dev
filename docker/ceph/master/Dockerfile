@@ -29,6 +29,10 @@ RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_curre
 RUN dnf install -y python2-devel \
     && dnf clean packages
 
+COPY nfs-ganesha/nfs-ganesha.repo /etc/yum.repos.d
+RUN dnf install -y nfs-ganesha-ceph nfs-ganesha-rados-grace \
+    && dnf clean packages
+
 # Required in order for build-doc to run successfully:
 RUN pip3 install -U Cython==0.29.3
 

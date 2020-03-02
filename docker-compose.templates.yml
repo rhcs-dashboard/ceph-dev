@@ -10,6 +10,7 @@ services:
             - CEPH_PORT=10000
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
             - FS
+            - GANESHA
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - MDS
             - MGR

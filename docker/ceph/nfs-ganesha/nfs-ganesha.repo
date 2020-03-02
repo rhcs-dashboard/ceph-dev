@@ -1,0 +1,11 @@
+[nfs-ganesha]
+name=NFS Ganesha
+baseurl=https://download.nfs-ganesha.org/2.7/2.7.6/CentOS/el-8/x86_64/
+enabled=1
+gpgcheck=0
+
+[nfs-ganesha-noarch]
+name=NFS Ganesha - noarch
+baseurl=https://download.nfs-ganesha.org/2.7/2.7.6/CentOS/el-8/noarch/
+enabled=1
+gpgcheck=0
