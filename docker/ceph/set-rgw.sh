@@ -101,13 +101,13 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                         --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "$RGW_REALM_ADMIN_ACCESS_KEY" \
                         --secret "$RGW_REALM_ADMIN_SECRET_KEY" ${ZONE_OPTIONS}
 
+                    [[ "$REALM_NUM" == 1 && "$ZONEGROUP_NUM" == 1 && "$ZONE_NUM" == 1 ]] && create_system_user
+
                     add_placement_targets_and_storage_classes
                 done
 
                 RGW_DAEMON_PORT=$((${RGW_DAEMON_PORT} + 1))
             done
-
-            create_system_user
 
             "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$REALM_NAME" --commit
 
