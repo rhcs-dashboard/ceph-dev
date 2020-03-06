@@ -114,7 +114,7 @@ run_tox() {
     else # Master env list.
         if [[ -z "$TOX_ARGS" ]]; then
             # Default behaviour (pre-commit)
-            TOX_ARGS='py27,py3,lint,check'
+            TOX_ARGS='py3,lint,check'
         elif [[ "${1:0:6}" == 'tests/' ]]; then
             # Run user-defined unit tests
             TOX_ARGS="py3 $TOX_ARGS"
