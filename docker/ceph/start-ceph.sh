@@ -53,7 +53,7 @@ echo 'vstart.sh completed!'
 "$CEPH_BIN"/ceph osd pool application enable rbd-pool rbd
 
 # Configure Object Gateway:
-if [ "$RGW" -gt 0 ]; then
+if [ "$RGW" -gt 0 || "$RGW_MULTISITE" == 1 ]; then
     /docker/set-rgw.sh
 fi
 
