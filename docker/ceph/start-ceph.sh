@@ -53,7 +53,9 @@ echo 'vstart.sh completed!'
 "$CEPH_BIN"/ceph osd pool application enable rbd-pool rbd
 
 # Configure Object Gateway:
-/docker/set-rgw.sh
+if [ "$RGW" -gt 0 || "$RGW_MULTISITE" == 1 ]; then
+    /docker/set-rgw.sh
+fi
 
 # Enable prometheus module
 if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
