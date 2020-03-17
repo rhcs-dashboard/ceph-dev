@@ -54,7 +54,7 @@ RUN mkdir -p /ceph/build /ceph/src
 
 WORKDIR /ceph
 
-ARG VCS_BRANCH=master
+ARG VCS_BRANCH=nautilus
 RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/src/vstart.sh \
     -o /ceph/src/vstart.sh \
     && chmod +x /ceph/src/vstart.sh

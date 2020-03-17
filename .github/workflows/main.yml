@@ -9,8 +9,10 @@ on:
     - docker/ceph/aws/aws-cli-configure.sh
     - docker/ceph/master/Dockerfile
     - docker/ceph/nautilus/Dockerfile
+    - docker/ceph/octopus/Dockerfile
     - docker/ceph/rpm/master/Dockerfile
     - docker/ceph/rpm/nautilus/Dockerfile
+    - docker/ceph/rpm/octopus/Dockerfile
     - docker/ceph/rpm/set-ceph-repo.sh
   pull_request:
     branches:
@@ -20,8 +22,10 @@ on:
     - docker/ceph/aws/aws-cli-configure.sh
     - docker/ceph/master/Dockerfile
     - docker/ceph/nautilus/Dockerfile
+    - docker/ceph/octopus/Dockerfile
     - docker/ceph/rpm/master/Dockerfile
     - docker/ceph/rpm/nautilus/Dockerfile
+    - docker/ceph/rpm/octopus/Dockerfile
     - docker/ceph/rpm/set-ceph-repo.sh
   schedule:
     - cron:  '0 2 * * *'
@@ -31,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        branch: [master, nautilus]
+        branch: [master, octopus, nautilus]
         name: [ceph, ceph-rpm]
         include:
           - name: ceph
