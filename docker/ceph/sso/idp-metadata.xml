@@ -28,5 +28,13 @@
           </dsig:X509Data>
         </dsig:KeyInfo>
       </KeyDescriptor>
+      <KeyDescriptor use="encryption">
+        <dsig:KeyInfo>
+          <dsig:KeyName>FJ86GcF3jTbNLOco4NvZkUCIUmfYCqoqtOQeMfbhNlE</dsig:KeyName>
+          <dsig:X509Data>
+            <dsig:X509Certificate>MIIBnDCCAQUCBgFoOBMMhjANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQDDAlzYW1sLWRlbW8wHhcNMTkwMTEwMTQwMTM5WhcNMjkwMTEwMTQwMzE5WjAUMRIwEAYDVQQDDAlzYW1sLWRlbW8wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKtWsK5O0CtuBpnMvWG+HTG0vmZzujQ2o9WdheQu+BzCILcGMsbDW0YQaglpcO5JpGWWhubnckGGPHfdQ2/7nP9QwbiTK0FbGF41UqcvoaCqU1psxoV88s8IXyQCAqeyLv00yj6foqdJjxh5SZ5z+na+M7Y2OxIBVxYRAxWEnfUvAgMBAAEwDQYJKoZIhvcNAQELBQADgYEAngyGo5cnhqAW8ufW9V7FIVVs3USPdtWhJ+YOqC1KtgNkimwJiI8Hr0AVyAgv/j9b3SrryTEmpjb/ALnQkViH4YbeAsUh8I8prJqQ04zFGDsfF3ptfRg6G/EAZ0p+VL8fYVkl5PVOmqKO4MewgD6S9sYJ2jlGBq17Yf83NxDbrbE=</dsig:X509Certificate>
+          </dsig:X509Data>
+        </dsig:KeyInfo>
+      </KeyDescriptor>
    </IDPSSODescriptor>
 </EntityDescriptor>
