@@ -23,6 +23,7 @@ if [[ "$HTML_FILES" > 0 && -z "$SCSS_FILES" && -z "$TS_FILES" ]]; then
 fi
 
 if [[ -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
+    check_browser_console_calls
     run_npm_fix
 
     # Add fixes to staging:

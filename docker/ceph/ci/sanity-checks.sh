@@ -24,6 +24,20 @@ run_npm_lint_html() {
     npm run lint:html --if-present
 }
 
+check_browser_console_calls() {
+    echo 'Checking browser console calls...'
+
+    cd "$REPO_DIR"
+
+    CONSOLE_CALLS=$(echo "$SCSS_FILES $TS_FILES" | xargs grep -Eirn "console\..*\(")
+    if [[ -n "${CONSOLE_CALLS}" ]]; then
+        echo "${CONSOLE_CALLS}
+
+ERROR: please remove browser console calls."
+        exit 1
+    fi
+}
+
 run_npm_fix() {
     echo 'Running "npm fix"...'
 
