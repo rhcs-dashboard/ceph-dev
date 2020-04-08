@@ -29,7 +29,9 @@ check_browser_console_calls() {
 
     cd "$REPO_DIR"
 
-    CONSOLE_CALLS=$(echo "$SCSS_FILES $TS_FILES" | xargs grep -Eirn "console\..*\(")
+    local TARGET="$@"
+    [[ -z "${TARGET}" ]] && TARGET="$REPO_DIR"/src/pybind/mgr/dashboard/frontend/src/app
+    local CONSOLE_CALLS=$((echo "${TARGET}" | xargs grep -Eirn "console\..*\(") || echo '')
     if [[ -n "${CONSOLE_CALLS}" ]]; then
         echo "${CONSOLE_CALLS}
 
@@ -59,11 +61,12 @@ run_jest() {
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
+    local JEST_OPTIONS="--maxWorkers=$(nproc --ignore=3)"
     if [[ -n "$@" ]]; then
         npm run test:config
-        npx jest "$@"
+        npx jest "$@" ${JEST_OPTIONS}
     else
-        npm run test:ci -- --maxWorkers=$(nproc --ignore=2)
+        npm run test:ci -- ${JEST_OPTIONS}
     fi
 
     echo 'All tests passed: OK'
