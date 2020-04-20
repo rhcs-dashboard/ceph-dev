@@ -34,7 +34,7 @@ RUN wget "https://kojipkgs.fedoraproject.org//packages/jericho-html/3.2/5.fc19/n
 RUN sed -i 's/LIBLTDL=1 -I/LIBLTDL=1 -DXMLSEC_NO_SIZE_T -I/' /usr/bin/xmlsec1-config
 
 RUN pip install -U pip \
-    && pip install python-saml==2.4.2 tox==2.9.1
+    && pip install python3-saml==1.8.0 tox==2.9.1
 
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 

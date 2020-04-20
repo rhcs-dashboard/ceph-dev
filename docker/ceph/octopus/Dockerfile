@@ -53,6 +53,8 @@ ARG FOR_MAKE_CHECK=1
 RUN bash -x /ceph/install-deps.sh \
     && dnf clean packages
 
+RUN dnf install -y ccache \
+    && dnf clean packages
 RUN pip3 install python3-saml==1.9.0
 
 # Install doc-build deps.

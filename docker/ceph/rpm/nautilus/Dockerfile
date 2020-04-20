@@ -38,7 +38,7 @@ RUN ln -s /venv/bin/node /usr/local/bin/node \
     && ln -s /venv/bin/npx /usr/local/bin/npx
 
 RUN sed -i 's/LIBLTDL=1 -I/LIBLTDL=1 -DXMLSEC_NO_SIZE_T -I/' /usr/bin/xmlsec1-config \
-    && pip install python-saml==2.4.2
+    && pip install python3-saml==1.8.0
 
 ARG REPO_URL
 ARG CEPH_RELEASE=nautilus
