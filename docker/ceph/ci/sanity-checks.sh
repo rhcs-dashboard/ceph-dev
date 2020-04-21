@@ -188,7 +188,6 @@ setup_api_tests_env() {
     if [[ -n "$CEPH_RPM_REPO_DIR" ]]; then
         ln -s "$CEPH_BIN" /ceph/build/bin
         ln -s "$CEPH_LIB" /ceph/build/lib
-        export TEUTHOLOGY_PYTHON_BIN=/usr/bin/python2
         if [[ "$CEPH_VERSION" -le '14' ]]; then
             echo "MGR_PYTHON_VERSION:STRING=${PYTHON_VERSION}" >> /ceph/build/CMakeCache.txt
         fi
