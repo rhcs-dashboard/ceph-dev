@@ -8,7 +8,9 @@ services:
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
             - CEPH_DEBUG=${CEPH_DEBUG:-0}
             - CEPH_PORT=10000
+            - CHECK_MYPY=${CHECK_MYPY:-0}
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
+            - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
             - FS
             - GANESHA
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
@@ -43,8 +45,6 @@ services:
             - CEPH_CONF_PATH=/ceph/build/ceph
             - CEPH_DEV_DIR=/ceph/build/ceph/dev
             - CEPH_OUT_DIR=/ceph/build/ceph/out
-            - CHECK_MYPY=${CHECK_MYPY:-0}
-            - DASHBOARD_SSL=${DASHBOARD_SSL:-1}
             - SOURCE_DATE_EPOCH=358228200
         cap_add:
             - ALL
@@ -66,5 +66,4 @@ services:
             - CEPH_LIB=/usr/lib64/ceph
             - CEPH_OUT_DIR=/ceph/build.ceph-rpm/out
             - CEPH_RPM_REPO_DIR
-            - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
         entrypoint: /docker/rpm/entrypoint.sh
