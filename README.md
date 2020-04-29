@@ -208,14 +208,13 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_npm_lint
 * Run frontend E2E tests:
 ```
 # If ceph is running:
-docker-compose exec ceph /docker/e2e/run-frontend-e2e-tests.sh
+docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
 
-# If ceph is running (using e2e image):
-cd /path/to/your/local/ceph
-docker run --rm -v "$PWD"/src:/ceph/src -e BASE_URL=https://localhost:$CEPH_HOST_PORT --network=host docker.io/rhcsdashboard/e2e:nautilus
+# Only 1 specific test file:
+docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests --spec "cypress/integration/block/images.e2e-spec.ts"
 
 # If ceph is not running:
-docker-compose run --rm ceph /docker/e2e/run-frontend-e2e-tests.sh
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
 ```
 
 * Check dashboard python code with **mypy**:

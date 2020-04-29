@@ -9,6 +9,7 @@ services:
             - CEPH_DEBUG=${CEPH_DEBUG:-0}
             - CEPH_PORT=10000
             - CHECK_MYPY=${CHECK_MYPY:-0}
+            - CYPRESS_CACHE_FOLDER=/ceph/build.cypress
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
             - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
             - FS
