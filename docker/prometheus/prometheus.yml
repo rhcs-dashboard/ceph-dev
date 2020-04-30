@@ -21,4 +21,4 @@ alerting:
       - 'alertmanager:9093'
 
 rule_files:
-  - 'alerting-rules.yml'
+  - 'alerts/ceph_default_alerts.yml'
