@@ -2,17 +2,14 @@
 
 set -e
 
-source /docker/set-env.sh
-
 [[ -z "$MGR" ]] && export MGR=1
 [[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH=/ceph/src/pybind/mgr
 [[ -d "$MGR_PYTHON_PATH"/dashboard/frontend ]] && export IS_UPSTREAM_LUMINOUS=0
 [[ -z "$RGW" ]] && export RGW=1
 
-export IS_CEPH_RPM=$(hostname | grep "\-rpm" | wc -l)
 export IS_FIRST_CLUSTER=$(hostname | grep -v cluster | wc -l)
 
-[[ ("$IS_CEPH_RPM" == 0 || -n "$CEPH_RPM_REPO_DIR") && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]] \
+[[ ("$IS_CEPH_RPM" == 0 || -n "$CEPH_REPO_DIR") && "$IS_UPSTREAM_LUMINOUS" == 0 && "$IS_FIRST_CLUSTER" == 1 ]] \
     && export FRONTEND_BUILD_REQUIRED=1
 FRONTEND_BUILD_OPTIONS=${FRONTEND_BUILD_OPTIONS:-"--deleteOutputPath=false"}
 

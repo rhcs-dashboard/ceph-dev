@@ -2,8 +2,6 @@
 
 set -e
 
-source /docker/set-env.sh
-
 REPO_DIR=/ceph
 [[ "$IS_UPSTREAM" == 1 && "$CEPH_VERSION" -le '14' ]] && PYTHON_VERSION=2 || PYTHON_VERSION=3
 TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
@@ -53,7 +51,7 @@ run_npm_lint() {
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
-    npm run lint
+    npm run lint --silent
 }
 
 run_jest() {
@@ -125,7 +123,7 @@ run_tox() {
             echo 'Python 2 build detected: switching to python 2 tox env.'
             TOX_ARGS=${TOX_ARGS//py3-/py27-}
         fi
-        if [[ -n "$CEPH_RPM_REPO_DIR" ]]; then
+        if [[ "${IS_CEPH_RPM}" == 1 ]]; then
             TOX_OPTIONS='--sitepackages'
         fi
     else # Master env list.
@@ -178,14 +176,15 @@ setup_api_tests_env() {
 
     cd "$REPO_DIR"/build
 
-    mkdir -p "$CEPH_CONF_PATH" && rm -rf "$CEPH_CONF_PATH"/*
+    rm -rf "$CEPH_CONF_PATH"/*
     rm -f vstart_runner.log
+
+    # vstart_runner uses /ceph/build cluster path.
     ln -sf "$CEPH_DEV_DIR" /ceph/build/dev
     ln -sf "$CEPH_OUT_DIR" /ceph/build/out
     ln -sf "$CEPH_CONF" /ceph/build/ceph.conf
     ln -sf "$CEPH_CONF_PATH"/keyring /ceph/build/keyring
-
-    if [[ -n "$CEPH_RPM_REPO_DIR" ]]; then
+    if [[ "${IS_CEPH_RPM}" == 1 ]]; then
         ln -s "$CEPH_BIN" /ceph/build/bin
         ln -s "$CEPH_LIB" /ceph/build/lib
         if [[ "$CEPH_VERSION" -le '14' ]]; then

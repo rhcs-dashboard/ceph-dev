@@ -2,7 +2,10 @@
 
 set -e
 
-if [[ -n "$CUSTOM_BUILD_DIR_ENABLED" ]]; then
+if [[ "${IS_CEPH_RPM}" == 1 ]]; then
+    echo 'ERROR: wrong image for building.'
+    exit 1
+elif [[ -n "$CUSTOM_BUILD_DIR_ENABLED" ]]; then
     echo 'ERROR: custom build directory not allowed for new build creation.'
     exit 1
 fi
@@ -13,6 +16,9 @@ cd $CEPH_DIR
 ./install-deps.sh
 
 rm -rf $CEPH_DIR/build
+
+export BUILD_DATE=1981-05-09
+export SOURCE_DATE_EPOCH=358228200
 
 readonly CCACHE_CONF_FILE="$HOME/.ccache/ccache.conf"
 if [[ ! -f "$CCACHE_CONF_FILE" ]]; then

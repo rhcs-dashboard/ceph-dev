@@ -1,10 +1,45 @@
 version: '2.2'
 
 services:
+    ceph-base:
+        image: ${CEPH_IMAGE:-rhcsdashboard/ceph-rpm:master}
+        volumes:
+            - ./docker/ceph:/docker:ro
+            - ${CEPH_REPO_DIR}:/ceph
+            - ${CEPH_CUSTOM_BUILD_DIR:-empty_volume}:/build
+            - ${HOST_CCACHE_DIR:-~/.ccache}:/root/.ccache
+        environment:
+            - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
+            - CEPH_DEBUG=${CEPH_DEBUG:-0}
+            - CEPH_PORT=10000
+            - CEPH_REPO_DIR
+            - CHECK_MYPY=${CHECK_MYPY:-0}
+            - CYPRESS_CACHE_FOLDER=/ceph/build.cypress
+            - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
+            - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
+            - FS
+            - GANESHA
+            - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
+            - MDS
+            - MGR
+            - MON
+            - MON_MAX_PG_PER_OSD
+            - NG_CLI_ANALYTICS=false
+            - NODE_EXPORTER_HOST_PORT=${NODE_EXPORTER_HOST_PORT}
+            - OSD
+            - PROMETHEUS_HOST_PORT=${PROMETHEUS_HOST_PORT}
+            - PYTHONDONTWRITEBYTECODE=1
+            - REMOTE_DASHBOARD_URL
+            - RGW
+            - RGW_MULTISITE=${RGW_MULTISITE:-0}
+        cap_add:
+            - ALL
+        entrypoint: /docker/entrypoint.sh
+        command: /docker/start.sh
+        scale: -1
     ceph:
         extends:
-            file: docker-compose.templates.yml
-            service: ceph-build-base
+            service: ceph-base
         container_name: ceph
         hostname: ceph
         ports: ['${CEPH_PROXY_HOST_PORT:-4200}:4200','${CEPH_HOST_PORT:-11000}:11000']
@@ -12,89 +47,27 @@ services:
 
     ceph-cluster2:
         extends:
-            file: docker-compose.templates.yml
-            service: ceph-build-base
+            service: ceph-base
         container_name: ceph-cluster2
         hostname: ceph-cluster2
-        environment:
-            - CEPH_ASOK_DIR=/ceph/build/ceph-cluster2/out
-            - CEPH_CONF=/ceph/build/ceph-cluster2/ceph.conf
-            - CEPH_CONF_PATH=/ceph/build/ceph-cluster2
-            - CEPH_DEV_DIR=/ceph/build/ceph-cluster2/dev
-            - CEPH_OUT_DIR=/ceph/build/ceph-cluster2/out
 
     ceph-host2:
         extends:
-            file: docker-compose.templates.yml
-            service: ceph-build-base
+            service: ceph-base
         container_name: ceph-host2
         hostname: ceph-host2
         command: /docker/start-ceph-additional-host.sh
 
     ceph2:
         extends:
-            file: docker-compose.templates.yml
-            service: ceph-build-base
-        image: rhcsdashboard/ceph:${CEPH2_IMAGE_TAG:-master}
+            service: ceph-base
+        image: ${CEPH2_IMAGE:-rhcsdashboard/ceph-rpm:master}
         container_name: ceph2
         hostname: ceph2
         ports: ['${CEPH2_PROXY_HOST_PORT:-4202}:4200','${CEPH2_HOST_PORT:-11002}:11000']
         volumes:
             - ${CEPH2_REPO_DIR}:/ceph
             - ${CEPH2_CUSTOM_BUILD_DIR:-empty_volume}:/build
-        environment:
-            - CEPH_ASOK_DIR=/ceph/build/ceph2/out
-            - CEPH_CONF=/ceph/build/ceph2/ceph.conf
-            - CEPH_CONF_PATH=/ceph/build/ceph2
-            - CEPH_DEV_DIR=/ceph/build/ceph2/dev
-            - CEPH_OUT_DIR=/ceph/build/ceph2/out
-
-    ceph-rpm:
-        extends:
-            file: docker-compose.templates.yml
-            service: ceph-rpm-base
-        container_name: ceph-rpm
-        hostname: ceph-rpm
-        ports: ['${CEPH_RPM_PROXY_HOST_PORT:-4201}:4200','${CEPH_RPM_HOST_PORT:-11001}:11000']
-
-    ceph-rpm-cluster2:
-        extends:
-            file: docker-compose.templates.yml
-            service: ceph-rpm-base
-        container_name: ceph-rpm-cluster2
-        hostname: ceph-rpm-cluster2
-        environment:
-            - CEPH_ASOK_DIR=/ceph/build.ceph-rpm-cluster2/out
-            - CEPH_CONF=/ceph/build.ceph-rpm-cluster2/ceph.conf
-            - CEPH_CONF_PATH=/ceph/build.ceph-rpm-cluster2
-            - CEPH_DEV_DIR=/ceph/build.ceph-rpm-cluster2/dev
-            - CEPH_OUT_DIR=/ceph/build.ceph-rpm-cluster2/out
-
-    ceph-rpm-host2:
-        extends:
-            file: docker-compose.templates.yml
-            service: ceph-rpm-base
-        container_name: ceph-rpm-host2
-        hostname: ceph-rpm-host2
-        command: /docker/start-ceph-additional-host.sh
-
-    ceph-rpm2:
-        extends:
-            file: docker-compose.templates.yml
-            service: ceph-rpm-base
-        image: ${CEPH_RPM2_IMAGE:-rhcsdashboard/ceph-rpm:centos7}
-        container_name: ceph-rpm2
-        hostname: ceph-rpm2
-        ports: ['${CEPH_RPM2_PROXY_HOST_PORT:-4212}:4200','${CEPH_RPM2_HOST_PORT:-11012}:11000']
-        volumes:
-            - ${CEPH_RPM2_REPO_DIR:-empty_volume}:/ceph
-        environment:
-            - CEPH_ASOK_DIR=/ceph/build.ceph-rpm2/out
-            - CEPH_CONF=/ceph/build.ceph-rpm2/ceph.conf
-            - CEPH_CONF_PATH=/ceph/build.ceph-rpm2
-            - CEPH_DEV_DIR=/ceph/build.ceph-rpm2/dev
-            - CEPH_OUT_DIR=/ceph/build.ceph-rpm2/out
-            - CEPH_RPM_REPO_DIR=${CEPH_RPM2_REPO_DIR}
 
     grafana:
         image: ${GRAFANA_IMAGE:-rhcsdashboard/grafana}

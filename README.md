@@ -2,26 +2,22 @@
 
 # RHCS Dashboard Dev. Env.
 
-## Quick Install (RPM-based)
+## Quick Install
+
 1. Clone this repo: `git clone https://github.com/rhcs-dashboard/ceph-dev.git`
-1. Enter `ceph-dev` directory
-1. To install `docker`, `podman` and `docker-compose`, if you're using:
+1. Enter `ceph-dev` directory.
+1. To install `docker` and `docker-compose`, if you're using:
    * Fedora: `sudo bash ./docker/scripts/install-docker-compose-fedora.sh`
    * CentOS/RHEL: `sudo bash ./docker/scripts/install-docker-compose-centos-rhel.sh`
-   * Other OSes: please check [this doc](https://docs.docker.com/compose/install/)
-1. Use `.env.example` template for ceph-dev configuration: `cp .env.example .env`
+   * Other OSes: please check [this](https://docs.docker.com/compose/install/).
+1. Use `.env.example` template for ceph-dev configuration: `cp .env.example .env`.
 1. Download the container images: `docker-compose pull`
-1. Launch everything: `docker-compose up -d --scale ceph-rpm=1 ceph-rpm prometheus node-exporter grafana alertmanager`
-1. You may have a coffee/tea until everything is up and running
-   * You may check how things are going with `docker-compose logs -f ceph-rpm`. It'll finally print `All done`
-1. The dashboard will be available at: `https://localhost:11012` with user/password `admin/admin`
+1. Launch everything: `docker-compose up -d`
+1. Check how things are going with `docker-compose logs -f ceph`:
+   * After a couple of minutes (aprox.) it'll finally print `All done`.
+1. The dashboard will be available at: `https://localhost:11000` with credentials: `admin / admin`.
 
 ## Advanced Installation
-
-* If it doesn't exist, create a local directory for **ccache**:
-```
-mkdir -p ~/.ccache
-```
 
 * Clone Ceph:
 ```
@@ -33,28 +29,10 @@ git clone git@github.com:ceph/ceph.git
 git clone git@github.com:rhcs-dashboard/ceph-dev.git
 ```
 
-* In ceph-dev, create *.env* file from template and set values:
+* In ceph-dev, create *.env* file from template and **set your local values**:
 ```
 cd ceph-dev
 cp .env.example .env
-
-# default values:
-
-HOST_CCACHE_DIR=/path/to/your/local/.ccache/dir
-
-CEPH_IMAGE_TAG=master
-CEPH_REPO_DIR=/path/to/your/local/ceph/repo
-# Optional: a custom build directory other than default one ($CEPH_REPO_DIR/build)
-CEPH_CUSTOM_BUILD_DIR=
-# Set 5200 if you want to access the dashboard proxy at http://localhost:5200
-CEPH_PROXY_HOST_PORT=4200
-# Set 11001 if you want to access the dashboard at https://localhost:11001
-CEPH_HOST_PORT=11000
-
-GRAFANA_HOST_PORT=3000
-PROMETHEUS_HOST_PORT=9090
-NODE_EXPORTER_HOST_PORT=9100
-ALERTMANAGER_HOST_PORT=9093
 ```
 
 * Install [Docker Compose](https://docs.docker.com/compose/install/). You can run the following, depending on your OS:
@@ -85,11 +63,6 @@ docker-compose run --rm -e HOST_PWD=$PWD ceph /docker/ci/pre-commit-setup.sh
 ```
 
 ## Usage
-
-* Build Ceph:
-```
-docker-compose run --rm ceph /docker/build-ceph.sh
-```
 
 * Start ceph + dashboard feature services:
 ```
@@ -132,6 +105,14 @@ docker-compose up -d --scale ceph-host2=1
 docker-compose down
 ```
 
+* Build Ceph:
+
+Set your local **ccache** path in *.env* file:
+HOST_CCACHE_DIR=/path/to/your/local/.ccache
+```
+docker-compose run --rm ceph /docker/build-ceph.sh
+```
+
 * Rebuild not proxied dashboard frontend:
 ```
 docker-compose run --rm ceph /docker/build-dashboard-frontend.sh
@@ -168,6 +149,17 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox lint controller
 # Only 1 file in nautilus branch:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pylint controllers/health.py
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pycodestyle controllers/health.py
+```
+
+* Check dashboard python code with **mypy**:
+```
+# Enable mypy check in .env file:
+CHECK_MYPY=1
+
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_mypy
+
+# Only 1 file:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_mypy src/pybind/mgr/dashboard/controllers/rgw.py
 ```
 
 * Run API tests (integration tests based on [Teuthology](https://github.com/ceph/teuthology)):
@@ -215,11 +207,6 @@ docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests --sp
 
 # If ceph is not running:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
-```
-
-* Check dashboard python code with **mypy**:
-```
-docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_mypy
 ```
 
 * Run sanity checks:
@@ -338,16 +325,7 @@ docker push rhcsdashboard/ceph:master
 
 ## Start Ceph 2 (useful for parallel development)
 
-* Set appropriate values in *.env*:
-```
-CEPH2_IMAGE_TAG=master
-CEPH2_REPO_DIR=/path/to/your/local/ceph2
-CEPH2_CUSTOM_BUILD_DIR=
-# default: 4202
-CEPH2_PROXY_HOST_PORT=4202
-# default: 11002
-CEPH2_HOST_PORT=11002
-```
+* Set your `CEPH2_` local values in *.env*.
 
 * Start ceph2 + ceph + ...:
 ```
@@ -355,48 +333,4 @@ docker-compose up -d --scale ceph2=1
 
 # Start ceph2 but not ceph:
 docker-compose up -d --scale ceph2=1 --scale ceph=0
-```
-
-## Start Ceph RPM version
-
-* Set appropriate values in *.env*:
-```
-CEPH_RPM_IMAGE=rhcsdashboard/ceph-rpm:master
-# default: 11001
-CEPH_RPM_HOST_PORT=11001
-# Start ceph-rpm in dashboard development mode:
-CEPH_RPM_REPO_DIR=/path/to/your/local/ceph
-```
-
-* Start ceph-rpm + ceph + ...:
-```
-docker-compose up -d --scale ceph-rpm=1
-
-# Start ceph-rpm but not ceph:
-docker-compose up -d --scale ceph-rpm=1 --scale ceph=0
-
-# Start only ceph-rpm:
-docker-compose up -d --scale ceph-rpm=1 ceph-rpm
-```
-
-* Create ceph-rpm image:
-```
-# From master branch:
-docker build -t rhcsdashboard/ceph-rpm:master \
--f ./docker/ceph/rpm/master/Dockerfile ./docker/ceph \
---build-arg REPO_URL=$(curl -s "https://shaman.ceph.com/api/search/?project=ceph&distros=centos/8&flavor=default&ref=master&sha1=latest" | jq -r '.[0] | .url')x86_64/ \
---network=host
-
-# From nautilus branch (for backporting):
-docker build -t rhcsdashboard/ceph-rpm:nautilus \
--f ./docker/ceph/rpm/nautilus/Dockerfile ./docker/ceph \
---build-arg REPO_URL=$(curl -s "https://shaman.ceph.com/api/search/?project=ceph&distros=centos/7&flavor=default&ref=nautilus&sha1=latest" | jq -r '.[0] | .url')x86_64/ \
---network=host
-
-# From nautilus stable release (version tag has to be checked before running this):
-docker build -t rhcsdashboard/ceph-rpm:nautilus-v14.2.5 \
--f ./docker/ceph/rpm/nautilus/Dockerfile ./docker/ceph \
---build-arg REPO_URL=https://download.ceph.com/rpm-nautilus/el7/x86_64/ \
---build-arg VCS_BRANCH=v14.2.5 \
---network=host
 ```
