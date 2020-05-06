@@ -6,13 +6,5 @@
     {
         "targets": [ "ceph2:9283" ],
         "labels": {}
-    },
-    {
-        "targets": [ "ceph-rpm:9283" ],
-        "labels": {}
-    },
-    {
-        "targets": [ "ceph-rpm2:9283" ],
-        "labels": {}
     }
 ]
