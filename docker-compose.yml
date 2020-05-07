@@ -70,7 +70,7 @@ services:
             - ${CEPH2_CUSTOM_BUILD_DIR:-empty_volume}:/build
 
     grafana:
-        image: ${GRAFANA_IMAGE:-rhcsdashboard/grafana}
+        image: ${GRAFANA_IMAGE:-grafana/grafana:5.4.3}
         container_name: grafana
         hostname: grafana
         ports: ['${GRAFANA_HOST_PORT:-3000}:3000']
@@ -79,9 +79,11 @@ services:
             - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
             - ./docker/grafana/provisioning:/etc/grafana/provisioning
             - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:ro
+        environment:
+            - GF_INSTALL_PLUGINS=grafana-piechart-panel 1.4.0,vonage-status-panel 1.0.9
 
     prometheus:
-        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.5.0}
+        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.7.2}
         container_name: prometheus
         hostname: prometheus
         ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
@@ -103,7 +105,7 @@ services:
             - '--no-collector.timex'
 
     alertmanager:
-        image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.16.1}
+        image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.16.2}
         container_name: alertmanager
         hostname: alertmanager
         ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']
