@@ -11,6 +11,8 @@ export CEPH_CONF_PATH=/ceph/build."${HOSTNAME}"
 export CEPH_DEV_DIR=/ceph/build."${HOSTNAME}"/dev
 export CEPH_OUT_DIR=/ceph/build."${HOSTNAME}"/out
 
+echo "export CEPH_CONF=${CEPH_CONF}" >> /root/.bashrc
+
 mkdir -p "${CEPH_CONF_PATH}"
 
 if [[ "${IS_CEPH_RPM}" == 1 ]]; then
