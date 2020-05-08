@@ -18,14 +18,18 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
         npm update @angular/cli
     fi
 
-    npm install --no-shrinkwrap || { rm -rf node_modules && npm install --no-shrinkwrap; }
+    npm_clean_install() {
+        rm -rf node_modules
+        npm install --no-shrinkwrap
+    }
+
+    npm install --no-shrinkwrap || npm_clean_install
 
     NPM_BUILD_SCRIPT='build'
-    if [[ "$CEPH_VERSION" -gt '14' || ("$CEPH_VERSION" -eq '14' && "$CEPH_PATCH_VERSION" -gt '4') ]]; then
-        NPM_BUILD_SCRIPT=${NPM_BUILD_SCRIPT}':en-US -- '
-    fi
     if [[ -z "$REMOTE_DASHBOARD_URL" ]]; then
-        npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} # Required to run dashboard module.
+        # Required to run dashboard python module.
+        npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} \
+         || { npm_clean_install && npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} ; }
     fi
 
     # Start dev server
