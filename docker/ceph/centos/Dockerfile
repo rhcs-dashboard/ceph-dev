@@ -21,6 +21,9 @@ RUN pip3 install awscli
 COPY aws/aws-cli-configure.sh /root
 RUN /root/aws-cli-configure.sh
 
+# For dev mode: node installation tool.
+RUN pip3 install nodeenv
+
 # For dev. mode: run e2e tests.
 RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
     xorg-x11-server-Xvfb \

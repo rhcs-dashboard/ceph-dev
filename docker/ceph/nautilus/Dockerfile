@@ -54,4 +54,8 @@ RUN mkdir /ceph
 
 WORKDIR /ceph
 
+ARG VCS_BRANCH=nautilus
+COPY install-node.sh /root
+RUN /root/install-node.sh
+
 ENV PATH="/opt/rh/devtoolset-8/root/usr/bin:$PATH"

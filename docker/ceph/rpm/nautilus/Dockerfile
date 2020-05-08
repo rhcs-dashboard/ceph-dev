@@ -31,11 +31,7 @@ RUN yum install -y devtoolset-8-gcc-c++ git \
     && yum clean packages
 ENV PATH="/opt/rh/devtoolset-8/root/usr/bin:$PATH"
 RUN pip install -U pip \
-    && pip install -U nodeenv tox \
-    && nodeenv venv -n 10.13.0
-RUN ln -s /venv/bin/node /usr/local/bin/node \
-    && ln -s /venv/bin/npm /usr/local/bin/npm \
-    && ln -s /venv/bin/npx /usr/local/bin/npx
+    && pip install -U nodeenv tox
 
 RUN sed -i 's/LIBLTDL=1 -I/LIBLTDL=1 -DXMLSEC_NO_SIZE_T -I/' /usr/bin/xmlsec1-config \
     && pip install python3-saml==1.8.0
@@ -55,6 +51,5 @@ RUN mkdir -p /ceph/build /ceph/src
 WORKDIR /ceph
 
 ARG VCS_BRANCH=nautilus
-RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/src/vstart.sh \
-    -o /ceph/src/vstart.sh \
-    && chmod +x /ceph/src/vstart.sh
+COPY install-node.sh /root
+RUN /root/install-node.sh

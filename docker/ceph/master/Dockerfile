@@ -31,3 +31,6 @@ RUN dnf install -y ant doxygen \
     && dnf clean all
 
 RUN rm -rf /var/cache/dnf/*
+
+COPY install-node.sh /root
+RUN /root/install-node.sh
