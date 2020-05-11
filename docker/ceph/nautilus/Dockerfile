@@ -54,6 +54,7 @@ RUN mkdir /ceph
 
 WORKDIR /ceph
 
+RUN pip install nodeenv
 ARG VCS_BRANCH=nautilus
 COPY install-node.sh /root
 RUN /root/install-node.sh
