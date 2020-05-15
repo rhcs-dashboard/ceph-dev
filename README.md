@@ -278,6 +278,12 @@ RGW_MULTISITE=1
 docker-compose up -d --scale ceph-cluster2=1
 ```
 
+* Run 100s duration [benchmark](https://github.com/markhpc/hsbench#usage):
+```
+docker-compose exec ceph-cluster2 bash
+hsbench -a <rgw-user-access-key> -s <rgw-user-secret-key> -u http://127.0.0.1:8000 -z 4K -d 100 -t 10 -b 10
+```
+
 ## Access local dashboard connected to remote cluster
 
 * Set appropriate values in *.env*:

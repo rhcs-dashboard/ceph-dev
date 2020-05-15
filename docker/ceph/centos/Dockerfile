@@ -51,6 +51,12 @@ COPY nfs-ganesha/nfs-ganesha.repo /etc/yum.repos.d
 RUN dnf install -y nfs-ganesha-ceph nfs-ganesha-rados-grace \
     && dnf clean packages
 
+# S3 benchmark:
+RUN dnf install -y go \
+    && go get github.com/markhpc/hsbench && cd /root/go/src/github.com/markhpc/hsbench \
+    && go build && mv hsbench /usr/local/bin/hsbench \
+    && dnf remove -y go && rm -rf /root/go && dnf clean packages
+
 RUN dnf clean all && rm -rf /var/cache/dnf/*
 
 RUN mkdir -p /ceph/build /ceph/src
