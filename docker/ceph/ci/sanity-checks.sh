@@ -222,24 +222,26 @@ run_api_tests() {
 run_frontend_e2e_tests() {
     echo 'Running frontend E2E tests...'
 
-    local E2E_CMD="npx cypress run --browser chrome $@"
+    E2E_CMD="npx cypress run --browser chrome $@"
     if [[ "$CEPH_VERSION" == '15' ]]; then
         E2E_CMD="npm run e2e:ci"
     elif [[ "$CEPH_VERSION" == '14' ]]; then
         E2E_CMD="npm run e2e:dev"
     fi
+    export E2E_CMD
     if [[ "$DASHBOARD_DEV_SERVER" != 1 ]]; then
         if [[ $(ps -ef | grep -v grep | grep "ceph-mgr -i" | wc -l) == 0 ]]; then
-            export DASHBOARD_DEV_SERVER=0
-            export FRONTEND_BUILD_OPTIONS="--deleteOutputPath=false --prod"
-
             cd "$CEPH_CONF_PATH"
             "$REPO_DIR"/src/stop.sh
 
             /docker/start-ceph.sh
         fi
 
-        export BASE_URL=$("$CEPH_BIN"/ceph mgr services | jq -r .dashboard)
+        BASE_URL=null
+        while [[ "${BASE_URL}" == 'null' ]]; do
+            export BASE_URL=$("$CEPH_BIN"/ceph mgr services | jq -r .dashboard)
+            sleep 1
+        done
         if [[ "$CEPH_VERSION" -ge '16' ]]; then
             export CYPRESS_BASE_URL="${BASE_URL}"
         fi

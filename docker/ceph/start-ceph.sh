@@ -25,18 +25,16 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
 
     npm install --no-shrinkwrap || npm_clean_install
 
-    NPM_BUILD_SCRIPT='build'
     if [[ -z "$REMOTE_DASHBOARD_URL" ]]; then
         # Required to run dashboard python module.
-        npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} \
-         || { npm_clean_install && npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} ; }
+        npm run build || { npm_clean_install && npm run build ; }
     fi
 
     # Start dev server
     if [[ "$DASHBOARD_DEV_SERVER" == 1 || -n "$REMOTE_DASHBOARD_URL" ]]; then
         npm run start &
-    elif [[ "$FRONTEND_BUILD_OPTIONS" != *'--prod'* ]]; then
-        npm run ${NPM_BUILD_SCRIPT} -- ${FRONTEND_BUILD_OPTIONS} --watch &
+    elif [[ -z "${E2E_CMD}" ]]; then
+        npm run build -- ${FRONTEND_BUILD_OPTIONS} --watch &
     fi
 fi
 

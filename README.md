@@ -203,7 +203,7 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_npm_lint
 docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
 
 # Only 1 specific test file:
-docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests --spec "cypress/integration/block/images.e2e-spec.ts"
+docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests --spec "cypress/integration/ui/dashboard.e2e-spec.ts"
 
 # If ceph is not running:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
