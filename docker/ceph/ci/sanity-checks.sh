@@ -61,7 +61,7 @@ run_jest() {
 
     local JEST_OPTIONS="--maxWorkers=$(nproc --ignore=3)"
     if [[ -n "$@" ]]; then
-        npm run test:config
+        [[ "$CEPH_VERSION" -le '15' ]] && npm run test:config --if-present
         npx jest "$@" ${JEST_OPTIONS}
     else
         npm run test:ci -- ${JEST_OPTIONS}
