@@ -31,10 +31,11 @@ RUN wget "https://kojipkgs.fedoraproject.org//packages/jericho-html/3.2/5.fc19/n
       "https://kojipkgs.fedoraproject.org//packages/ditaa/0.9/10.r74.fc20/noarch/ditaa-0.9-10.r74.fc20.noarch.rpm" && \
       rpm -vih jericho-html-3.2-5.fc19.noarch.rpm ditaa-0.9-10.r74.fc20.noarch.rpm
 
-RUN sed -i 's/LIBLTDL=1 -I/LIBLTDL=1 -DXMLSEC_NO_SIZE_T -I/' /usr/bin/xmlsec1-config
-
 RUN pip install -U pip \
-    && pip install python3-saml==1.8.0 tox==2.9.1
+    && pip install tox==2.9.1
+
+# SSO (after installing xmlsec deps).
+RUN pip install wheel==0.34.2 xmlsec==1.3.3 python3-saml==1.8.0
 
 COPY e2e/google-chrome.repo /etc/yum.repos.d
 

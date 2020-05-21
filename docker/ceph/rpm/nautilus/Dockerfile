@@ -33,8 +33,8 @@ ENV PATH="/opt/rh/devtoolset-8/root/usr/bin:$PATH"
 RUN pip install -U pip \
     && pip install -U nodeenv tox
 
-RUN sed -i 's/LIBLTDL=1 -I/LIBLTDL=1 -DXMLSEC_NO_SIZE_T -I/' /usr/bin/xmlsec1-config \
-    && pip install python3-saml==1.8.0
+# SSO (after installing xmlsec deps).
+RUN pip install wheel==0.34.2 xmlsec==1.3.3 python3-saml==1.8.0
 
 ARG REPO_URL
 ARG CEPH_RELEASE=nautilus
