@@ -96,52 +96,5 @@ fi
 [[ "$CEPH_VERSION" -gt '14' ]] && DASHBOARD_USER_CREATE_OPTIONS='--force-password'
 "$CEPH_BIN"/ceph dashboard ac-user-create ${DASHBOARD_USER_CREATE_OPTIONS} test test
 
-# Configure grafana
-set_grafana_api_url() {
-    while true; do
-        GRAFANA_IP=$(getent ahosts grafana | tail -1 | awk '{print $1}')
-        if [[ -n "$GRAFANA_IP" ]]; then
-            "$CEPH_BIN"/ceph dashboard set-grafana-api-url "http://$GRAFANA_IP:$GRAFANA_HOST_PORT"
-
-            break
-        fi
-
-        sleep 3
-    done
-}
-set_grafana_api_url &
-
-# RHCS 3.2 beta start ends here
-if [[ "$CEPH_VERSION" == '12' ]]; then
-    exit 0
-fi
-
-# Configure alertmanager
-set_alertmanager_api_host() {
-    while true; do
-        ALERTMANAGER_IP=$(getent ahosts alertmanager | tail -1 | awk '{print $1}')
-        if [[ -n "$ALERTMANAGER_IP" ]]; then
-            "$CEPH_BIN"/ceph dashboard set-alertmanager-api-host "http://$ALERTMANAGER_IP:$ALERTMANAGER_HOST_PORT"
-
-            break
-        fi
-
-        sleep 3
-    done
-}
-set_alertmanager_api_host &
-
-# Configure prometheus
-set_prometheus_api_host() {
-    while true; do
-        PROMETHEUS_IP=$(getent ahosts prometheus | tail -1 | awk '{print $1}')
-        if [[ -n "$PROMETHEUS_IP" ]]; then
-            "$CEPH_BIN"/ceph dashboard set-prometheus-api-host "http://$PROMETHEUS_IP:$PROMETHEUS_HOST_PORT"
-
-            break
-        fi
-
-        sleep 3
-    done
-}
-set_prometheus_api_host &
+# Set monitoring stack:
+/docker/set-monitoring.sh
