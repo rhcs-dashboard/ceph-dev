@@ -35,16 +35,10 @@ cd ceph-dev
 cp .env.example .env
 ```
 
-* Install [Docker Compose](https://docs.docker.com/compose/install/). You can run the following, depending on your OS:
+* Install [Docker Compose](https://docs.docker.com/compose/install/) by running the following, depending on your OS:
 ```
 # Fedora:
 sudo bash ./docker/scripts/install-docker-compose-fedora.sh
-# If Fedora >= 31 and docker version does not support Control Group V2, run the following:
-sudo dnf install -y grubby \
-&& sudo grubby \
-    --update-kernel=ALL \
-    --args="systemd.unified_cgroup_hierarchy=0" \
-&& reboot
 
 # CentOS 7 / RHEL 7:
 sudo bash ./docker/scripts/install-docker-compose-centos-rhel.sh

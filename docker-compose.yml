@@ -4,7 +4,7 @@ services:
     ceph-base:
         image: ${CEPH_IMAGE:-rhcsdashboard/ceph-rpm:master}
         volumes:
-            - ./docker/ceph:/docker:ro
+            - ./docker/ceph:/docker:z
             - ${CEPH_REPO_DIR}:/ceph
             - ${CEPH_CUSTOM_BUILD_DIR:-empty_volume}:/build
             - ${HOST_CCACHE_DIR:-~/.ccache}:/root/.ccache
@@ -76,9 +76,9 @@ services:
         ports: ['${GRAFANA_HOST_PORT:-3000}:3000']
         volumes:
             - grafana_data:/var/lib/grafana
-            - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
-            - ./docker/grafana/provisioning:/etc/grafana/provisioning
-            - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:ro
+            - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:Z
+            - ./docker/grafana/provisioning:/etc/grafana/provisioning:Z
+            - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:Z
         environment:
             - GF_INSTALL_PLUGINS=grafana-piechart-panel 1.4.0,vonage-status-panel 1.0.9
 
@@ -88,8 +88,8 @@ services:
         hostname: prometheus
         ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
         volumes:
-            - ./docker/prometheus:/etc/prometheus
-            - ${CEPH_REPO_DIR}/monitoring/prometheus/alerts:/etc/prometheus/alerts:ro
+            - ./docker/prometheus:/etc/prometheus:Z
+            - ${CEPH_REPO_DIR}/monitoring/prometheus/alerts:/etc/prometheus/alerts:Z
 
     node-exporter:
         image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v0.17.0}
@@ -99,9 +99,8 @@ services:
         volumes:
             - /proc:/host/proc:ro
             - /sys:/host/sys:ro
+            - /:/rootfs:ro
         command:
-            - '--path.procfs=/host/proc'
-            - '--path.sysfs=/host/sys'
             - '--no-collector.timex'
 
     alertmanager:
@@ -110,7 +109,7 @@ services:
         hostname: alertmanager
         ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']
         volumes:
-            - ./docker/alertmanager:/etc/alertmanager:ro
+            - ./docker/alertmanager:/etc/alertmanager:Z
         command:
             - '--config.file=/etc/alertmanager/config.yml'
 
@@ -120,7 +119,7 @@ services:
         hostname: keycloak
         ports: ['${KEYCLOAK_HOST_PORT:-8080}:8080']
         volumes:
-            - ./docker/keycloak:/docker:ro
+            - ./docker/keycloak:/docker:Z
         environment:
             - KEYCLOAK_USER=admin
             - KEYCLOAK_PASSWORD=keycloak
