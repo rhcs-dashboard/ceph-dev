@@ -18,16 +18,11 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
         npm update @angular/cli
     fi
 
-    npm_clean_install() {
-        rm -rf node_modules
-        npm install --no-shrinkwrap
-    }
-
-    npm install --no-shrinkwrap || npm_clean_install
+    npm ci
 
     if [[ -z "$REMOTE_DASHBOARD_URL" ]]; then
         # Required to run dashboard python module.
-        npm run build || { npm_clean_install && npm run build ; }
+        npm run build
     fi
 
     # Start dev server

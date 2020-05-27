@@ -65,5 +65,6 @@ fi
 [[ "$CEPH_VERSION" == 'De' ]] && export_var CEPH_VERSION=1000000
 [[ -z "$CEPH_PATCH_VERSION" ]] && export_var CEPH_PATCH_VERSION=$("$CEPH_BIN"/ceph -v | sed -r 's/.*\.([0-9]*)\-.*/\1/')
 [[ $(rpm -qi ceph-mgr-dashboard | grep 'Red Hat' | wc -l) > 0 ]] && export_var IS_UPSTREAM=0 || export_var IS_UPSTREAM=1
+export_var NODE_OPTIONS=--max_old_space_size=4096
 
 exec "$@"
