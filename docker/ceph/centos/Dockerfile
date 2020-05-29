@@ -5,7 +5,7 @@ ARG CENTOS_VERSION
 RUN dnf install -y epel-release \
     && dnf clean packages
 RUN dnf install -y bind-utils curl dnf dnf-plugins-core git hostname iputils jq lsof net-tools python3-pip \
-    util-linux which \
+    util-linux which python3-jsonpatch \
     && dnf clean packages
 
 RUN dnf config-manager --save --setopt=\*.skip_if_unavailable=true \*
@@ -42,10 +42,6 @@ RUN dnf install -y libtool-ltdl-devel libxml2-devel python36-devel xmlsec1-devel
 
 # SSO (after installing xmlsec deps).
 RUN pip3 install python3-saml==1.9.0
-
-# For dev. mode: py2 is needed to run API tests until teuthology is py3 compatible.
-RUN dnf install -y python2-devel \
-    && dnf clean packages
 
 COPY nfs-ganesha/nfs-ganesha.repo /etc/yum.repos.d
 RUN dnf install -y nfs-ganesha-ceph nfs-ganesha-rados-grace \
