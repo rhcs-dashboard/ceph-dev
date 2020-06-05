@@ -58,6 +58,8 @@ docker-compose run --rm -e HOST_PWD=$PWD ceph /docker/ci/pre-commit-setup.sh
 
 ## Usage
 
+You don't need to build ceph if you've set ```CEPH_IMAGE=rhcsdashboard/ceph-rpm:...``` container image (the default).
+
 * Start ceph + dashboard feature services:
 ```
 docker-compose up -d
@@ -100,10 +102,11 @@ docker-compose down
 ```
 
 * Build Ceph:
-
-Set your local **ccache** path in *.env* file:
-HOST_CCACHE_DIR=/path/to/your/local/.ccache
 ```
+# Set a build-ready image and your local ccache path in .env file:
+CEPH_IMAGE=rhcsdashboard/ceph:master  # DO NOT use ceph-rpm:... image.
+HOST_CCACHE_DIR=/path/to/your/local/.ccache
+
 docker-compose run --rm ceph /docker/build-ceph.sh
 ```
 
@@ -158,18 +161,21 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_mypy src/pybind/mgr
 
 * Run API tests (integration tests based on [Teuthology](https://github.com/ceph/teuthology)):
 ```
+# Run tests interactively:
+docker-compose run --rm -p 11000:11000 ceph bash
+source /docker/ci/sanity-checks.sh && create_api_tests_cluster
+run_teuthology_tests tasks.mgr.dashboard.test_health
+run_teuthology_tests {moreTests}
+cleanup_teuthology  # this also outputs coverage report.
+
 # All tests:
 docker-compose run --rm ceph /docker/ci/run-api-tests.sh
 
 # Only specific tests:
 docker-compose run --rm ceph /docker/ci/run-api-tests.sh tasks.mgr.dashboard.test_health tasks.mgr.dashboard.test_pool
 
-# Run tests interactively:
-docker-compose run --rm ceph bash
-source /docker/ci/sanity-checks.sh && create_api_tests_cluster
-run_teuthology_tests tasks.mgr.dashboard.test_health
-run_teuthology_tests {moreTests}
-cleanup_teuthology
+# Only 1 test:
+docker-compose run --rm ceph /docker/ci/run-api-tests.sh tasks.mgr.dashboard.test_rgw.RgwBucketTest.test_all
 ```
 
 * Run frontend unit tests or lint:

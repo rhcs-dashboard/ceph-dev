@@ -18,12 +18,12 @@ services:
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
             - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
             - FS
-            - GANESHA
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - MDS
             - MGR
             - MON
             - MON_MAX_PG_PER_OSD
+            - NFS
             - NG_CLI_ANALYTICS=false
             - NODE_EXPORTER_HOST_PORT=${NODE_EXPORTER_HOST_PORT}
             - OSD
@@ -79,6 +79,7 @@ services:
             - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:Z
             - ./docker/grafana/provisioning:/etc/grafana/provisioning:Z
             - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:Z
+        user: '${HOST_USER:-1000}'
         environment:
             - GF_INSTALL_PLUGINS=grafana-piechart-panel 1.4.0,vonage-status-panel 1.0.9
 
@@ -90,6 +91,7 @@ services:
         volumes:
             - ./docker/prometheus:/etc/prometheus:Z
             - ${CEPH_REPO_DIR}/monitoring/prometheus/alerts:/etc/prometheus/alerts:Z
+        user: '${HOST_USER:-1000}'
 
     node-exporter:
         image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v0.17.0}
@@ -110,6 +112,7 @@ services:
         ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']
         volumes:
             - ./docker/alertmanager:/etc/alertmanager:Z
+        user: '${HOST_USER:-1000}'
         command:
             - '--config.file=/etc/alertmanager/config.yml'
 
