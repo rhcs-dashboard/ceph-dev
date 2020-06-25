@@ -13,6 +13,8 @@ fi
 readonly CEPH_DIR=/ceph
 
 cd $CEPH_DIR
+# ISSUE install-deps.sh can fail if submodule dirs contain stale data, so by --force'ing we wipe that out and avoid that error later
+git submodule update --init --recursive --force
 ./install-deps.sh
 
 rm -rf $CEPH_DIR/build
