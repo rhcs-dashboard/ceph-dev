@@ -52,6 +52,7 @@ jobs:
     needs: build-ceph-base
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         branch: [master, octopus, nautilus]
         name: [ceph, ceph-rpm]
