@@ -200,6 +200,11 @@ create_api_tests_cluster() {
 
     setup_api_tests_env
 
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+    mkdir -p dist  # Avoid dashboard module crash.
+    # Build frontend in background so dashboard is accessible for debug purposes.
+    (npm ci && npm run build -- --deleteOutputPath=false ) &
+
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
     set +e
     source ./run-backend-api-tests.sh
@@ -208,13 +213,14 @@ create_api_tests_cluster() {
 }
 
 run_api_tests() {
-    echo 'Running API tests...'
+    create_api_tests_cluster
 
-    setup_api_tests_env
+    echo 'Running API tests...'
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard
 
-    ./run-backend-api-tests.sh "$@"
+    run_teuthology_tests "$@"
+    cleanup_teuthology
 
     echo 'API tests successfully finished! Congratulations!'
 }

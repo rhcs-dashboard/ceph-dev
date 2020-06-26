@@ -11,7 +11,7 @@ services:
         environment:
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
             - CEPH_DEBUG=${CEPH_DEBUG:-0}
-            - CEPH_PORT=10000
+            - CEPH_PORT
             - CEPH_REPO_DIR
             - CHECK_MYPY=${CHECK_MYPY:-0}
             - CYPRESS_CACHE_FOLDER=/ceph/build.cypress

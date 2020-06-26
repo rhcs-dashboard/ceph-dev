@@ -15,6 +15,7 @@ export_var CEPH_CONF=/ceph/build."${HOSTNAME}"/ceph.conf
 export_var CEPH_CONF_PATH=/ceph/build."${HOSTNAME}"
 export_var CEPH_DEV_DIR=/ceph/build."${HOSTNAME}"/dev
 export_var CEPH_OUT_DIR=/ceph/build."${HOSTNAME}"/out
+export_var CEPH_PORT=${CEPH_PORT:-10000}
 
 mkdir -p "${CEPH_CONF_PATH}"
 
