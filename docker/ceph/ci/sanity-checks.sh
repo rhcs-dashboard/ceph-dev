@@ -228,11 +228,13 @@ run_api_tests() {
 run_frontend_e2e_tests() {
     echo 'Running frontend E2E tests...'
 
-    E2E_CMD="npx cypress run --browser chrome $@"
-    if [[ "$CEPH_VERSION" == '15' ]]; then
+    cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+    npx --no-install cypress -v && WITH_CYPRESS=1 || WITH_CYPRESS=0
+    E2E_CMD="npm run e2e:dev"
+    if [[ "${WITH_CYPRESS}" == 1 ]]; then
+        E2E_CMD="npx cypress run $@ --browser chrome --headless"
+    elif [[ "$(npm run | grep e2e:ci | wc -l)" == 1 ]]; then
         E2E_CMD="npm run e2e:ci"
-    elif [[ "$CEPH_VERSION" == '14' ]]; then
-        E2E_CMD="npm run e2e:dev"
     fi
     export E2E_CMD
     if [[ "$DASHBOARD_DEV_SERVER" != 1 ]]; then
@@ -248,7 +250,7 @@ run_frontend_e2e_tests() {
             export BASE_URL=$("$CEPH_BIN"/ceph mgr services | jq -r .dashboard)
             sleep 1
         done
-        if [[ "$CEPH_VERSION" -ge '16' ]]; then
+        if [[ "${WITH_CYPRESS}" == 1 ]]; then
             export CYPRESS_BASE_URL="${BASE_URL}"
         fi
         cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
