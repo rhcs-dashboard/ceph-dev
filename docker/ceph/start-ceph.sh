@@ -46,8 +46,8 @@ cd /ceph/build
 echo 'vstart.sh completed!'
 
 # Create rbd pool:
-"$CEPH_BIN"/ceph osd pool create rbd-pool 8 8 replicated
-"$CEPH_BIN"/ceph osd pool application enable rbd-pool rbd
+"$CEPH_BIN"/ceph osd pool create rbd 8 8 replicated
+"$CEPH_BIN"/ceph osd pool application enable rbd rbd
 
 # Configure Object Gateway:
 if [[ "$RGW" -gt 0  ||  "$RGW_MULTISITE" == 1 ]]; then
