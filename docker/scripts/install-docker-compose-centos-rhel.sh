@@ -8,7 +8,7 @@ if [ "$(whoami)" != 'root' ]; then
     exit 1
 fi
 
-yum remove docker* || true
+yum remove "docker*" || true
 
 # Taken from https://www.vultr.com/docs/installing-docker-ce-on-centos-7
 
