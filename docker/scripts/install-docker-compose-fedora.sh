@@ -8,7 +8,7 @@ if [ "$(whoami)" != 'root' ]; then
     exit 1
 fi
 
-dnf remove -y docker* || true
+dnf remove -y "docker*" || true
 
 dnf install -y dnf-plugins-core grubby
 
