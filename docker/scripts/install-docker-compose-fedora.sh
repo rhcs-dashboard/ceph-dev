@@ -15,7 +15,7 @@ dnf install -y dnf-plugins-core grubby
 dnf info moby-engine >/dev/null 2>&1
 MOBY_ENGINE_EXISTS=$?
 if [[ ${MOBY_ENGINE_EXISTS} == 0 ]]; then
-    dnf install moby-engine
+    dnf install -y moby-engine
 else
     dnf config-manager \
         --add-repo \
@@ -33,8 +33,8 @@ usermod -aG docker "$(logname)"
 FEDORA_VERSION=$(sed -nE 's/^VERSION_ID=(.*)$/\1/p' /etc/os-release)
 if [[ "${FEDORA_VERSION}" -ge 32 ]]; then
     # Docker does not yet cooperate with the nftables backend.
-    firewall-cmd --permanent --zone=trusted --add-interface=docker0
-    firewall-cmd --permanent --zone=trusted --add-source=172.0.0.0/8
+    firewall-cmd --permanent --zone=trusted --add-interface=docker0 || true
+    firewall-cmd --permanent --zone=trusted --add-source=172.0.0.0/8 || true
     firewall-cmd --reload
 fi
 
