@@ -27,7 +27,8 @@ COPY fedora/fedora.repo /etc/yum.repos.d
 RUN dnf install -y ditaa \
     && dnf clean packages
 RUN dnf config-manager --set-disabled fedora
-RUN dnf install -y ant doxygen \
+RUN dnf install -y ant doxygen libxslt-devel libxml2-devel graphviz python3-devel python3-pip python3-virtualenv \
+    python3-Cython \
     && dnf clean all
 
 RUN rm -rf /var/cache/dnf/*
