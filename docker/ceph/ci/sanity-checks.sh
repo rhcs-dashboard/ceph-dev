@@ -269,25 +269,25 @@ run_frontend_e2e_tests() {
 }
 
 run_build_doc() {
-  echo 'Running "build-doc"...'
+    echo 'Running "build-doc"...'
 
-  cd "$REPO_DIR"
+    cd "$REPO_DIR"
 
-  rm -rf "$REPO_DIR/build-doc/virtualenv"
+    rm -rf "$REPO_DIR/build-doc/virtualenv"
 
-  alternatives --set python /usr/bin/python3
+    alternatives --set python /usr/bin/python3
 
-  admin/build-doc
+    admin/build-doc
 }
 
 run_serve_doc() {
-  echo 'Running "serve-doc"...'
+    echo 'Running "serve-doc"...'
 
-  cd "$REPO_DIR"
+    cd "$REPO_DIR"
 
-  alternatives --set python /usr/bin/python2
+    [[ "${PYTHON_VERSION}" == 2 ]] && alternatives --set python /usr/bin/python2
 
-  admin/serve-doc
+    admin/serve-doc
 }
 
 # End of sourced section. Do not exit shell when the script has been sourced.
