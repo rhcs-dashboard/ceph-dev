@@ -17,7 +17,7 @@ RUN pip3 install -U pip
 RUN pip3 install mypy tox
 
 # AWS CLI.
-RUN pip3 install awscli
+RUN pip3 install awscli boto3 boto3-stubs
 COPY aws/aws-cli-configure.sh /root
 RUN /root/aws-cli-configure.sh
 
