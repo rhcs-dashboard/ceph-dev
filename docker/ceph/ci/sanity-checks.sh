@@ -130,6 +130,8 @@ run_tox() {
         if [[ -z "$TOX_ARGS" ]]; then
             # Default behaviour (pre-commit)
             TOX_ARGS='py3,lint,check'
+            [[ "$(tox -l | grep 'openapi-check' | wc -l)" > 0 ]] && TOX_ARGS="${TOX_ARGS},openapi-check"
+            echo "Tox environments: ${TOX_ARGS}"
         elif [[ "${1:0:6}" == 'tests/' ]]; then
             # Run user-defined unit tests
             TOX_ARGS="py3 $TOX_ARGS"

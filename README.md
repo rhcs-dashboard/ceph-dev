@@ -146,6 +146,14 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox lint controller
 # Only 1 file in nautilus branch:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pylint controllers/health.py
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pycodestyle controllers/health.py
+
+# Other utilities
+
+# Check OpenAPI Specification:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox openapi-check
+
+# List tox environmnets:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run tox -lv
 ```
 
 * Check dashboard python code with **mypy**:
