@@ -91,6 +91,9 @@ fi
 [[ "$CEPH_VERSION" -gt '14' ]] && DASHBOARD_USER_CREATE_OPTIONS='--force-password'
 "$CEPH_BIN"/ceph dashboard ac-user-create ${DASHBOARD_USER_CREATE_OPTIONS} test test
 
+# Set dashboard log level.
+"$CEPH_BIN"/ceph config set mgr mgr/dashboard/log_level debug
+
 # Enable debug mode.
 "$CEPH_BIN"/ceph dashboard debug enable
 
