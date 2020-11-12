@@ -82,20 +82,21 @@ if [[ "$DASHBOARD_SSL" == 0 && "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_FIRST_CLUSTER
     echo "SSL disabled."
 fi
 
-# Upstream mimic start ends here
-if [[ "$CEPH_VERSION" == '13' || "$IS_FIRST_CLUSTER" == 0 ]]; then
-    exit 0
-fi
+# Secondary cluster start (or upstream mimic start) ends here.
+[[ "$IS_FIRST_CLUSTER" == 0 || "$CEPH_VERSION" -le '13' ]] && exit 0
 
 # Create dashboard "test" user:
 [[ "$CEPH_VERSION" -gt '14' ]] && DASHBOARD_USER_CREATE_OPTIONS='--force-password'
 "$CEPH_BIN"/ceph dashboard ac-user-create ${DASHBOARD_USER_CREATE_OPTIONS} test test
-
-# Set dashboard log level.
-"$CEPH_BIN"/ceph config set mgr mgr/dashboard/log_level debug
 
 # Enable debug mode.
 "$CEPH_BIN"/ceph dashboard debug enable
 
 # Set monitoring stack:
 /docker/set-monitoring.sh
+
+# Upstream nautilus start ends here.
+[[ "$CEPH_VERSION" -le '14' ]] && exit 0
+
+# Set dashboard log level.
+"$CEPH_BIN"/ceph config set mgr mgr/dashboard/log_level debug
