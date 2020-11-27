@@ -87,7 +87,12 @@ fi
 
 # Create dashboard "test" user:
 [[ "$CEPH_VERSION" -gt '14' ]] && DASHBOARD_USER_CREATE_OPTIONS='--force-password'
-"$CEPH_BIN"/ceph dashboard ac-user-create ${DASHBOARD_USER_CREATE_OPTIONS} test test
+create_test_user() {
+    DASHBOARD_TEST_USER_SECRET_FILE="/tmp/dashboard-test-user-secret.txt"
+    printf 'test' > "${DASHBOARD_TEST_USER_SECRET_FILE}"
+    "$CEPH_BIN"/ceph dashboard ac-user-create test -i "${DASHBOARD_TEST_USER_SECRET_FILE}" "${DASHBOARD_USER_CREATE_OPTIONS}"
+}
+create_test_user || "$CEPH_BIN"/ceph dashboard ac-user-create test test "${DASHBOARD_USER_CREATE_OPTIONS}"
 
 # Enable debug mode.
 "$CEPH_BIN"/ceph dashboard debug enable
