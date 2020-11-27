@@ -19,7 +19,7 @@ RUN yum install -y google-chrome-stable \
     && yum clean packages
 
 # For dev. mode: run integration tests.
-RUN yum install -y python2-devel python2-pip \
+RUN yum install -y python2-devel python2-pip python3-devel \
     && yum clean packages
 
 # For dev. mode: run backend unit tests.
