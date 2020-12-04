@@ -258,7 +258,7 @@ docker-compose up -d --scale keycloak=1 keycloak
 
 You can access Keycloak administration console with credentials: admin / keycloak
 
-http://localhost:8080
+http://localhost:8080 or https://localhost:8443
 
 * Enable dashboard SSO in running ceph container:
 ```

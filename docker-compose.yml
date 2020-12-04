@@ -115,16 +115,17 @@ services:
             - '--config.file=/etc/alertmanager/config.yml'
 
     keycloak:
-        image: jboss/keycloak:4.8.3.Final
+        image: ${KEYCLOAK_IMAGE:-jboss/keycloak:11.0.3}
         container_name: keycloak
         hostname: keycloak
-        ports: ['${KEYCLOAK_HOST_PORT:-8080}:8080']
+        ports: ['${KEYCLOAK_HOST_HTTP_PORT:-8080}:8080', '${KEYCLOAK_HOST_HTTPS_PORT:-8443}:8443']
         volumes:
             - ./docker/keycloak:/docker:Z
         environment:
             - KEYCLOAK_USER=admin
             - KEYCLOAK_PASSWORD=keycloak
-        command: -b 0.0.0.0 -Dkeycloak.import=/docker/saml-demo-realm.json
+            - KEYCLOAK_IMPORT=/docker/saml-demo-realm.json
+            - BIND=127.0.0.1
         scale: -1
 
 volumes:
