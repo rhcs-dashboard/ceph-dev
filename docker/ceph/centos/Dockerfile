@@ -9,7 +9,7 @@ RUN dnf install -y bind-utils curl dnf dnf-plugins-core git hostname iputils jq 
     && dnf clean packages
 
 RUN dnf config-manager --save --setopt=\*.skip_if_unavailable=true \*
-RUN dnf config-manager --set-enabled PowerTools
+RUN dnf config-manager --set-enabled powertools
 
 RUN pip3 install -U pip
 
