@@ -84,7 +84,7 @@ services:
             - GF_SECURITY_ALLOW_EMBEDDING=true
 
     prometheus:
-        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.7.2}
+        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.18.1}
         container_name: prometheus
         hostname: prometheus
         ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
@@ -93,7 +93,7 @@ services:
             - ${CEPH_REPO_DIR}/monitoring/prometheus/alerts:/etc/prometheus/alerts:Z
 
     node-exporter:
-        image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v0.17.0}
+        image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v0.18.1}
         container_name: node-exporter
         hostname: node-exporter
         ports: ['${NODE_EXPORTER_HOST_PORT:-9100}:9100']
@@ -105,7 +105,7 @@ services:
             - '--no-collector.timex'
 
     alertmanager:
-        image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.16.2}
+        image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.20.0}
         container_name: alertmanager
         hostname: alertmanager
         ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']
