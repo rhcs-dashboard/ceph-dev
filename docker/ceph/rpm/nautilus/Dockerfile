@@ -30,7 +30,7 @@ RUN yum install -y libtool-ltdl-devel libxml2-devel xmlsec1-devel xmlsec1-openss
 RUN yum install -y devtoolset-8-gcc-c++ git \
     && yum clean packages
 ENV PATH="/opt/rh/devtoolset-8/root/usr/bin:$PATH"
-RUN pip install -U pip \
+RUN pip install pip==20.3 \
     && pip install -U nodeenv tox
 
 # SSO (after installing xmlsec deps).

@@ -31,7 +31,7 @@ RUN wget "https://kojipkgs.fedoraproject.org//packages/jericho-html/3.2/5.fc19/n
       "https://kojipkgs.fedoraproject.org//packages/ditaa/0.9/10.r74.fc20/noarch/ditaa-0.9-10.r74.fc20.noarch.rpm" && \
       rpm -vih jericho-html-3.2-5.fc19.noarch.rpm ditaa-0.9-10.r74.fc20.noarch.rpm
 
-RUN pip install -U pip \
+RUN pip install pip==20.3 \
     && pip install tox==2.9.1
 
 # SSO (after installing xmlsec deps).
