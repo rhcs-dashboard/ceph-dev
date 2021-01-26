@@ -13,6 +13,9 @@ RUN dnf config-manager --set-enabled powertools
 
 RUN pip3 install -U pip
 
+# TODO: remove this line when the bug free rpm package is available.
+RUN pip3 install cheroot==8.4.5
+
 # Sanity checks:
 RUN pip3 install mypy tox
 
