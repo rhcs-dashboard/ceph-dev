@@ -15,8 +15,6 @@ RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/install-
 RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/ceph.spec.in \
     -o /ceph/ceph.spec.in
 
-RUN sed -i 's/gpgcheck=1/gpgcheck=0/' /etc/dnf/dnf.conf
-
 ARG FOR_MAKE_CHECK=1
 RUN bash -x /ceph/install-deps.sh \
     && dnf clean packages

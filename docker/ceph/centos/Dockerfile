@@ -8,7 +8,9 @@ RUN dnf install -y bind-utils curl dnf dnf-plugins-core git hostname iputils jq 
     util-linux which python3-jsonpatch \
     && dnf clean packages
 
-RUN dnf config-manager --save --setopt=\*.skip_if_unavailable=true \*
+RUN sed -i 's/gpgcheck=1/gpgcheck=0/' /etc/dnf/dnf.conf
+RUN sed -i 's/skip_if_unavailable=False/skip_if_unavailable=True/' /etc/dnf/dnf.conf
+
 RUN dnf config-manager --set-enabled powertools
 
 RUN pip3 install -U pip

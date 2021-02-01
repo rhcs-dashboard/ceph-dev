@@ -7,8 +7,6 @@ RUN dnf config-manager --add-repo http://apt-mirror.front.sepia.ceph.com/lab-ext
 RUN dnf config-manager --setopt gpgcheck=0 apt-mirror.front.sepia.ceph.com_lab-extras_${CENTOS_VERSION}_ --save
 RUN dnf copr enable -y ktdreyer/ceph-el${CENTOS_VERSION}
 
-RUN sed -i 's/gpgcheck=1/gpgcheck=0/' /etc/dnf/dnf.conf
-
 ARG REPO_URL
 ARG CEPH_RELEASE=master
 COPY rpm/set-ceph-repo.sh /root
