@@ -149,14 +149,23 @@ run_tox() {
 }
 
 run_mypy() {
+    echo 'Running mypy...'
+
+    if [[ "$CEPH_VERSION" -ge 15 ]]; then
+        cd "$REPO_DIR"/src/pybind/mgr/rook
+        ./generate_rook_ceph_client.sh
+
+        cd "$REPO_DIR"/src/pybind/mgr
+        tox -e mypy
+        return 0
+    fi
+
     cd "$REPO_DIR"
 
     if [[ "$PYTHON_VERSION" != 3 || "$CHECK_MYPY" == '0' ]]; then
         echo 'SKIPPED: mypy'
         return 0
     fi
-
-    echo 'Running mypy...'
 
     MYPY_CONFIG_FILE="$REPO_DIR"/src/mypy.ini
     if [[ ! -e "$MYPY_CONFIG_FILE" ]]; then
