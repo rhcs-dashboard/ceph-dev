@@ -127,6 +127,12 @@ services:
             - KEYCLOAK_IMPORT=/docker/saml-demo-realm.json
             - BIND=127.0.0.1
         scale: -1
+    
+    haproxy:
+        image: haproxy
+        volumes:
+            - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+        network_mode: host
 
 volumes:
     empty_volume:
