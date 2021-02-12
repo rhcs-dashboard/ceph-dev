@@ -127,6 +127,17 @@ services:
             - KEYCLOAK_IMPORT=/docker/saml-demo-realm.json
             - BIND=127.0.0.1
         scale: -1
+    
+    haproxy:
+        image: ${HAPROXY_IMAGE:-haproxy:latest}
+        container_name: haproxy
+        hostname: haproxy
+        ports: ['${HAPROXY_HOST_HTTP_PORT:-80}:80', '${HAPROXY_HOST_HTTPS_PORT:-443}:443']
+        volumes:
+            - ./docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+            - ./docker/haproxy/dashboard.pem:/etc/ssl/certs/dashboard.pem
+            - ./docker/haproxy/cors.lua:/etc/haproxy/cors.lua
+        scale: -1
 
 volumes:
     empty_volume:
