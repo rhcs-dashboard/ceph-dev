@@ -240,15 +240,17 @@ run_frontend_e2e_tests() {
     echo 'Running frontend E2E tests...'
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
+    npm ci
     npx --no-install cypress -v && WITH_CYPRESS=1 || WITH_CYPRESS=0
     E2E_CMD="npm run e2e:dev"
     if [[ "${WITH_CYPRESS}" == 1 ]]; then
+        [[ -n "${BASE_URL}" ]] && export CYPRESS_BASE_URL="${BASE_URL}"
         E2E_CMD="npx cypress run $@ --browser chrome --headless"
     elif [[ "$(npm run | grep e2e:ci | wc -l)" == 1 ]]; then
         E2E_CMD="npm run e2e:ci"
     fi
     export E2E_CMD
-    if [[ "$DASHBOARD_DEV_SERVER" != 1 ]]; then
+    if [[ "$DASHBOARD_DEV_SERVER" != 1 && -z "${BASE_URL}" && -z "${CYPRESS_BASE_URL}" ]]; then
         if [[ $(ps -ef | grep -v grep | grep "ceph-mgr -i" | wc -l) == 0 ]]; then
             cd "$CEPH_CONF_PATH"
             "$REPO_DIR"/src/stop.sh
