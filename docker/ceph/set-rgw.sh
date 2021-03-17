@@ -3,7 +3,7 @@
 set -ex
 
 readonly RGW_REALM_USER_UID='dev'
-readonly RGW_REALM_USER_NAME='Dev '
+readonly RGW_REALM_USER_NAME='Dev'
 readonly RGW_REALM_USER_ACCESS_KEY=('DiPt4V7WWvy2njL1z6aC' 'M1KBQY1XV9ELH8Y637PD')
 readonly RGW_REALM_USER_ACCESS_KEY_FILE="/tmp/rgw-user-access-key.txt"
 readonly RGW_REALM_USER_SECRET_KEY=('xSZUdYky0bTctAdCEEW8ikhfBVKsBV5LFYL82vvh' 'GsOwxjOfxAwM2It2mBiB5A5CJFxu73GjpNjCROvx')
@@ -16,6 +16,9 @@ truncate -s0 ${RGW_REALM_USER_SECRET_KEY_FILE}
 
 create_system_user() {
     local USER_NUM=$1
+    local USER_UID="${RGW_REALM_USER_UID}${USER_NUM}"
+    local SECRET_INDEX=${USER_NUM}-1
+    [[ -z "${USER_NUM}" ]] && SECRET_INDEX=0
     local REALM_NAME=$2
     local ZG_NAME=$3
     local ZONE_NAME=$4
@@ -23,10 +26,15 @@ create_system_user() {
     [[ -n "${REALM_NAME}" ]] && NAMESPACE_OPTIONS="--rgw-realm ${REALM_NAME}"
     [[ -n "${ZG_NAME}" ]] && NAMESPACE_OPTIONS+=" --rgw-zonegroup ${ZG_NAME}"
     [[ -n "${ZONE_NAME}" ]] && NAMESPACE_OPTIONS+=" --rgw-zone ${ZONE_NAME}"
-    "$CEPH_BIN"/radosgw-admin user create --uid "${RGW_REALM_USER_UID}${USER_NUM}" \
+
+    "$CEPH_BIN"/radosgw-admin user create --uid "${USER_UID}" \
         --display-name "${RGW_REALM_USER_NAME}${USER_NUM}" \
-        --access-key "${RGW_REALM_USER_ACCESS_KEY[${USER_NUM}-1]}" --secret "${RGW_REALM_USER_SECRET_KEY[${USER_NUM}-1]}" \
+        --access-key "${RGW_REALM_USER_ACCESS_KEY[${SECRET_INDEX}]}" --secret "${RGW_REALM_USER_SECRET_KEY[${SECRET_INDEX}]}" \
         ${NAMESPACE_OPTIONS} --system
+
+    # Create MFA TOTP token.
+    "$CEPH_BIN"/radosgw-admin mfa create --uid="${USER_UID}" --totp-serial=1 --totp-seed=23456723 --totp-seed-type=base32 \
+        ${NAMESPACE_OPTIONS}
 }
 
 add_placement_targets_and_storage_classes() {
@@ -181,18 +189,12 @@ else
     ZONEGROUP_NAME=default
     ZONE_NAME=default
     add_placement_targets_and_storage_classes
-    create_system_user ${RGW_REALM_USER_NUM}
+    create_system_user
     echo -n "${RGW_REALM_USER_ACCESS_KEY[0]}" > "${RGW_REALM_USER_ACCESS_KEY_FILE}"
     echo -n "${RGW_REALM_USER_SECRET_KEY[0]}" > "${RGW_REALM_USER_SECRET_KEY_FILE}"
 fi
 
 if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
-    # Create MFA TOTP token.
-    "$CEPH_BIN"/radosgw-admin mfa create --uid="${RGW_REALM_USER_UID}${RGW_REALM_USER_NUM}" --totp-serial=1 --totp-seed=23456723 --totp-seed-type=base32
-    if [[ "$RGW_MULTISITE" != 1 ]]; then
-        "$CEPH_BIN"/radosgw-admin mfa create --uid=testid --totp-serial=1 --totp-seed=23456723 --totp-seed-type=base32
-    fi
-
     "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key -i "${RGW_REALM_USER_ACCESS_KEY_FILE}" \
         || "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "${RGW_REALM_USER_ACCESS_KEY[0]}"
 
