@@ -14,7 +14,7 @@ export IS_FIRST_CLUSTER=$(hostname | grep -v cluster | wc -l)
 FRONTEND_BUILD_OPTIONS=${FRONTEND_BUILD_OPTIONS:-"--deleteOutputPath=false"}
 
 if [[ "$RGW_MULTISITE" == 1 ]]; then
-    export RGW=0
+    export RGW=0  # Required to prevent vstart from starting any rgw daemon.
 
     if [[ "$IS_FIRST_CLUSTER" == 0 ]]; then
         export FS=0

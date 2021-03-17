@@ -1,12 +1,41 @@
 #!/bin/bash
 
-set -e
+set -ex
 
-readonly RGW_REALM_ADMIN_UID='dev'
-readonly RGW_REALM_ADMIN_NAME='Dev Admin'
-readonly RGW_REALM_ADMIN_ACCESS_KEY='DiPt4V7WWvy2njL1z6aC'
-readonly RGW_REALM_ADMIN_SECRET_KEY='xSZUdYky0bTctAdCEEW8ikhfBVKsBV5LFYL82vvh'
+readonly RGW_REALM_USER_UID='dev'
+readonly RGW_REALM_USER_NAME='Dev'
+readonly RGW_REALM_USER_ACCESS_KEY=('DiPt4V7WWvy2njL1z6aC' 'M1KBQY1XV9ELH8Y637PD')
+readonly RGW_REALM_USER_ACCESS_KEY_FILE="/tmp/rgw-user-access-key.txt"
+readonly RGW_REALM_USER_SECRET_KEY=('xSZUdYky0bTctAdCEEW8ikhfBVKsBV5LFYL82vvh' 'GsOwxjOfxAwM2It2mBiB5A5CJFxu73GjpNjCROvx')
+readonly RGW_REALM_USER_SECRET_KEY_FILE="/tmp/rgw-user-secret-key.txt"
+readonly RGW_REALM_USER_NUM=1
 RGW_DAEMON_PORT=8000
+
+truncate -s0 ${RGW_REALM_USER_ACCESS_KEY_FILE}
+truncate -s0 ${RGW_REALM_USER_SECRET_KEY_FILE}
+
+create_system_user() {
+    local USER_NUM=$1
+    local USER_UID="${RGW_REALM_USER_UID}${USER_NUM}"
+    local SECRET_INDEX=${USER_NUM}-1
+    [[ -z "${USER_NUM}" ]] && SECRET_INDEX=0
+    local REALM_NAME=$2
+    local ZG_NAME=$3
+    local ZONE_NAME=$4
+    local NAMESPACE_OPTIONS=''
+    [[ -n "${REALM_NAME}" ]] && NAMESPACE_OPTIONS="--rgw-realm ${REALM_NAME}"
+    [[ -n "${ZG_NAME}" ]] && NAMESPACE_OPTIONS+=" --rgw-zonegroup ${ZG_NAME}"
+    [[ -n "${ZONE_NAME}" ]] && NAMESPACE_OPTIONS+=" --rgw-zone ${ZONE_NAME}"
+
+    "$CEPH_BIN"/radosgw-admin user create --uid "${USER_UID}" \
+        --display-name "${RGW_REALM_USER_NAME}${USER_NUM}" \
+        --access-key "${RGW_REALM_USER_ACCESS_KEY[${SECRET_INDEX}]}" --secret "${RGW_REALM_USER_SECRET_KEY[${SECRET_INDEX}]}" \
+        ${NAMESPACE_OPTIONS} --system
+
+    # Create MFA TOTP token.
+    "$CEPH_BIN"/radosgw-admin mfa create --uid="${USER_UID}" --totp-serial=1 --totp-seed=23456723 --totp-seed-type=base32 \
+        ${NAMESPACE_OPTIONS}
+}
 
 add_placement_targets_and_storage_classes() {
     # Add placement targets:
@@ -35,15 +64,11 @@ add_placement_targets_and_storage_classes() {
     fi
 }
 
-create_system_user() {
-    "$CEPH_BIN"/radosgw-admin user create --uid "$RGW_REALM_ADMIN_UID" --display-name "$RGW_REALM_ADMIN_NAME" \
-        --access-key "$RGW_REALM_ADMIN_ACCESS_KEY" --secret "$RGW_REALM_ADMIN_SECRET_KEY" --system
-}
-
 start_rgw_daemon() {
     local RGW_DAEMON_PORT=$1
-    local RGW_DAEMON_ZONEGROUP=$2
-    local RGW_DAEMON_ZONE=$3
+    local RGW_DAEMON_REALM=$2
+    local RGW_DAEMON_ZONEGROUP=$3
+    local RGW_DAEMON_ZONE=$4
     local RGW_DAEMON_PID_FILE="$CEPH_OUT_DIR"/radosgw."$RGW_DAEMON_PORT".pid
     local RGW_DAEMON_NAME="client.rgw.$RGW_DAEMON_PORT"
 
@@ -60,7 +85,7 @@ start_rgw_daemon() {
         --admin-socket="$CEPH_OUT_DIR"/radosgw."$RGW_DAEMON_PORT".asok \
         --pid-file="$RGW_DAEMON_PID_FILE" --rgw_frontends="beast port=$RGW_DAEMON_PORT" \
         -n "$RGW_DAEMON_NAME" ${RGW_DEBUG} \
-        --rgw-region "${RGW_DAEMON_ZONEGROUP}" --rgw-zone "${RGW_DAEMON_ZONE}"
+        --rgw-realm "${RGW_DAEMON_REALM}" --rgw-zonegroup "${RGW_DAEMON_ZONEGROUP}" --rgw-zone "${RGW_DAEMON_ZONE}"
 }
 
 if [[ "$RGW_MULTISITE" == 1 ]]; then
@@ -98,10 +123,8 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                         RGW_DAEMON_ZONE_OPTION="$ZONE_NAME"
                     fi
                     "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
-                        --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "$RGW_REALM_ADMIN_ACCESS_KEY" \
-                        --secret "$RGW_REALM_ADMIN_SECRET_KEY" ${ZONE_OPTIONS}
-
-                    [[ "$REALM_NUM" == 1 && "$ZONEGROUP_NUM" == 1 && "$ZONE_NUM" == 1 ]] && create_system_user
+                        --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "${RGW_REALM_USER_ACCESS_KEY[${REALM_NUM}-1]}" \
+                        --secret "${RGW_REALM_USER_SECRET_KEY[${REALM_NUM}-1]}" ${ZONE_OPTIONS}
 
                     add_placement_targets_and_storage_classes
                 done
@@ -109,10 +132,19 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                 RGW_DAEMON_PORT=$((${RGW_DAEMON_PORT} + 1))
             done
 
+            create_system_user ${REALM_NUM} "${REALM_NAME}" "${RGW_DAEMON_ZONEGROUP_OPTION}" "${RGW_DAEMON_ZONE_OPTION}"
+            # Add content to secret file:
+            echo -n "'"${RGW_DAEMON_ZONEGROUP_PORT}"':'"${RGW_REALM_USER_ACCESS_KEY[${REALM_NUM}-1]}"'," >> "${RGW_REALM_USER_ACCESS_KEY_FILE}"
+            echo -n "'"${RGW_DAEMON_ZONEGROUP_PORT}"':'"${RGW_REALM_USER_SECRET_KEY[${REALM_NUM}-1]}"'," >> "${RGW_REALM_USER_SECRET_KEY_FILE}"
+
             "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$REALM_NAME" --commit
 
-            start_rgw_daemon "${RGW_DAEMON_ZONEGROUP_PORT}" "${RGW_DAEMON_ZONEGROUP_OPTION}" "${RGW_DAEMON_ZONE_OPTION}"
+            start_rgw_daemon "${RGW_DAEMON_ZONEGROUP_PORT}" "${REALM_NAME}" "${RGW_DAEMON_ZONEGROUP_OPTION}" "${RGW_DAEMON_ZONE_OPTION}"
         done
+
+        # Convert file content to python dict string:
+        echo -n "{$(cat ${RGW_REALM_USER_ACCESS_KEY_FILE} | sed 's/,$//')}" > "${RGW_REALM_USER_ACCESS_KEY_FILE}"
+        echo -n "{$(cat ${RGW_REALM_USER_SECRET_KEY_FILE} | sed 's/,$//')}" > "${RGW_REALM_USER_SECRET_KEY_FILE}"
     else
         readonly FIRST_CLUSTER_HOSTNAME=$(hostname | sed -e 's/-cluster.//')
         readonly CLUSTER2_PULL_REALM="${REALM_NAME_PREFIX}1"
@@ -125,20 +157,20 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                 IS_FIRST_GATEWAY_AVAILABLE=$(curl -LsS http://${FIRST_CLUSTER_HOSTNAME}:"$RGW_DAEMON_PORT" 2>&1 | grep "xml version" | wc -l)
                 if [[ $IS_FIRST_GATEWAY_AVAILABLE == 1 ]]; then
                     "$CEPH_BIN"/radosgw-admin realm pull --rgw-realm "$CLUSTER2_PULL_REALM" --url http://${FIRST_CLUSTER_HOSTNAME}:"$RGW_DAEMON_PORT" \
-                        --access-key "$RGW_REALM_ADMIN_ACCESS_KEY" --secret "$RGW_REALM_ADMIN_SECRET_KEY" \
+                        --access-key "${RGW_REALM_USER_ACCESS_KEY[0]}" --secret "${RGW_REALM_USER_SECRET_KEY[0]}" \
                         --default
                     "$CEPH_BIN"/radosgw-admin period pull --url=http://${FIRST_CLUSTER_HOSTNAME}:"$RGW_DAEMON_PORT" \
-                        --access-key "$RGW_REALM_ADMIN_ACCESS_KEY" --secret "$RGW_REALM_ADMIN_SECRET_KEY"
+                        --access-key "${RGW_REALM_USER_ACCESS_KEY[0]}" --secret "${RGW_REALM_USER_SECRET_KEY[0]}"
 
                     # Add secondary zone:
                     "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$CLUSTER2_ZONEGROUP" --rgw-zone "$CLUSTER2_ZONE" \
-                        --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "$RGW_REALM_ADMIN_ACCESS_KEY" \
-                        --secret "$RGW_REALM_ADMIN_SECRET_KEY"
+                        --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "${RGW_REALM_USER_ACCESS_KEY[0]}" \
+                        --secret "${RGW_REALM_USER_SECRET_KEY[0]}"
 
                     # Add archive zone:
                     "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$CLUSTER2_ZONEGROUP" --rgw-zone "$CLUSTER2_ARCHIVE_ZONE" \
-                        --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "$RGW_REALM_ADMIN_ACCESS_KEY" \
-                        --secret "$RGW_REALM_ADMIN_SECRET_KEY" \
+                        --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "${RGW_REALM_USER_ACCESS_KEY[0]}" \
+                        --secret "${RGW_REALM_USER_SECRET_KEY[0]}" \
                         --tier-type=archive
 
                     "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$CLUSTER2_PULL_REALM" --commit
@@ -158,31 +190,19 @@ else
     ZONE_NAME=default
     add_placement_targets_and_storage_classes
     create_system_user
-    pkill radosgw
-    start_rgw_daemon "$RGW_DAEMON_PORT" "${ZONEGROUP_NAME}" "${ZONE_NAME}"
+    echo -n "${RGW_REALM_USER_ACCESS_KEY[0]}" > "${RGW_REALM_USER_ACCESS_KEY_FILE}"
+    echo -n "${RGW_REALM_USER_SECRET_KEY[0]}" > "${RGW_REALM_USER_SECRET_KEY_FILE}"
 fi
 
 if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
-    # Create MFA TOTP token.
-    "$CEPH_BIN"/radosgw-admin mfa create --uid="$RGW_REALM_ADMIN_UID" --totp-serial=1 --totp-seed=23456723 --totp-seed-type=base32
-    if [[ "$RGW_MULTISITE" != 1 ]]; then
-        "$CEPH_BIN"/radosgw-admin mfa create --uid=testid --totp-serial=1 --totp-seed=23456723 --totp-seed-type=base32
-    fi
+    "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key -i "${RGW_REALM_USER_ACCESS_KEY_FILE}" \
+        || "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "${RGW_REALM_USER_ACCESS_KEY[0]}"
 
-    "$CEPH_BIN"/ceph dashboard set-rgw-api-user-id "$RGW_REALM_ADMIN_UID"
-
-    RGW_REALM_ADMIN_ACCESS_KEY_FILE="/tmp/rgw-user-access-key.txt"
-    printf "${RGW_REALM_ADMIN_ACCESS_KEY}" > "${RGW_REALM_ADMIN_ACCESS_KEY_FILE}"
-    "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key -i "${RGW_REALM_ADMIN_ACCESS_KEY_FILE}" \
-        || "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "${RGW_REALM_ADMIN_ACCESS_KEY}"
-
-    RGW_REALM_ADMIN_SECRET_KEY_FILE="/tmp/rgw-user-secret-key.txt"
-    printf "${RGW_REALM_ADMIN_SECRET_KEY}" > "${RGW_REALM_ADMIN_SECRET_KEY_FILE}"
-    "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key -i "${RGW_REALM_ADMIN_SECRET_KEY_FILE}" \
-        || "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "${RGW_REALM_ADMIN_SECRET_KEY}"
+    "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key -i "${RGW_REALM_USER_SECRET_KEY_FILE}" \
+        || "$CEPH_BIN"/ceph dashboard set-rgw-api-secret-key "${RGW_REALM_USER_SECRET_KEY[0]}"
 fi
 
 if [[ -f "/root/.aws/credentials" ]]; then
-    echo "aws_access_key_id = $RGW_REALM_ADMIN_ACCESS_KEY
-aws_secret_access_key = $RGW_REALM_ADMIN_SECRET_KEY" >> /root/.aws/credentials
+    echo "aws_access_key_id = ${RGW_REALM_USER_ACCESS_KEY[0]}
+aws_secret_access_key = ${RGW_REALM_USER_SECRET_KEY[0]}" >> /root/.aws/credentials
 fi
