@@ -16,7 +16,11 @@
 1. To install `docker` and `docker-compose`, if you're using:
    * Fedora: `sudo bash ./docker/scripts/install-docker-compose-fedora.sh`
    * CentOS/RHEL: `sudo bash ./docker/scripts/install-docker-compose-centos-rhel.sh`
-   * Other OSes: please check [this](https://docs.docker.com/compose/install/).
+   * Other OSes: please check [this](https://docs.docker.com/compose/install/). Additionally, please ensure that SELinux is running in permissive mode:
+     ```bash
+     setenforce 0
+     sed -i -E 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+     ```
 1. Use `.env.example` template for ceph-dev configuration: `cp .env.example .env`, edit `.env` and modify `CEPH_REPO_DIR=/path/to/...` to point to the directory where you cloned the Ceph repo (step #1)
 1. Download the container images: `docker-compose pull`
 1. Launch it (for a minimal Ceph-only deployment):
