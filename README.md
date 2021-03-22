@@ -12,7 +12,7 @@
    * Other OSes: please check [this](https://docs.docker.com/compose/install/).
 1. Use `.env.example` template for ceph-dev configuration: `cp .env.example .env`.
 1. Download the container images: `docker-compose pull`
-1. Launch everything: `docker-compose up -d`
+1. Launch everything: `docker-compose up -d ceph` (for Ceph-only deployment) or `docker-compose up -d ceph grafana prometheus alertmanager node-exporter` (for Ceph + monitoring stack).
 1. Check how things are going with `docker-compose logs -f ceph`:
    * After a couple of minutes (aprox.) it'll finally print `All done`.
 1. The dashboard will be available at: `https://localhost:11000` with credentials: `admin / admin`.
