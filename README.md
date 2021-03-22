@@ -4,18 +4,32 @@
 
 ## Quick Install
 
-1. Clone this repo: `git clone https://github.com/rhcs-dashboard/ceph-dev.git`
-1. Enter `ceph-dev` directory.
-1. To install `docker` and `docker-compose`, if you're using:
+1. Clone the Ceph repo (both `--depth 1 --single-branch` are optional flags but they'll dramatically reduce the amount of data transferred and stored):
+    ```sh
+    git clone --depth 1 --single-branch git@github.com:ceph/ceph.git
+    ```
+3. Clone this repo:
+    ```sh
+    git clone https://github.com/rhcs-dashboard/ceph-dev.git
+    ```
+5. Enter `ceph-dev` directory.
+6. To install `docker` and `docker-compose`, if you're using:
    * Fedora: `sudo bash ./docker/scripts/install-docker-compose-fedora.sh`
    * CentOS/RHEL: `sudo bash ./docker/scripts/install-docker-compose-centos-rhel.sh`
    * Other OSes: please check [this](https://docs.docker.com/compose/install/).
-1. Use `.env.example` template for ceph-dev configuration: `cp .env.example .env`.
-1. Download the container images: `docker-compose pull`
-1. Launch everything: `docker-compose up -d ceph` (for Ceph-only deployment) or `docker-compose up -d ceph grafana prometheus alertmanager node-exporter` (for Ceph + monitoring stack).
-1. Check how things are going with `docker-compose logs -f ceph`:
+7. Use `.env.example` template for ceph-dev configuration: `cp .env.example .env`, edit `.env` and modify `CEPH_REPO_DIR=/path/to/...` to point to the directory where you cloned the Ceph repo (step #1)
+8. Download the container images: `docker-compose pull`
+9. Launch it (for a minimal Ceph-only deployment):
+    ```
+    docker-compose up -d ceph
+    ```
+    or  (for Ceph + monitoring stack):
+    ```
+    docker-compose up -d ceph grafana prometheus alertmanager node-exporter
+    ```
+11. Check how things are going with `docker-compose logs -f ceph`:
    * After a couple of minutes (aprox.) it'll finally print `All done`.
-1. The dashboard will be available at: `https://localhost:11000` with credentials: `admin / admin`.
+12. The dashboard will be available at: `https://localhost:11000` with credentials: `admin / admin`.
 
 ## Advanced Installation
 
