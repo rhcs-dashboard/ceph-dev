@@ -45,8 +45,9 @@ RUN dnf install -y libtool-ltdl-devel libxml2-devel python36-devel xmlsec1-devel
 # SSO (after installing xmlsec deps).
 RUN pip3 install python3-saml==1.9.0
 
-COPY nfs-ganesha/nfs-ganesha.repo /etc/yum.repos.d
-RUN dnf install -y nfs-ganesha-ceph nfs-ganesha-rados-grace \
+# NFS Ganesha.
+RUN dnf install -y centos-release-nfs-ganesha30 \
+    && dnf install -y nfs-ganesha-rados-grace nfs-ganesha-rados-urls \
     && dnf clean packages
 
 # S3 benchmark:

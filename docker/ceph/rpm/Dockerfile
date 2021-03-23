@@ -11,8 +11,9 @@ ARG REPO_URL
 ARG CEPH_RELEASE=master
 COPY rpm/set-ceph-repo.sh /root
 RUN /root/set-ceph-repo.sh
-RUN dnf install -y ceph ceph-mgr-dashboard ceph-mgr-diskprediction-local ceph-radosgw rbd-mirror \
-    && dnf clean all
+RUN dnf install -y --nogpgcheck ceph ceph-mgr-dashboard ceph-mgr-diskprediction-local \
+    ceph-radosgw rbd-mirror \
+    && dnf clean packages
 
 # Install doc-build deps.
 # Fedora provide missing dependencies until epel provide all dependencies.
