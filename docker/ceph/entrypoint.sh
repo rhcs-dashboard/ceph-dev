@@ -17,6 +17,7 @@ export_var CEPH_DEV_DIR=/ceph/build."${HOSTNAME}"/dev
 export_var CEPH_OUT_DIR=/ceph/build."${HOSTNAME}"/out
 export_var CEPH_PORT=${CEPH_PORT:-10000}
 
+rm -rf /ceph/build
 mkdir -p "${CEPH_CONF_PATH}"
 
 if [[ "${IS_CEPH_RPM}" == 1 ]]; then
@@ -36,28 +37,21 @@ if [[ "${IS_CEPH_RPM}" == 1 ]]; then
         fi
     fi
 
-    # Set cmake vars checked by vstart (enable dashboard module, ...).
-    mkdir -p /opt/ceph/build
-    mkdir -p /ceph/build
-    mount -o bind /opt/ceph/build /ceph/build
-    echo '
-ceph_SOURCE_DIR:STATIC=/ceph
-WITH_MGR_DASHBOARD_FRONTEND:BOOL=ON
-WITH_RBD:BOOL=ON
-' > /ceph/build/CMakeCache.txt
+    mkdir /ceph/build
+    cp -rT /docker/rpm/build-fake /ceph/build
 else
     # Ceph build mode.
     export_var CEPH_BIN=/ceph/build/bin
 
     readonly BUILD_DIR=/ceph/build
-    readonly CUSTOM_BUILD_DIR=/build
+    readonly CUSTOM_BUILD_DIR=/ceph/build.custom
     readonly NODEENV_BIN_DIR=src/pybind/mgr/dashboard/node-env/bin
     
     if [[ -e "$CUSTOM_BUILD_DIR/$NODEENV_BIN_DIR" ]]; then
-        mkdir -p $BUILD_DIR
-        mount -o bind $CUSTOM_BUILD_DIR $BUILD_DIR
-    
+        ln -sT $CUSTOM_BUILD_DIR /ceph/build
         export_var CUSTOM_BUILD_DIR_ENABLED=1
+    else
+        ln -sT /ceph/build.latest /ceph/build
     fi
 fi
 

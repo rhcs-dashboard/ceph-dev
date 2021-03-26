@@ -6,7 +6,7 @@ services:
         volumes:
             - ./docker/ceph:/docker:z
             - ${CEPH_REPO_DIR}:/ceph
-            - ${CEPH_CUSTOM_BUILD_DIR:-empty_volume}:/build
+            - ${CEPH_CUSTOM_BUILD_DIR:-empty_volume}:/ceph/build.custom
             - ${HOST_CCACHE_DIR:-~/.ccache}:/root/.ccache
         environment:
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
@@ -68,7 +68,7 @@ services:
         ports: ['${CEPH2_PROXY_HOST_PORT:-4202}:4200','${CEPH2_HOST_PORT:-11002}:11000']
         volumes:
             - ${CEPH2_REPO_DIR}:/ceph
-            - ${CEPH2_CUSTOM_BUILD_DIR:-empty_volume}:/build
+            - ${CEPH2_CUSTOM_BUILD_DIR:-empty_volume}:/ceph/build.custom
 
     grafana:
         image: ${GRAFANA_IMAGE:-ceph/ceph-grafana}

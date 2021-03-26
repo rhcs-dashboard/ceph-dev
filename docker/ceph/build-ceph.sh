@@ -17,7 +17,7 @@ cd $CEPH_DIR
 git submodule update --init --recursive --force
 ./install-deps.sh
 
-rm -rf $CEPH_DIR/build
+unlink $CEPH_DIR/build
 
 export BUILD_DATE=1981-05-09
 export SOURCE_DATE_EPOCH=358228200
@@ -37,5 +37,9 @@ rm -rf node_modules
 cd $CEPH_DIR/build
 
 make -j $(nproc --ignore=2) vstart mgr-dashboard-frontend-deps mgr-dashboard-frontend-build
+
+echo 'Renaming build as "build.latest"...'
+cd $CEPH_DIR
+mv -fT build build.latest
 
 echo "Ceph successfully built!!!"
