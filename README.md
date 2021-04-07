@@ -143,7 +143,7 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox
 # All tests:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox py3
 # All tests in nautilus branch:
-docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox py3-cov
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox py3-cov,py27-cov
 
 # Only specific tests:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox tests/test_rest_client.py tests/test_grafana.py
@@ -158,12 +158,14 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pytest -
 
 # All files:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox lint
+# All files in nautilus branch:
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox py3-lint,py27-lint
 
 # Only 1 file:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox lint controllers/health.py
 # Only 1 file in nautilus branch:
-docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pylint controllers/health.py
-docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox run -- pycodestyle controllers/health.py
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox py3-run pylint controllers/health.py
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox py3-run pycodestyle controllers/health.py
 
 # Other utilities
 

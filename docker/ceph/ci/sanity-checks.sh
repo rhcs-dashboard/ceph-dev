@@ -106,27 +106,15 @@ run_tox() {
 
     export CEPH_BUILD_DIR="$PWD"/.tox
     TOX_ARGS="$@"
-    # Nautilus env list.
+    # Nautilus branch.
     if [[ "$(tox -l | grep cov | wc -l)" > 0 ]]; then
         if [[ -z "$TOX_ARGS" ]]; then
-            TOX_ARGS='py3-cov,py3-lint'
+            TOX_ARGS='py3-cov,py3-lint,py27-cov,py27-lint'
         elif [[ "${1:0:6}" == 'tests/' ]]; then
             # Run user-defined unit tests
             TOX_ARGS="py3-run pytest $TOX_ARGS"
-        else
-            TOX_ARGS="py3-$TOX_ARGS"
         fi
-        if [[ "$TOX_ARGS" == *'py27-'* && "$PYTHON_VERSION" == 3 ]]; then
-            echo 'Python 3 build detected: switching to python 3 tox env.'
-            TOX_ARGS=${TOX_ARGS//py27-/py3-}
-        elif [[ "$TOX_ARGS" == *'py3-'* && "$PYTHON_VERSION" != 3 ]]; then
-            echo 'Python 2 build detected: switching to python 2 tox env.'
-            TOX_ARGS=${TOX_ARGS//py3-/py27-}
-        fi
-        if [[ "${IS_CEPH_RPM}" == 1 ]]; then
-            TOX_OPTIONS='--sitepackages'
-        fi
-    else # Master env list.
+    else # Master branch.
         if [[ -z "$TOX_ARGS" ]]; then
             # Default behaviour (pre-commit)
             TOX_ARGS='py3,lint,check'
