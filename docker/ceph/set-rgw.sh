@@ -175,7 +175,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
 
                     "$CEPH_BIN"/radosgw-admin period update --rgw-realm "$CLUSTER2_PULL_REALM" --commit
 
-                    start_rgw_daemon "$RGW_DAEMON_PORT" "${CLUSTER2_ZONEGROUP}" "${CLUSTER2_ZONE}"
+                    start_rgw_daemon "$RGW_DAEMON_PORT" "${CLUSTER2_PULL_REALM}" "${CLUSTER2_ZONEGROUP}" "${CLUSTER2_ZONE}"
 
                     break
                 fi
