@@ -47,7 +47,7 @@ RUN pip3 install python3-saml==1.9.0
 
 # NFS Ganesha.
 RUN dnf install -y centos-release-nfs-ganesha30 \
-    && dnf install -y nfs-ganesha-rados-grace nfs-ganesha-rados-urls \
+    && dnf install -y nfs-ganesha-ceph nfs-ganesha-rados-grace nfs-ganesha-rados-urls \
     && dnf clean packages
 
 # S3 benchmark:
