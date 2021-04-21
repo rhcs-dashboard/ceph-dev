@@ -19,6 +19,9 @@ ARG FOR_MAKE_CHECK=1
 RUN bash -x /ceph/install-deps.sh \
     && dnf clean packages
 
+RUN dnf install -y ninja-build \
+    && dnf clean packages
+
 # Install doc-build deps.
 # Fedora provide missing dependencies until epel provide all dependencies.
 COPY fedora/fedora.repo /etc/yum.repos.d
