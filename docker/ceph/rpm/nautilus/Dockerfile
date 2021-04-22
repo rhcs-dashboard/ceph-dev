@@ -34,6 +34,7 @@ RUN pip install pip==20.3 \
     && pip install -U nodeenv tox
 
 # SSO (after installing xmlsec deps).
+RUN pip install pkgconfig==1.5.2
 RUN pip install wheel==0.34.2 xmlsec==1.3.3 python3-saml==1.8.0
 
 ARG REPO_URL

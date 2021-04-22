@@ -3,11 +3,11 @@
 set -e
 
 export_var() {
-    export "$1"
+    export "${1?}"
     echo "export $1" >> /root/.bashrc
 }
 
-export_var IS_CEPH_RPM=$(which ceph-mgr 2>/dev/null | wc -l)
+export_var IS_CEPH_RPM="$(command -v ceph-mgr 2>/dev/null | wc -l)"
 
 # Env. vars used in vstart.
 export_var CEPH_ASOK_DIR=/ceph/build."${HOSTNAME}"/out
@@ -15,7 +15,7 @@ export_var CEPH_CONF=/ceph/build."${HOSTNAME}"/ceph.conf
 export_var CEPH_CONF_PATH=/ceph/build."${HOSTNAME}"
 export_var CEPH_DEV_DIR=/ceph/build."${HOSTNAME}"/dev
 export_var CEPH_OUT_DIR=/ceph/build."${HOSTNAME}"/out
-export_var CEPH_PORT=${CEPH_PORT:-10000}
+export_var CEPH_PORT="${CEPH_PORT:-10000}"
 
 rm -rf /ceph/build
 mkdir -p "${CEPH_CONF_PATH}"
@@ -43,7 +43,6 @@ else
     # Ceph build mode.
     export_var CEPH_BIN=/ceph/build/bin
 
-    readonly BUILD_DIR=/ceph/build
     readonly CUSTOM_BUILD_DIR=/ceph/build.custom
     readonly NODEENV_BIN_DIR=src/pybind/mgr/dashboard/node-env/bin
     
@@ -56,10 +55,29 @@ else
 fi
 
 # Common env. vars.
-[[ -z "$CEPH_VERSION" ]] && export_var CEPH_VERSION=$("$CEPH_BIN"/ceph -v | awk '{ print substr($3,1,2) }')
-[[ "$CEPH_VERSION" == 'De' ]] && export_var CEPH_VERSION=1000000
-[[ -z "$CEPH_PATCH_VERSION" ]] && export_var CEPH_PATCH_VERSION=$("$CEPH_BIN"/ceph -v | sed -r 's/.*\.([0-9]*)\-.*/\1/')
-[[ $(rpm -qi ceph-mgr-dashboard | grep 'Red Hat' | wc -l) > 0 ]] && export_var IS_UPSTREAM=0 || export_var IS_UPSTREAM=1
+if [[ "${IS_CEPH_RPM}" == 1 ]]; then
+    if [[ -z "$CEPH_VERSION" ]]; then
+        export_var CEPH_VERSION="$("$CEPH_BIN"/ceph -v | cut -d" "  -f3 | cut -d. -f1)"
+    elif [[ "$CEPH_VERSION" == 'De' ]]; then
+        export_var CEPH_VERSION=1000000
+    fi
+
+    if [[ "$(rpm -qi ceph-mgr-dashboard | grep -c 'Red Hat')" -gt 0 ]]; then
+        export_var IS_UPSTREAM=0
+    else
+        export_var IS_UPSTREAM=1
+    fi
+else
+    # git describe returns "v17.0.0-3432-ga67d1cf2a7" but we only need "17"
+    export_var CEPH_VERSION="$(git describe | cut -c2- | cut -d. -f1)"
+
+    if [[ "$(git rev-parse --abbrev-ref HEAD)" == ceph-*-rhel-patches ]]; then
+      export_var IS_UPSTREAM=0
+    else
+      export_var IS_UPSTREAM=1
+    fi
+fi
+
 export_var NODE_OPTIONS=--max_old_space_size=4096
 
 exec "$@"
