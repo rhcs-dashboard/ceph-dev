@@ -32,8 +32,7 @@ fi
 
 # Build process
 NPROC=$(nproc --ignore=2) $CEPH_DIR/src/script/run-make.sh \
-  --cmake-args "-D ENABLE_GIT_VERSION=OFF" -- \
-  --target vstart mgr-dashboard-frontend-deps mgr-dashboard-frontend-build
+  --cmake-args "-D ENABLE_GIT_VERSION=OFF" -- vstart
 
 echo 'Renaming build as "build.latest"...'
 cd $CEPH_DIR
