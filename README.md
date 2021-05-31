@@ -242,6 +242,12 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
 docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh
 ```
 
+* Run promtool unit tests for testing prometheus rules:
+```
+# In this directory /monitoring/prometheus/alerts run -
+promtool test rules test_alerts.yml
+```
+
 * Build Ceph documentation:
 ```
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_build_doc
