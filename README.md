@@ -326,14 +326,33 @@ docker-compose up -d ceph
 
 ## Build and push an image to docker registry:
 
-If you want to update an image, you'll have to edit image's Dockerfile and then:
-
 * Build image:
 ```
 docker build -t {imageName}:{imageTag} -f {/path/to/Dockerfile} ./docker/ceph
 
-# Example:
-docker build -t rhcsdashboard/ceph:master -f ./docker/ceph/master/Dockerfile  ./docker/ceph
+# Examples
+
+# Build base image:
+docker build -t rhcsdashboard/ceph-base:centos8 -f ./docker/ceph/centos/Dockerfile  ./docker/ceph
+
+# Nightly ceph-rpm master:
+docker build -t rhcsdashboard/ceph-rpm:master \
+-f ./docker/ceph/rpm/Dockerfile ./docker/ceph \
+--network=host
+
+# Using custom repo URL (only for ceph-rpm images):
+docker build -t rhcsdashboard/ceph-rpm:v16.2.0 \
+-f ./docker/ceph/rpm/Dockerfile ./docker/ceph \
+--build-arg REPO_URL=https://download.ceph.com/rpm-pacific/el8/x86_64/ \
+--build-arg VCS_BRANCH=v16.2.0 \
+--network=host
+
+# Using custom repo files placed in './docker/ceph/rpm' (only for ceph-rpm images):
+docker build -t rhcsdashboard/ceph-rpm:rhcs5.0 \
+-f ./docker/ceph/rpm/Dockerfile ./docker/ceph \
+--build-arg USE_REPO_FILES=1 \
+--build-arg VCS_BRANCH=v16.2.0 \
+--network=host
 ```
 
 * Optionally, create an additional tag:
