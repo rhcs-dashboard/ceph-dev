@@ -7,12 +7,14 @@ RUN dnf config-manager --add-repo http://apt-mirror.front.sepia.ceph.com/lab-ext
 RUN dnf config-manager --setopt gpgcheck=0 apt-mirror.front.sepia.ceph.com_lab-extras_${CENTOS_VERSION}_ --save
 RUN dnf copr enable -y ktdreyer/ceph-el${CENTOS_VERSION}
 
+ARG USE_REPO_FILES=0
 ARG REPO_URL
 ARG CEPH_RELEASE=master
-COPY rpm/set-ceph-repo.sh /root
+COPY rpm/*.* /root/
 RUN /root/set-ceph-repo.sh
-RUN dnf install -y --nogpgcheck ceph ceph-mgr-dashboard ceph-mgr-diskprediction-local \
-    ceph-radosgw rbd-mirror \
+RUN dnf install -y --nogpgcheck ceph-mds ceph-mgr-cephadm ceph-mgr-dashboard \
+    ceph-mgr-diskprediction-local \
+    ceph-mon ceph-osd ceph-radosgw rbd-mirror \
     && dnf clean packages
 
 # Install doc-build deps.

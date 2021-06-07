@@ -37,12 +37,14 @@ RUN pip install pip==20.3 \
 RUN pip install lxml==4.6.3 pkgconfig==1.5.2
 RUN pip install wheel==0.34.2 xmlsec==1.3.3 python3-saml==1.8.0
 
+ARG USE_REPO_FILES=0
 ARG REPO_URL
 ARG CEPH_RELEASE=nautilus
-COPY rpm/set-ceph-repo.sh /root
+COPY rpm/*.* /root/
 RUN /root/set-ceph-repo.sh
 
-RUN yum install -y ceph ceph-mgr-dashboard ceph-mgr-diskprediction-local ceph-radosgw rbd-mirror \
+RUN yum install -y ceph-mds ceph-mgr-dashboard ceph-mgr-diskprediction-local \
+    ceph-mon ceph-osd ceph-radosgw rbd-mirror \
     && yum clean all
 
 RUN rm -rf /var/cache/yum/*

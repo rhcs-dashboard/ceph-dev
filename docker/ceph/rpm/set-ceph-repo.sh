@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ "${USE_REPO_FILES}" == 1 ]]; then
+    mv /root/*.repo /etc/yum.repos.d
+    exit 0
+fi
+
 if [[ -z "$REPO_URL" ]]; then
     if [[ -z "$CEPH_RELEASE" ]]; then
         CEPH_RELEASE=master

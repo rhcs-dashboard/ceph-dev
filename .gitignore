@@ -1,4 +1,5 @@
 *.env
 .idea
 cluster
+docker/ceph/rpm/*.repo
 openshift.local.clusterup
