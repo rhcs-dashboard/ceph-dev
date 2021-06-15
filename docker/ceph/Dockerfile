@@ -5,7 +5,8 @@ ARG CENTOS_VERSION
 # Required in order for build-doc to run successfully:
 RUN pip3 install -U Cython==0.29.3
 
-RUN dnf install -y ccache \
+# @TODO: erase libarchive install when cmake 3.20.2 or above is available as system package
+RUN dnf install -y ccache libarchive\
     && dnf clean packages
 
 ARG VCS_BRANCH=master
