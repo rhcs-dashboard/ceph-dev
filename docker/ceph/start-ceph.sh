@@ -9,7 +9,7 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     # Set dev server proxy:
-    DASHBOARD_URL="\"$HTTP_PROTO://localhost:$CEPH_MGR_DASHBOARD_PORT\""
+    DASHBOARD_URL="\"$HTTP_PROTO://${HOSTNAME}:$CEPH_MGR_DASHBOARD_PORT\""
     [[ -n "$REMOTE_DASHBOARD_URL" ]] && DASHBOARD_URL="\"$REMOTE_DASHBOARD_URL\""
     jq '.["/api/"].target'="$DASHBOARD_URL" proxy.conf.json.sample | jq '.["/ui-api/"].target'="$DASHBOARD_URL" > proxy.conf.json
 

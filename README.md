@@ -33,7 +33,7 @@
     ```
 1. Check how things are going with `docker-compose logs -f ceph`:
    * After a couple of minutes (aprox.) it'll finally print `All done`.
-1. The dashboard will be available at: `https://localhost:11000` with credentials: `admin / admin`.
+1. The dashboard will be available at: `https://127.0.0.1:11000` with credentials: `admin / admin`.
 
 ## Advanced Installation
 
@@ -93,7 +93,7 @@ docker-compose logs -f ceph
 
 * Access dashboard with credentials: admin / admin
 
-https://localhost:$CEPH_HOST_PORT
+https://127.0.0.1:$CEPH_HOST_PORT
 
 Access dev. server dashboard when you see in container logs something like this:
 ```
@@ -102,7 +102,7 @@ ceph                 | All done.
 ceph                 | *********
 ```
 
-http://localhost:$CEPH_PROXY_HOST_PORT
+http://127.0.0.1:$CEPH_PROXY_HOST_PORT
 
 * Restart dashboard module:
 ```
@@ -251,25 +251,25 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_build_doc
 ```
 docker-compose run --rm -p 11001:8080 ceph /docker/ci/sanity-checks.sh run_serve_doc
 
-# Access here: http://localhost:11001
+# Access here: http://127.0.0.1:11001
 ```
 
 ## Grafana
 
 If you have started grafana, you can access it at:
 
-http://localhost:$GRAFANA_HOST_PORT/login
+http://127.0.0.1:$GRAFANA_HOST_PORT/login
 
 ## Prometheus
 
 If you have started prometheus, you can access it at:
 
-http://localhost:$PROMETHEUS_HOST_PORT
+http://127.0.0.1:$PROMETHEUS_HOST_PORT
 
 ## Single Sign-On (SSO)
 
 Keycloak (open source Identity and Access Management solution)
-will be used for authentication, so localhost port 8080 must be available.
+will be used for authentication, so port 8080 must be available in your machine.
 
 * Start Keycloak:
 ```
@@ -278,7 +278,7 @@ docker-compose up -d --scale keycloak=1 keycloak
 
 You can access Keycloak administration console with credentials: admin / keycloak
 
-http://localhost:8080 or https://localhost:8443
+http://127.0.0.1:8080 or https://127.0.0.1:8443
 
 * Enable dashboard SSO in running ceph container:
 ```
@@ -287,7 +287,7 @@ docker-compose exec ceph /docker/sso/sso-enable.sh
 
 * Access dashboard with SSO credentials: admin / ssoadmin
 
-https://localhost:$CEPH_HOST_PORT
+https://127.0.0.1:$CEPH_HOST_PORT
 
 * Disable dashboard SSO:
 ```
