@@ -4,7 +4,7 @@ ARG CENTOS_VERSION
 
 RUN dnf install -y epel-release \
     && dnf clean packages
-RUN dnf install -y bind-utils curl dnf dnf-plugins-core git hostname iputils jq lsof net-tools \
+RUN dnf install -y bind-utils curl dnf dnf-plugins-core git hostname iputils jq jsonnet lsof net-tools \
     python3-jinja2 python3-jsonpatch python3-pip util-linux which \
     && dnf clean packages
 
