@@ -117,7 +117,7 @@ run_tox() {
     else # Master branch.
         if [[ -z "$TOX_ARGS" ]]; then
             # Default behaviour (pre-commit)
-            TOX_ARGS='py3,lint,check'
+            TOX_ARGS='py3,lint,check,grafonnet-check'
             [[ "$(tox -l | grep 'openapi-check' | wc -l)" > 0 ]] && TOX_ARGS="${TOX_ARGS},openapi-check"
             echo "Tox environments: ${TOX_ARGS}"
         elif [[ "${1:0:6}" == 'tests/' ]]; then
