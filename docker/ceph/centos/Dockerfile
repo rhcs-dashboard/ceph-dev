@@ -4,7 +4,7 @@ ARG CENTOS_VERSION
 
 RUN dnf install -y epel-release \
     && dnf clean packages
-RUN dnf install -y bind-utils curl dnf dnf-plugins-core git hostname iputils jq lsof net-tools \
+RUN dnf install -y bind-utils curl dnf dnf-plugins-core git hostname iputils jq jsonnet lsof net-tools \
     python3-jinja2 python3-jsonpatch python3-pip util-linux which \
     && dnf clean packages
 
@@ -16,7 +16,7 @@ RUN dnf config-manager --set-enabled powertools
 RUN pip3 install -U pip
 
 # Sanity checks:
-RUN pip3 install mypy tox
+RUN pip3 install jsondiff mypy tox
 
 # AWS CLI.
 RUN pip3 install awscli boto3 boto3-stubs
