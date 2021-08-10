@@ -105,30 +105,25 @@ run_tox() {
     chmod 777 .tox
 
     export CEPH_BUILD_DIR="$PWD"/.tox
+    TOX_OPTIONS='-e'
     TOX_ARGS="$@"
-    # Nautilus branch.
-    if [[ "$(tox -l | grep cov | wc -l)" > 0 ]]; then
-        if [[ -z "$TOX_ARGS" ]]; then
-            TOX_ARGS='py3-cov,py3-lint,py27-cov,py27-lint'
-        elif [[ "${1:0:6}" == 'tests/' ]]; then
-            # Run user-defined unit tests
+    unset TOX_SKIP_ENV
+    if [[ -z "$TOX_ARGS" ]]; then
+        # Default behaviour (pre-commit)
+        unset TOX_OPTIONS
+        export TOX_SKIP_ENV='^.*(doc|fix|run)$'
+    elif [[ "${1:0:6}" == 'tests/' ]]; then
+        # Run user-defined unit tests
+        if [[ "$(tox -l | grep cov | wc -l)" > 0 ]]; then  # Nautilus branch.
             TOX_ARGS="py3-run pytest $TOX_ARGS"
-        fi
-    else # Master branch.
-        if [[ -z "$TOX_ARGS" ]]; then
-            # Default behaviour (pre-commit)
-            TOX_ARGS='py3,lint,check'
-            [[ "$(tox -l | grep 'openapi-check' | wc -l)" > 0 ]] && TOX_ARGS="${TOX_ARGS},openapi-check"
-            echo "Tox environments: ${TOX_ARGS}"
-        elif [[ "${1:0:6}" == 'tests/' ]]; then
-            # Run user-defined unit tests
+        else  # Master branch.
             TOX_ARGS="py3 $TOX_ARGS"
         fi
     fi
 
     find . -name ".coverage" -exec rm -f {} \;
 
-    tox ${TOX_OPTIONS} -e $TOX_ARGS
+    tox ${TOX_OPTIONS} $TOX_ARGS
 
     # Cleanup
     find .tox -maxdepth 1 -iname "py*" -type d -exec chmod -R 777 {} \;
