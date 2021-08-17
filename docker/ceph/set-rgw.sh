@@ -2,8 +2,8 @@
 
 set -ex
 
-readonly RGW_REALM_USER_UID='dev'
-readonly RGW_REALM_USER_NAME='Dev'
+readonly RGW_REALM_USER_UID='dashboard'
+readonly RGW_REALM_USER_NAME='Ceph Dashboard'
 readonly RGW_REALM_USER_ACCESS_KEY=('DiPt4V7WWvy2njL1z6aC' 'M1KBQY1XV9ELH8Y637PD')
 readonly RGW_REALM_USER_ACCESS_KEY_FILE="/tmp/rgw-user-access-key.txt"
 readonly RGW_REALM_USER_SECRET_KEY=('xSZUdYky0bTctAdCEEW8ikhfBVKsBV5LFYL82vvh' 'GsOwxjOfxAwM2It2mBiB5A5CJFxu73GjpNjCROvx')
@@ -16,7 +16,7 @@ truncate -s0 ${RGW_REALM_USER_SECRET_KEY_FILE}
 
 create_system_user() {
     local USER_NUM=$1
-    local USER_UID="${RGW_REALM_USER_UID}${USER_NUM}"
+    local USER_UID="${RGW_REALM_USER_UID}"
     local SECRET_INDEX=${USER_NUM}-1
     [[ -z "${USER_NUM}" ]] && SECRET_INDEX=0
     local REALM_NAME=$2
@@ -194,7 +194,8 @@ else
     echo -n "${RGW_REALM_USER_SECRET_KEY[0]}" > "${RGW_REALM_USER_SECRET_KEY_FILE}"
 fi
 
-if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
+RGW_CREDENTIALS_CMD=$("$CEPH_BIN"/ceph dashboard set-rgw- 2>&1 | grep set-rgw-credentials | wc -l)
+if [[ "$IS_FIRST_CLUSTER" == 1 && "${RGW_CREDENTIALS_CMD}" == 0 ]]; then
     "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key -i "${RGW_REALM_USER_ACCESS_KEY_FILE}" \
         || "$CEPH_BIN"/ceph dashboard set-rgw-api-access-key "${RGW_REALM_USER_ACCESS_KEY[0]}"
 
