@@ -35,12 +35,23 @@ RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_curre
 RUN dnf install -y gcc-c++ make \
     && dnf clean packages
 
+# Fedora provide missing dependencies until epel provide all dependencies.
+COPY fedora/fedora.repo /etc/yum.repos.d
+RUN dnf install -y ditaa \
+    && dnf clean packages
+RUN dnf config-manager --set-disabled fedora
+RUN dnf copr enable -y tchaikov/python3-asyncssh
+RUN dnf install -y python3-asyncssh \
+    && dnf clean packages
+
+# Install doc-build deps.
+RUN dnf install -y ant doxygen libxslt-devel libxml2-devel graphviz python3-devel python3-pip python3-virtualenv \
+    python3-Cython \
+    && dnf clean packages
+
 # For dev. mode: run backend unit tests.
-# Fedora provide missing dependencies for backend unit tests until epel provide all dependencies.
-#COPY fedora/fedora.repo /etc/yum.repos.d
 RUN dnf install -y libtool-ltdl-devel libxml2-devel python36-devel xmlsec1-devel xmlsec1-openssl-devel \
     && dnf clean packages
-#RUN dnf config-manager --set-disabled fedora
 
 # SSO (after installing xmlsec deps).
 RUN pip3 install python3-saml==1.9.0

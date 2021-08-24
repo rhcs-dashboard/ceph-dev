@@ -23,17 +23,7 @@ RUN bash -x /ceph/install-deps.sh \
 RUN dnf install -y ninja-build \
     && dnf clean packages
 
-# Install doc-build deps.
-# Fedora provide missing dependencies until epel provide all dependencies.
-COPY fedora/fedora.repo /etc/yum.repos.d
-RUN dnf install -y ditaa \
-    && dnf clean packages
-RUN dnf config-manager --set-disabled fedora
-RUN dnf install -y ant doxygen libxslt-devel libxml2-devel graphviz python3-devel python3-pip python3-virtualenv \
-    python3-Cython \
-    && dnf clean all
-
-RUN rm -rf /var/cache/dnf/*
+RUN dnf clean all && rm -rf /var/cache/dnf/*
 
 COPY install-node.sh /root
 RUN /root/install-node.sh
