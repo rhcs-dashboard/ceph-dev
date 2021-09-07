@@ -30,6 +30,19 @@ if [[ "$CEPH_DEBUG" == 1 ]]; then
     RGW_DEBUG='--debug-rgw=20 --debug-ms=1'
     VSTART_OPTIONS="$VSTART_OPTIONS -d"
 fi
+if [[ "$VSTART_CEPHADM" == 1 ]]; then
+    VSTART_OPTIONS+=" --cephadm"
+    if [[ ! -f "/root/.ssh/id_rsa" ]]; then
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
+    fi
+    if [[ ! -f "/root/.ssh/known_hosts" ]]; then
+        ssh-keygen -A
+    fi
+    dnf install -y openssh-server
+    /usr/sbin/sshd
+fi
 export RGW_DEBUG
 export VSTART_OPTIONS
 

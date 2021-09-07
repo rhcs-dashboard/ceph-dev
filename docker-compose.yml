@@ -32,6 +32,7 @@ services:
             - REMOTE_DASHBOARD_URL
             - RGW
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
+            - VSTART_CEPHADM
         cap_add:
             - ALL
         entrypoint: /docker/entrypoint.sh
