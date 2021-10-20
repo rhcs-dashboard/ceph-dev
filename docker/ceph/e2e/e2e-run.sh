@@ -5,7 +5,9 @@ set -eo pipefail
 cd /ceph/src/pybind/mgr/dashboard/frontend
 
 export NODE_OPTIONS=--max_old_space_size=4096
-npm ci
+if [[ "${RUN_NPM_INSTALL}" != 0 ]]; then
+    npm ci
+fi
 
 npx webdriver-manager update --versions.chrome=$(google-chrome --version | awk '{ print $3 }')
 

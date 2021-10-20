@@ -71,6 +71,29 @@ services:
             - ${CEPH2_REPO_DIR}:/ceph
             - ${CEPH2_CUSTOM_BUILD_DIR:-empty_volume}:/ceph/build.custom
 
+    ceph-e2e:
+        extends:
+            service: ceph-base
+        image: ${CEPH_E2E_IMAGE:-rhcsdashboard/ceph-e2e:nautilus}
+        container_name: ceph-e2e
+        hostname: ceph-e2e
+        environment:
+            - BASE_URL=${BASE_URL:-https://ceph:11000}
+            - RUN_NPM_INSTALL=${RUN_NPM_INSTALL:-0}
+        entrypoint: ''
+        command: '/docker/e2e/e2e-run.sh'
+
+    ceph2-e2e:
+        extends:
+            service: ceph-e2e
+        image: ${CEPH2_E2E_IMAGE:-rhcsdashboard/ceph-e2e:nautilus}
+        container_name: ceph2-e2e
+        hostname: ceph2-e2e
+        volumes:
+            - ${CEPH2_REPO_DIR}:/ceph
+        environment:
+            - BASE_URL=${BASE_URL:-https://ceph2:11000}
+
     grafana:
         image: ${GRAFANA_IMAGE:-ceph/ceph-grafana}
         container_name: grafana

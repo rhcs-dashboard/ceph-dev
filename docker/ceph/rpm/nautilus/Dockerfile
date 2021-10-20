@@ -13,11 +13,6 @@ RUN yum install -y awscli \
 COPY aws/aws-cli-configure.sh /root
 RUN /root/aws-cli-configure.sh
 
-# For dev. mode: run e2e tests.
-COPY e2e/google-chrome.repo /etc/yum.repos.d
-RUN yum install -y google-chrome-stable \
-    && yum clean packages
-
 # For dev. mode: run integration tests.
 RUN yum install -y python2-devel python2-pip python3-devel \
     && yum clean packages
