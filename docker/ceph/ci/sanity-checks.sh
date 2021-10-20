@@ -59,12 +59,11 @@ run_jest() {
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
 
-    local JEST_OPTIONS="--maxWorkers=$(nproc --ignore=3)"
     if [[ -n "$@" ]]; then
         [[ "$CEPH_VERSION" -le '15' ]] && npm run test:config --if-present
-        npx jest "$@" ${JEST_OPTIONS}
+        npx jest "$@"
     else
-        npm run test:ci -- ${JEST_OPTIONS}
+        npm run test:ci
     fi
 
     echo 'All tests passed: OK'

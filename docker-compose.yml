@@ -36,7 +36,8 @@ services:
             - ALL
         entrypoint: /docker/entrypoint.sh
         command: /docker/start.sh
-        cpus: ${CEPH_CPUS:-0}
+        cpus: ${CEPH_CONTAINER_CPUS:-4}
+        mem_limit: ${CEPH_CONTAINER_MEM_LIMIT:-6g}
         scale: -1
     ceph:
         extends:
