@@ -41,10 +41,10 @@ add_placement_targets_and_storage_classes() {
     # Add placement targets:
     for PT_NUM in 1 2; do
         PT_NAME=pt"$PT_NUM"-"$ZONE_NAME"
-        "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$ZONEGROUP_NAME" \
+        "$CEPH_BIN"/radosgw-admin zonegroup placement --rgw-realm "$REALM_NAME" add --rgw-zonegroup "$ZONEGROUP_NAME" \
             --placement-id "$PT_NAME"
 
-        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
+        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-realm "$REALM_NAME" --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
             --placement-id "$PT_NAME" \
             --data-pool "$PT_NAME".rgw.buckets.data \
             --index-pool "$PT_NAME".rgw.buckets.index
@@ -53,11 +53,11 @@ add_placement_targets_and_storage_classes() {
     # Add cold storage class:
     if [[ "$CEPH_VERSION" -ge '14' ]]; then
         COLD_STORAGE_CLASS=COLD
-        "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-zonegroup "$ZONEGROUP_NAME" \
+        "$CEPH_BIN"/radosgw-admin zonegroup placement add --rgw-realm "$REALM_NAME" --rgw-zonegroup "$ZONEGROUP_NAME" \
             --placement-id "$PT_NAME" \
             --storage-class "$COLD_STORAGE_CLASS"
 
-        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
+        "$CEPH_BIN"/radosgw-admin zone placement add --rgw-realm "$REALM_NAME" --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
             --placement-id "$PT_NAME" \
             --storage-class "$COLD_STORAGE_CLASS" \
             --data-pool "$PT_NAME".rgw.cold.data
@@ -122,7 +122,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                         ZONE_OPTIONS='--master --default'
                         RGW_DAEMON_ZONE_OPTION="$ZONE_NAME"
                     fi
-                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
+                    "$CEPH_BIN"/radosgw-admin zone create --rgw-realm "$REALM_NAME" --rgw-zonegroup "$ZONEGROUP_NAME" --rgw-zone "$ZONE_NAME" \
                         --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "${RGW_REALM_USER_ACCESS_KEY[${REALM_NUM}-1]}" \
                         --secret "${RGW_REALM_USER_SECRET_KEY[${REALM_NUM}-1]}" ${ZONE_OPTIONS}
 
@@ -163,12 +163,14 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
                         --access-key "${RGW_REALM_USER_ACCESS_KEY[0]}" --secret "${RGW_REALM_USER_SECRET_KEY[0]}"
 
                     # Add secondary zone:
-                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$CLUSTER2_ZONEGROUP" --rgw-zone "$CLUSTER2_ZONE" \
+                    "$CEPH_BIN"/radosgw-admin zone create --rgw-realm "$CLUSTER2_PULL_REALM" --rgw-zonegroup "$CLUSTER2_ZONEGROUP" \
+                        --rgw-zone "$CLUSTER2_ZONE" \
                         --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "${RGW_REALM_USER_ACCESS_KEY[0]}" \
                         --secret "${RGW_REALM_USER_SECRET_KEY[0]}"
 
                     # Add archive zone:
-                    "$CEPH_BIN"/radosgw-admin zone create --rgw-zonegroup "$CLUSTER2_ZONEGROUP" --rgw-zone "$CLUSTER2_ARCHIVE_ZONE" \
+                    "$CEPH_BIN"/radosgw-admin zone create --rgw-realm "$CLUSTER2_PULL_REALM" --rgw-zonegroup "$CLUSTER2_ZONEGROUP" \
+                        --rgw-zone "$CLUSTER2_ARCHIVE_ZONE" \
                         --endpoints http://$HOSTNAME:"$RGW_DAEMON_PORT" --access-key "${RGW_REALM_USER_ACCESS_KEY[0]}" \
                         --secret "${RGW_REALM_USER_SECRET_KEY[0]}" \
                         --tier-type=archive
