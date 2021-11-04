@@ -15,7 +15,7 @@ receivers:
   - name: 'default'
   - name: 'ceph'
     webhook_configs:
-    - url: 'http://ceph:11000/api/prometheus_receiver'
+    - url: 'https://ceph:11000/api/prometheus_receiver'
   - name: 'ceph2'
     webhook_configs:
-    - url: 'http://ceph2:11000/api/prometheus_receiver'
+    - url: 'https://ceph2:11000/api/prometheus_receiver'
