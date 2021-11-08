@@ -239,6 +239,11 @@ docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests --sp
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
 ```
 
+* Run monitoring tests:
+```
+docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_monitoring
+```
+
 * Run sanity checks:
 ```
 docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh

@@ -130,6 +130,28 @@ run_tox() {
     find . -iname "*.pyc" -delete
 }
 
+run_monitoring() {
+    if [[ ! -f /ceph/monitoring/grafana/dashboards/tox.ini ]]; then
+        return 0
+    fi
+
+    echo 'Running monitoring checks...'
+
+    local grafonnet_lib_path='/ceph/build.grafonnet-lib'
+    if [[ ! -d ${grafonnet_lib_path} ]]; then
+        git clone https://github.com/grafana/grafonnet-lib.git ${grafonnet_lib_path}
+    fi
+
+    cd "$REPO_DIR"/monitoring/grafana/dashboards
+
+    local grafonnet_version=$(grep 'set(ver' CMakeLists.txt | grep -Eo "([0-9.])+")
+    cd ${grafonnet_lib_path}
+    git checkout "v${grafonnet_version}"
+    cd -
+
+    GRAFONNET_PATH="${grafonnet_lib_path}"/grafonnet tox -e grafonnet-check
+}
+
 run_mypy() {
     echo 'Running mypy...'
 

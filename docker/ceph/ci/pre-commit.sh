@@ -13,6 +13,7 @@ readonly TS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.t
 readonly JEST_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.spec.ts" | grep -v "/e2e/" | tr '\n' ' ')
 readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.py" | tr '\n' ' ')
 readonly DOC_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "doc/*.rst" | wc -l)
+readonly MONITORING_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "monitoring/grafana/dashboards/*" | wc -l)
 
 if [[ "$NPM_PACKAGE_FILES" > 0 || -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
     run_npm_ci
@@ -47,6 +48,10 @@ fi
 if [[ -n "$PY_FILES" ]]; then
     run_tox
     run_mypy "$PY_FILES"
+fi
+
+if [[ "$MONITORING_FILES" > 0 ]]; then
+    run_monitoring
 fi
 
 if [[ "$DOC_FILES" > 0 ]]; then
