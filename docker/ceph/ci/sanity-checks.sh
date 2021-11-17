@@ -149,7 +149,7 @@ run_monitoring() {
     git checkout "v${grafonnet_version}"
     cd -
 
-    GRAFONNET_PATH="${grafonnet_lib_path}"/grafonnet tox -e grafonnet-check
+    GRAFONNET_PATH="${grafonnet_lib_path}"/grafonnet tox -e grafonnet-check,promql-query-test,lint
 }
 
 run_mypy() {
