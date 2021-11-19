@@ -63,10 +63,10 @@ RUN dnf install -y centos-release-nfs-ganesha30 \
     && dnf clean packages
 
 # S3 benchmark:
-RUN dnf install -y go \
-    && go get github.com/markhpc/hsbench && cd /root/go/src/github.com/markhpc/hsbench \
-    && go build && mv hsbench /usr/local/bin/hsbench \
-    && dnf remove -y go && rm -rf /root/go && dnf clean packages
+RUN dnf install -y golang \
+    && go get github.com/markhpc/hsbench && mv /root/go/bin/hsbench /usr/local/bin/hsbench \
+    && dnf remove -y golang && rm -rf /root/go \
+    && dnf clean packages
 
 RUN dnf clean all && rm -rf /var/cache/dnf/*
 
