@@ -10,6 +10,7 @@ services:
             - ${HOST_CCACHE_DIR:-~/.ccache}:/root/.ccache
         environment:
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
+            - APPLITOOLS_API_KEY
             - CEPH_DEBUG=${CEPH_DEBUG:-0}
             - CEPH_PORT
             - CEPH_REPO_DIR
