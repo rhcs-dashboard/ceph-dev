@@ -7,13 +7,7 @@ on:
     paths:
     - .github/workflows/main.yml
     - docker/ceph/aws/aws-cli-configure.sh
-    - docker/ceph/centos/Dockerfile
-    - docker/ceph/master/Dockerfile
-    - docker/ceph/nautilus/Dockerfile
-    - docker/ceph/octopus/Dockerfile
-    - docker/ceph/rpm/master/Dockerfile
-    - docker/ceph/rpm/nautilus/Dockerfile
-    - docker/ceph/rpm/octopus/Dockerfile
+    - 'docker/ceph/**/Dockerfile'
     - docker/ceph/rpm/set-ceph-repo.sh
   pull_request:
     branches:
@@ -21,13 +15,7 @@ on:
     paths:
     - .github/workflows/main.yml
     - docker/ceph/aws/aws-cli-configure.sh
-    - docker/ceph/centos/Dockerfile
-    - docker/ceph/master/Dockerfile
-    - docker/ceph/nautilus/Dockerfile
-    - docker/ceph/octopus/Dockerfile
-    - docker/ceph/rpm/master/Dockerfile
-    - docker/ceph/rpm/nautilus/Dockerfile
-    - docker/ceph/rpm/octopus/Dockerfile
+    - 'docker/ceph/**/Dockerfile'
     - docker/ceph/rpm/set-ceph-repo.sh
   schedule:
     - cron:  '0 2 * * *'
