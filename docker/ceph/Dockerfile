@@ -5,7 +5,7 @@ ARG CENTOS_VERSION
 # Required in order for build-doc to run successfully:
 RUN pip3 install -U Cython==0.29.3
 
-RUN dnf install -y ccache systemd-udev \
+RUN dnf install -y bc ccache systemd-udev \
     && dnf clean packages
 
 ARG VCS_BRANCH=master
