@@ -41,9 +41,6 @@ COPY fedora/fedora.repo /etc/yum.repos.d
 RUN dnf install -y ditaa \
     && dnf clean packages
 RUN dnf config-manager --set-disabled fedora
-RUN dnf copr enable -y tchaikov/python3-asyncssh
-RUN dnf install -y python3-asyncssh \
-    && dnf clean packages
 
 # Install doc-build deps.
 RUN dnf install -y ant doxygen libxslt-devel libxml2-devel graphviz python3-devel python3-pip python3-virtualenv \
