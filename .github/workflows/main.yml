@@ -75,3 +75,26 @@ jobs:
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push docker.io/rhcsdashboard/${{ matrix.name }}:${{ matrix.branch }}
         docker logout
+  build-ceph-e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [master, pacific, octopus, nautilus]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Build
+      run: docker build -t docker.io/rhcsdashboard/ceph-e2e:${{ matrix.branch }} -f docker/ceph/e2e/Dockerfile ./docker/ceph --build-arg VCS_BRANCH=${{ matrix.branch }}
+    - name: Google Chat Notification
+      uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
+      with:
+        name: Build
+        url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+        status: ${{ job.status }}
+      if: failure()
+    - name: Push
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push docker.io/rhcsdashboard/ceph-e2e:${{ matrix.branch }}
+        docker logout
