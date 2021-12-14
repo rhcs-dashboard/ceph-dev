@@ -2,6 +2,7 @@ ARG CENTOS_VERSION=8
 FROM centos:$CENTOS_VERSION
 
 RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
+    libXScrnSaver xorg-x11-server-Xvfb \
     && dnf clean all
 
 RUN rm -rf /var/cache/dnf/*
