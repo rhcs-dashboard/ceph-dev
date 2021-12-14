@@ -230,7 +230,7 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_npm_lint
 # If ceph is running:
 docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
 # Against a running nautilus cluster:
-docker-compose run --rm -e BASE_URL=https://ceph:11000 ceph-e2e
+docker-compose run --rm -e DASHBOARD_URL=https://ceph:11000 ceph-e2e
 
 # Only 1 specific test file:
 docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests --spec "cypress/integration/ui/dashboard.e2e-spec.ts"
@@ -323,7 +323,7 @@ hsbench -a <rgw-user-access-key> -s <rgw-user-secret-key> -u http://127.0.0.1:80
 
 * Set appropriate values in *.env*:
 ```
-REMOTE_DASHBOARD_URL=http://remote.ceph.cluster.com:8443
+DASHBOARD_URL=http://remote.ceph.cluster.com:8443
 ```
 
 * Start only ceph:

@@ -18,6 +18,7 @@ services:
             - CYPRESS_CACHE_FOLDER=/ceph/build.cypress
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
             - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
+            - DASHBOARD_URL
             - FS
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - MDS
@@ -30,7 +31,6 @@ services:
             - OSD
             - PROMETHEUS_HOST_PORT=${PROMETHEUS_HOST_PORT}
             - PYTHONDONTWRITEBYTECODE=1
-            - REMOTE_DASHBOARD_URL
             - RGW
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
         cap_add:
@@ -79,7 +79,7 @@ services:
         container_name: ceph-e2e
         hostname: ceph-e2e
         environment:
-            - BASE_URL=${BASE_URL:-https://ceph:11000}
+            - DASHBOARD_URL=${DASHBOARD_URL:-https://ceph:11000}
             - RUN_NPM_INSTALL=${RUN_NPM_INSTALL:-0}
         entrypoint: ''
         command: '/docker/e2e/e2e-run.sh'
@@ -93,7 +93,7 @@ services:
         volumes:
             - ${CEPH2_REPO_DIR}:/ceph
         environment:
-            - BASE_URL=${BASE_URL:-https://ceph2:11000}
+            - DASHBOARD_URL=${DASHBOARD_URL:-https://ceph2:11000}
 
     grafana:
         image: ${GRAFANA_IMAGE:-ceph/ceph-grafana}

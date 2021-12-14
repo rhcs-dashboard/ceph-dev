@@ -9,9 +9,9 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     # Set dev server proxy:
-    DASHBOARD_URL="\"$HTTP_PROTO://${HOSTNAME}:$CEPH_MGR_DASHBOARD_PORT\""
-    [[ -n "$REMOTE_DASHBOARD_URL" ]] && DASHBOARD_URL="\"$REMOTE_DASHBOARD_URL\""
-    jq "(.[] | .target)=$DASHBOARD_URL" proxy.conf.json.sample > proxy.conf.json
+    TARGET_URL="${HTTP_PROTO}://${HOSTNAME}:${CEPH_MGR_DASHBOARD_PORT}"
+    [[ -n "${DASHBOARD_URL}" ]] && TARGET_URL=${DASHBOARD_URL}
+    jq "(.[] | .target)=\""${TARGET_URL}"\"" proxy.conf.json.sample > proxy.conf.json
 
     if [[ "$CEPH_VERSION" == '13' ]]; then
         rm -rf package-lock.json node_modules/@angular/cli
@@ -20,20 +20,20 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
 
     npm ci
 
-    if [[ -z "$REMOTE_DASHBOARD_URL" ]]; then
+    if [[ -z "${DASHBOARD_URL}" ]]; then
         # Required to run dashboard python module.
         npm run build
     fi
 
     # Start dev server
-    if [[ "$DASHBOARD_DEV_SERVER" == 1 || -n "$REMOTE_DASHBOARD_URL" ]]; then
+    if [[ "$DASHBOARD_DEV_SERVER" == 1 || -n "${DASHBOARD_URL}" ]]; then
         npm run start &
     elif [[ -z "${E2E_CMD}" ]]; then
         npm run build -- ${FRONTEND_BUILD_OPTIONS} --watch &
     fi
 fi
 
-if [[ -n "$REMOTE_DASHBOARD_URL" ]]; then
+if [[ -n "${DASHBOARD_URL}" ]]; then
     [[ "$FRONTEND_BUILD_REQUIRED" != 1 ]] && echo 'ERROR: ceph repo not found.' && exit 1
     exit 0
 fi

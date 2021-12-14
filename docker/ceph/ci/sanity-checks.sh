@@ -248,13 +248,13 @@ run_frontend_e2e_tests() {
     npx --no-install cypress -v && WITH_CYPRESS=1 || WITH_CYPRESS=0
     E2E_CMD="npm run e2e:dev"
     if [[ "${WITH_CYPRESS}" == 1 ]]; then
-        [[ -n "${BASE_URL}" ]] && export CYPRESS_BASE_URL="${BASE_URL}"
+        [[ -n "${DASHBOARD_URL}" ]] && export CYPRESS_BASE_URL="${DASHBOARD_URL}"
         E2E_CMD="npx cypress run $@ --browser chrome --headless"
     elif [[ "$(npm run | grep e2e:ci | wc -l)" == 1 ]]; then
         E2E_CMD="npm run e2e:ci"
     fi
     export E2E_CMD
-    if [[ "$DASHBOARD_DEV_SERVER" != 1 && -z "${BASE_URL}" && -z "${CYPRESS_BASE_URL}" ]]; then
+    if [[ -z "${DASHBOARD_URL}" && -z "${CYPRESS_BASE_URL}" ]]; then
         if [[ $(ps -ef | grep -v grep | grep "ceph-mgr -i" | wc -l) == 0 ]]; then
             cd "$CEPH_CONF_PATH"
             "$REPO_DIR"/src/stop.sh
@@ -262,19 +262,19 @@ run_frontend_e2e_tests() {
             /docker/start-ceph.sh
         fi
 
-        BASE_URL=null
-        while [[ "${BASE_URL}" == 'null' ]]; do
-            export BASE_URL=$("$CEPH_BIN"/ceph mgr services | jq -r .dashboard)
+        DASHBOARD_URL=null
+        while [[ "${DASHBOARD_URL}" == 'null' ]]; do
+            export DASHBOARD_URL=$("$CEPH_BIN"/ceph mgr services | jq -r .dashboard)
             sleep 1
         done
         if [[ "${WITH_CYPRESS}" == 1 ]]; then
-            export CYPRESS_BASE_URL="${BASE_URL}"
+            export CYPRESS_BASE_URL="${DASHBOARD_URL}"
         fi
         cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
         ANGULAR_VERSION=$(npm run ng version | grep 'Angular: ' | awk '{ print substr($2,1,1) }')
         # In nautilus this flag is required because BASE_URL is not read in protractor config.
         if [[ "$ANGULAR_VERSION" -le 7 ]]; then
-            ARGS="$ARGS --baseUrl=$BASE_URL"
+            ARGS="$ARGS --baseUrl=${DASHBOARD_URL}"
         fi
     fi
 

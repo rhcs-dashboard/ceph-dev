@@ -41,7 +41,7 @@ sudo podman build -t docker.io/rhcsdashboard/e2e:nautilus \
     ./docker/ceph/e2e
 
 sudo podman run --rm -v "$PWD"/../ceph/src:/ceph/src:z \
-    -e BASE_URL=http://localhost:11000 \
+    -e DASHBOARD_URL=http://localhost:11000 \
     --name=e2e --network=host \
     docker.io/rhcsdashboard/e2e:nautilus
 ```
