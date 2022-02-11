@@ -10,6 +10,7 @@ readonly NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUX
 readonly HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.html" | wc -l)
 readonly SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.scss" | tr '\n' ' ')
 readonly TS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.ts" | tr '\n' ' ')
+readonly GHERKIN_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.feature" | tr '\n' ' ')
 readonly JEST_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.spec.ts" | grep -v "/e2e/" | tr '\n' ' ')
 readonly PY_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.py" | tr '\n' ' ')
 readonly DOC_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "doc/*.rst" | wc -l)
@@ -23,13 +24,13 @@ if [[ "$HTML_FILES" > 0 && -z "$SCSS_FILES" && -z "$TS_FILES" ]]; then
     run_npm_lint_html
 fi
 
-if [[ -n "$SCSS_FILES" || -n "$TS_FILES" ]]; then
-    check_browser_console_calls "$SCSS_FILES $TS_FILES"
+if [[ -n "$SCSS_FILES" || -n "$TS_FILES" || -n "$GHERKIN_FILES" ]]; then
+    check_browser_console_calls "$SCSS_FILES $TS_FILES $GHERKIN_FILES"
     run_npm_fix
 
     # Add fixes to staging:
     cd "$REPO_DIR"
-    echo "$SCSS_FILES $TS_FILES" | xargs git add
+    echo "$SCSS_FILES $TS_FILES $GHERKIN_FILES" | xargs git add
 
     run_npm_lint
 fi
