@@ -1,10 +1,6 @@
 ARG CENTOS_VERSION=8
-FROM centos:$CENTOS_VERSION as ceph-base
+FROM quay.io/centos/centos:stream$CENTOS_VERSION as ceph-base
 ARG CENTOS_VERSION
-
-# Centos met EOL and the content of the CentOS 8 repos has been moved to vault.centos.org
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
-RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
 
 RUN dnf install -y epel-release \
     && dnf clean packages

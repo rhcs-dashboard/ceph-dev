@@ -25,19 +25,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [centos8]
+        os: [centos_stream8]
     steps:
     - name: Checkout
       uses: actions/checkout@master
     - name: Build
       run: docker build -t docker.io/rhcsdashboard/ceph-base:${{ matrix.os }} -f docker/ceph/centos/Dockerfile ./docker/ceph
-    - name: Google Chat Notification
-      uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
-      with:
-        name: Build
-        url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-        status: ${{ job.status }}
-      if: failure()      
+    # - name: Google Chat Notification
+    #   uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
+    #   with:
+    #     name: Build
+    #     url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+    #     status: ${{ job.status }}
+    #   if: failure()      
     - name: Push
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
@@ -63,13 +63,13 @@ jobs:
       uses: actions/checkout@master
     - name: Build
       run: docker build -t docker.io/rhcsdashboard/${{ matrix.name }}:${{ matrix.branch }} -f docker/${{ matrix.dir }}/${{ matrix.branch_dir}}/Dockerfile ./docker/ceph --build-arg CEPH_RELEASE=${{ matrix.branch }} --build-arg VCS_BRANCH=${{ matrix.branch }}
-    - name: Google Chat Notification
-      uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
-      with:
-        name: Build
-        url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-        status: ${{ job.status }}
-      if: failure()
+    # - name: Google Chat Notification
+    #   uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
+    #   with:
+    #     name: Build
+    #     url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+    #     status: ${{ job.status }}
+    #   if: failure()
     - name: Push
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
