@@ -1,9 +1,8 @@
 ARG CENTOS_VERSION=8
-FROM centos:$CENTOS_VERSION
+FROM quay.io/centos/centos:stream$CENTOS_VERSION
 
-# Centos met EOL and the content of the CentOS 8 repos has been moved to vault.centos.org
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
-RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+RUN dnf --disablerepo '*' --enablerepo=extras swap centos-linux-repos centos-stream-repos -y
+RUN dnf distro-sync -y
 
 RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
     libXScrnSaver xorg-x11-server-Xvfb \

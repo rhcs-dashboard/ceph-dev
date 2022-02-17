@@ -1,10 +1,6 @@
 ARG CENTOS_VERSION=8
-FROM rhcsdashboard/ceph-base:centos${CENTOS_VERSION}
+FROM rhcsdashboard/ceph-base:centos_stream${CENTOS_VERSION}
 ARG CENTOS_VERSION
-
-# Centos met EOL and the content of the CentOS 8 repos has been moved to vault.centos.org
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
-RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
 
 # Sepia provide missing dependencies until epel provide all dependencies.
 RUN dnf config-manager --add-repo http://apt-mirror.front.sepia.ceph.com/lab-extras/${CENTOS_VERSION}/
