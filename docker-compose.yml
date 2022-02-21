@@ -104,7 +104,7 @@ services:
             - grafana_data:/var/lib/grafana
             - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:Z
             - ./docker/grafana/provisioning:/etc/grafana/provisioning:Z
-            - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:Z
+            - ${CEPH_REPO_DIR}/monitoring/ceph-mixin/dashboards_out:/etc/grafana/provisioning/dashboards/ceph:Z
         environment:
             - GF_SECURITY_ALLOW_EMBEDDING=true
 
@@ -115,7 +115,7 @@ services:
         ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
         volumes:
             - ./docker/prometheus:/etc/prometheus:Z
-            - ${CEPH_REPO_DIR}/monitoring/prometheus/alerts:/etc/prometheus/alerts:Z
+            - ${CEPH_REPO_DIR}/monitoring/ceph-mixin/prometheus_alerts.yml:/etc/prometheus/ceph/ceph_default_alerts.yml:Z
 
     node-exporter:
         image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v0.18.1}
