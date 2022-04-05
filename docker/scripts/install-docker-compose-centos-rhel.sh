@@ -26,7 +26,7 @@ yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce
 
 # Optional: In case you want to use the latest version of Docker CE,
 # you have to enable those repositories which are disabled by default:
-yum-config-manager --enable docker-ce-edge
+yum-config-manager --enable docker-ce-stable
 yum-config-manager --enable docker-ce-test
 
 # To install Docker, simply run:
