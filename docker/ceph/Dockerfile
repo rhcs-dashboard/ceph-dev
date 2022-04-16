@@ -3,6 +3,7 @@ FROM rhcsdashboard/ceph-base:centos_stream${CENTOS_VERSION}
 ARG CENTOS_VERSION
 
 # Required in order for build-doc to run successfully:
+
 RUN pip3 install -U Cython==0.29.3
 
 RUN dnf install -y bc ccache systemd-udev \
