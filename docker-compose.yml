@@ -170,10 +170,10 @@ volumes:
 
 networks:
     default:
-        driver: bridge
-        enable_ipv6: true
-        ipam:
-            driver: default
-            config:
-                - subnet: 172.20.0.0/24
-                - subnet: 2600:3c02:e000:0058::/64
+       driver: bridge
+       enable_ipv6: true
+       ipam:
+          driver: default
+          config:
+            - subnet: 172.20.0.0/2
+            - subnet: 2600:3c02:e000:0058::/64
