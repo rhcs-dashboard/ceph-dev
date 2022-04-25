@@ -18,7 +18,15 @@ fi
 # sudo apt-get install lxc-docker -y
 
 # Alternatively you can use the official docker install script
-wget -qO- https://get.docker.com/ | sh
+# wget -qO- https://get.docker.com/ | sh
+
+# Install docker from ubuntu repository 
+sudo apt remove --yes docker docker-engine docker.io containerd runc || true
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt install docker.io
+systemctl start docker
+systemctl enable docker
 
 # Install docker-compose
 readonly dockerComposeVersion='1.21.0'
