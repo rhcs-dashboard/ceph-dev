@@ -1,6 +1,12 @@
-# Ask for the user password
-# Script only works if sudo caches the password for a few minutes
-sudo true
+#!/bin/bash
+
+set -e 
+
+# check user privileges:
+if [ "$(whoami)" != 'root' ]; then
+    echo "Super-user privileges are required. Please execute it with 'sudo'."
+    exit 1
+fi
 
 # Install kernel extra's to enable docker aufs support
 # sudo apt-get -y install linux-image-extra-$(uname -r)
@@ -15,10 +21,13 @@ sudo true
 wget -qO- https://get.docker.com/ | sh
 
 # Install docker-compose
-COMPOSE_VERSION=`git ls-remote https://github.com/docker/compose | grep refs/tags | grep -oE "[0-9]+\.[0-9][0-9]+\.[0-9]+$" | sort --version-sort | tail -n 1`
-sudo sh -c "curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose"
-sudo chmod +x /usr/local/bin/docker-compose
-sudo sh -c "curl -L https://raw.githubusercontent.com/docker/compose/${COMPOSE_VERSION}/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose"
+readonly dockerComposeVersion='1.21.0'
+
+curl -Ls "https://github.com/docker/compose/releases/download/$dockerComposeVersion/docker-compose-$(uname -s)-$(uname -m)" \
+    -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+echo "Docker successfully installed!!!!"
 
 # Install docker-cleanup command
 cd /tmp
