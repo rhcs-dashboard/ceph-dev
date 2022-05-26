@@ -21,6 +21,6 @@ ENTRYPOINT ["/e2e/e2e-run.sh"]
 RUN dnf install -y python3-pip \
     && dnf clean all
 RUN pip3 install nodeenv
-ARG VCS_BRANCH=master
+ARG VCS_BRANCH=main
 COPY install-node.sh /root
 RUN /root/install-node.sh

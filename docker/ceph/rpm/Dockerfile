@@ -9,7 +9,7 @@ RUN dnf copr enable -y ktdreyer/ceph-el${CENTOS_VERSION}
 
 ARG USE_REPO_FILES=0
 ARG REPO_URL
-ARG CEPH_RELEASE=master
+ARG CEPH_RELEASE=main
 COPY rpm/*.* /root/
 RUN /root/set-ceph-repo.sh
 RUN dnf install -y --nogpgcheck ceph-mds ceph-mgr-cephadm ceph-mgr-dashboard \
@@ -19,6 +19,6 @@ RUN dnf install -y --nogpgcheck ceph-mds ceph-mgr-cephadm ceph-mgr-dashboard \
 
 RUN dnf clean all && rm -rf /var/cache/dnf/*
 
-ARG VCS_BRANCH=master
+ARG VCS_BRANCH=main
 COPY install-node.sh /root
 RUN /root/install-node.sh

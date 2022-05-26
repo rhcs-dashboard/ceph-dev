@@ -1,4 +1,4 @@
-![Publish ceph images](https://github.com/rhcs-dashboard/ceph-dev/workflows/Publish%20ceph%20images/badge.svg?branch=master)
+![Publish ceph images](https://github.com/rhcs-dashboard/ceph-dev/workflows/Publish%20ceph%20images/badge.svg?branch=main)
 
 # RHCS Dashboard Dev. Env.
 
@@ -122,7 +122,7 @@ docker-compose down
 * Build Ceph:
 ```
 # Set a build-ready image and your local ccache path in .env file:
-CEPH_IMAGE=rhcsdashboard/ceph:master  # DO NOT use ceph-rpm:... image.
+CEPH_IMAGE=rhcsdashboard/ceph:main  # DO NOT use ceph-rpm:... image.
 HOST_CCACHE_DIR=/path/to/your/local/.ccache
 
 docker-compose run --rm ceph /docker/build-ceph.sh
@@ -342,8 +342,8 @@ docker build -t {imageName}:{imageTag} -f {/path/to/Dockerfile} ./docker/ceph
 # Build base image:
 docker build -t rhcsdashboard/ceph-base:centos8 -f ./docker/ceph/centos/Dockerfile  ./docker/ceph
 
-# Nightly ceph-rpm master:
-docker build -t rhcsdashboard/ceph-rpm:master \
+# Nightly ceph-rpm main:
+docker build -t rhcsdashboard/ceph-rpm:main \
 -f ./docker/ceph/rpm/Dockerfile ./docker/ceph \
 --network=host
 
@@ -373,7 +373,7 @@ docker build -t rhcsdashboard/ceph-e2e:nautilus \
 docker tag {imageName}:{imageTag} {imageName}:{imageNewTag}
 
 # Example:
-docker tag rhcsdashboard/ceph:master rhcsdashboard/ceph:latest
+docker tag rhcsdashboard/ceph:main rhcsdashboard/ceph:latest
 ```
 
 * Log in to rhcs-dashboard docker registry:
@@ -386,7 +386,7 @@ docker login -u rhcsdashboard
 docker push {imageName}:{imageTag}
 
 # Example:
-docker push rhcsdashboard/ceph:master
+docker push rhcsdashboard/ceph:main
 ```
 
 ## Start Ceph 2 (useful for parallel development)

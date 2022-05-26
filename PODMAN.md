@@ -32,7 +32,7 @@ sudo podman run --rm -d -v "$PWD"/docker/ceph:/docker:z \
     --env-file=ceph.env \
     --name=ceph --network=host --hostname=ceph -p 11000:11000 \
     --entrypoint /docker/entrypoint.sh \
-    docker.io/rhcsdashboard/ceph-rpm:master /docker/start.sh
+    docker.io/rhcsdashboard/ceph-rpm:main /docker/start.sh
 ```
 
 * Run E2E tests:

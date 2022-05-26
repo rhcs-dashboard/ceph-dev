@@ -2,7 +2,7 @@ version: '2.2'
 
 services:
     ceph-base:
-        image: ${CEPH_IMAGE:-rhcsdashboard/ceph-rpm:master}
+        image: ${CEPH_IMAGE:-rhcsdashboard/ceph-rpm:main}
         volumes:
             - ./docker/ceph:/docker:z
             - ${CEPH_REPO_DIR}:/ceph
@@ -64,7 +64,7 @@ services:
     ceph2:
         extends:
             service: ceph-base
-        image: ${CEPH2_IMAGE:-rhcsdashboard/ceph-rpm:master}
+        image: ${CEPH2_IMAGE:-rhcsdashboard/ceph-rpm:main}
         container_name: ceph2
         hostname: ceph2
         ports: ['${CEPH2_PROXY_HOST_PORT:-4202}:4200','${CEPH2_HOST_PORT:-11002}:11000']
@@ -99,12 +99,13 @@ services:
         image: ${GRAFANA_IMAGE:-ceph/ceph-grafana}
         container_name: grafana
         hostname: grafana
+        user: "0:0"
         ports: ['${GRAFANA_HOST_PORT:-3000}:3000']
         volumes:
             - grafana_data:/var/lib/grafana
             - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:Z
             - ./docker/grafana/provisioning:/etc/grafana/provisioning:Z
-            - ${CEPH_REPO_DIR}/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards/ceph:Z
+            - ${CEPH_REPO_DIR}/${GRAFANA_DASHBOARDS_DIR:-monitoring/ceph-mixin/dashboards_out}:/etc/grafana/provisioning/dashboards/ceph:Z
         environment:
             - GF_SECURITY_ALLOW_EMBEDDING=true
 

@@ -9,7 +9,7 @@ fi
 
 if [[ -z "$REPO_URL" ]]; then
     if [[ -z "$CEPH_RELEASE" ]]; then
-        CEPH_RELEASE=master
+        CEPH_RELEASE=main
     fi
 
     REPO_URL=$(curl -s "https://shaman.ceph.com/api/search/?project=ceph&distros=centos/$CENTOS_VERSION/x86_64&flavor=default&ref=$CEPH_RELEASE&sha1=latest" | jq -r '.[0] | .url')/x86_64/

@@ -8,7 +8,7 @@ RUN pip3 install -U Cython==0.29.3
 RUN dnf install -y bc ccache systemd-udev \
     && dnf clean packages
 
-ARG VCS_BRANCH=master
+ARG VCS_BRANCH=main
 RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/install-deps.sh \
     -o /ceph/install-deps.sh \
     && chmod +x /ceph/install-deps.sh
