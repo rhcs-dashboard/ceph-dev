@@ -8,7 +8,7 @@ RUN dnf distro-sync -y
 RUN dnf install -y epel-release \
     && dnf clean packages
 RUN dnf install -y bind-utils curl dnf dnf-plugins-core git golang-github-prometheus hostname \
-    iputils jq jsonnet lsof net-tools \
+    iproute iputils jq jsonnet lsof net-tools procps-ng \
     python3-jinja2 python3-jsonpatch python3-pip util-linux which \
     && dnf clean packages
 
