@@ -3,7 +3,7 @@ name: Publish ceph images
 on:
   push:
     branches: 
-      - master
+      - main
     paths:
     - .github/workflows/main.yml
     - docker/ceph/aws/aws-cli-configure.sh
@@ -11,7 +11,7 @@ on:
     - docker/ceph/rpm/set-ceph-repo.sh
   pull_request:
     branches:
-      - master
+      - main
     paths:
     - .github/workflows/main.yml
     - docker/ceph/aws/aws-cli-configure.sh
@@ -49,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [master, quincy, pacific, octopus, nautilus]
+        branch: [main, quincy, pacific, octopus, nautilus]
         name: [ceph, ceph-rpm]
         include:
           - name: ceph
@@ -80,7 +80,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [master, quincy, pacific, octopus, nautilus]
+        branch: [main, quincy, pacific, octopus, nautilus]
     steps:
     - name: Checkout
       uses: actions/checkout@master
