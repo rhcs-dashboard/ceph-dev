@@ -31,11 +31,15 @@ groupadd docker || true
 usermod -aG docker "$(logname)"
 
 FEDORA_VERSION=$(sed -nE 's/^VERSION_ID=(.*)$/\1/p' /etc/os-release)
-if [[ "${FEDORA_VERSION}" -ge 32 ]]; then
+if [[ "${FEDORA_VERSION}" -eq 32 || "${FEDORA_VERSION}" -eq 33 ]]; then
     # Docker does not yet cooperate with the nftables backend.
     firewall-cmd --permanent --zone=trusted --add-interface=docker0 || true
     firewall-cmd --permanent --zone=trusted --add-source=172.0.0.0/8 || true
     firewall-cmd --reload
+elif [[ "${FEDORA_VERSION}" -ge 34 ]]; then
+      # Docker now cooperates with the nftables backend.
+      firewall-cmd --permanent --zone=docker --change-interface=docker0
+      firewall-cmd --reload
 fi
 
 # Run SELinux in permissive mode.
