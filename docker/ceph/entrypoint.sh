@@ -10,22 +10,23 @@ export_var() {
 export_var IS_CEPH_RPM="$(command -v ceph-mgr 2>/dev/null | wc -l)"
 
 # Env. vars used in vstart.
-export_var CEPH_ASOK_DIR=/ceph/build."${HOSTNAME}"/out
-export_var CEPH_CONF=/ceph/build."${HOSTNAME}"/ceph.conf
-export_var CEPH_CONF_PATH=/ceph/build."${HOSTNAME}"
-export_var CEPH_DEV_DIR=/ceph/build."${HOSTNAME}"/dev
-export_var CEPH_OUT_DIR=/ceph/build."${HOSTNAME}"/out
+export_var CEPH_ASOK_DIR=/ceph/build.ceph-dev/run/"${HOSTNAME}"/asok
+export_var CEPH_CONF=/ceph/build.ceph-dev/run/"${HOSTNAME}"/ceph.conf
+export_var CEPH_CONF_PATH=/ceph/build.ceph-dev/run/"${HOSTNAME}"
+export_var CEPH_DEV_DIR=/ceph/build.ceph-dev/run/"${HOSTNAME}"/dev
+export_var CEPH_OUT_DIR=/ceph/build.ceph-dev/run/"${HOSTNAME}"/out
 export_var CEPH_PORT="${CEPH_PORT:-10000}"
 
 rm -rf /ceph/build
+
 mkdir -p "${CEPH_CONF_PATH}"
 
 if [[ "${IS_CEPH_RPM}" == 1 ]]; then
-    export_var CEPH_BIN=/usr/bin
+    export_var CEPH_BIN=/usr/bin/
     export_var CEPH_LIB=/usr/lib64/ceph
     export_var EC_PATH="$CEPH_LIB"/erasure-code
     export_var OBJCLASS_PATH=/usr/lib64/rados-classes
-    
+
     ln -sf "$EC_PATH"/* "$CEPH_LIB"
     ln -sf "$OBJCLASS_PATH"/* "$CEPH_LIB"
     

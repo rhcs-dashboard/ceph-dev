@@ -2,6 +2,8 @@
 
 set -e
 
+source /docker/set-mstart-env.sh
+
 REPO_DIR=/ceph
 [[ "$IS_UPSTREAM" == 1 && "$CEPH_VERSION" -le '14' ]] && PYTHON_VERSION=2 || PYTHON_VERSION=3
 TRANSLATION_FILE=src/pybind/mgr/dashboard/frontend/src/locale/messages.xlf
@@ -244,7 +246,7 @@ run_frontend_e2e_tests() {
     echo 'Running frontend E2E tests...'
 
     cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
-    npm ci
+    npm i
     npx --no-install cypress -v && WITH_CYPRESS=1 || WITH_CYPRESS=0
     E2E_CMD="npm run e2e:dev"
     if [[ "${WITH_CYPRESS}" == 1 ]]; then
@@ -264,12 +266,15 @@ run_frontend_e2e_tests() {
 
         DASHBOARD_URL=null
         while [[ "${DASHBOARD_URL}" == 'null' ]]; do
-            export DASHBOARD_URL=$("$CEPH_BIN"/ceph mgr services | jq -r .dashboard)
+            export DASHBOARD_URL=$(CEPH_CLI mgr services | jq -r .dashboard)
+            export DASHBOARD2_URL=$(CEPH2_CLI mgr services | jq -r .dashboard)
             sleep 1
         done
         if [[ "${WITH_CYPRESS}" == 1 ]]; then
             export CYPRESS_BASE_URL="${DASHBOARD_URL}"
+            export CYPRESS_CEPH2_URL="${DASHBOARD2_URL}"
         fi
+
         cd "$REPO_DIR"/src/pybind/mgr/dashboard/frontend
         ANGULAR_VERSION=$(npm run ng version | grep 'Angular: ' | awk '{ print substr($2,1,1) }')
         # In nautilus this flag is required because BASE_URL is not read in protractor config.

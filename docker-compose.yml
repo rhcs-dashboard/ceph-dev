@@ -33,6 +33,7 @@ services:
             - PYTHONDONTWRITEBYTECODE=1
             - RGW
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
+            - NUMBER_OF_CLUSTERS=${NUMBER_OF_CLUSTERS:-1}
         cap_add:
             - ALL
         entrypoint: /docker/entrypoint.sh
