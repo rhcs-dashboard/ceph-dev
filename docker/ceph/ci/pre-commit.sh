@@ -1,13 +1,13 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 echo 'Running pre-commit hook...'
 
 # shellcheck disable=SC1091
 source /docker/ci/sanity-checks.sh
 
-NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB | grep -E "package(-lock){0,1}.json" -c)
+NPM_PACKAGE_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB | grep -Ec "package(-lock)?.json" || true)
 HTML_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.html" | wc -l)
 SCSS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.scss" | tr '\n' ' ')
 TS_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB -- "*.ts" | tr '\n' ' ')
