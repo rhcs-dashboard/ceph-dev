@@ -116,7 +116,7 @@ services:
         ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
         volumes:
             - ./docker/prometheus:/etc/prometheus:Z
-            - ${CEPH_REPO_DIR}/monitoring/prometheus/alerts:/etc/prometheus/alerts:Z
+            - ${CEPH_REPO_DIR}/${PROMETHEUS_ALERTS_DIR:-monitoring/ceph-mixin}:/etc/prometheus/alerts:Z
 
     node-exporter:
         image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v0.18.1}

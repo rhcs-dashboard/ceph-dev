@@ -22,3 +22,4 @@ alerting:
 
 rule_files:
   - 'alerts/ceph_default_alerts.yml'
+  - 'alerts/prometheus_alerts.yml'
