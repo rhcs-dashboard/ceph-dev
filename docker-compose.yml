@@ -96,7 +96,7 @@ services:
             - DASHBOARD_URL=${DASHBOARD_URL:-https://ceph2:11000}
 
     grafana:
-        image: ${GRAFANA_IMAGE:-ceph/ceph-grafana}
+        image: ${GRAFANA_IMAGE:-quay.io/ceph/ceph-grafana:8.3.5}
         container_name: grafana
         hostname: grafana
         user: "0:0"
