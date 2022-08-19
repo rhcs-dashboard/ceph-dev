@@ -8,6 +8,7 @@ services:
             - ${CEPH_REPO_DIR}:/ceph
             - ${CEPH_CUSTOM_BUILD_DIR:-empty_volume}:/ceph/build.custom
             - ${HOST_CCACHE_DIR:-~/.ccache}:/root/.ccache
+            - ${NPM_DIR:-~/.npm}:/root/.npm
         environment:
             - ALERTMANAGER_HOST_PORT=${ALERTMANAGER_HOST_PORT}
             - APPLITOOLS_API_KEY
