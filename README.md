@@ -265,7 +265,7 @@ docker-compose run --rm -p 11001:8080 ceph /docker/ci/sanity-checks.sh run_serve
 
 If you have started grafana, you can access it at:
 
-http://127.0.0.1:$GRAFANA_HOST_PORT/login
+https://127.0.0.1:$GRAFANA_HOST_PORT/login
 
 ## Prometheus
 
