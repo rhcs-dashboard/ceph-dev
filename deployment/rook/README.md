@@ -2,7 +2,7 @@
 
 ## Troubleshooting
 
-Check [Rook Ceph Common Issues](https://rook.io/docs/rook/master/ceph-common-issues.html).
+Check [Rook Ceph Common Issues](https://rook.github.io/docs/rook/latest/Troubleshooting/ceph-common-issues/).
 
 ## Minikube cluster
 
