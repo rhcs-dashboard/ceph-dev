@@ -6,6 +6,7 @@ services:
         volumes:
             - ./docker/ceph:/docker:z
             - ${CEPH_REPO_DIR}:/ceph
+            - ${CEPH_REPO_DIR}/src/python-common/ceph:/usr/lib/python3.6/site-packages/ceph
             - ${CEPH_CUSTOM_BUILD_DIR:-empty_volume}:/ceph/build.custom
             - ${HOST_CCACHE_DIR:-~/.ccache}:/root/.ccache
             - ${NPM_DIR:-~/.npm}:/root/.npm
@@ -97,7 +98,7 @@ services:
             - DASHBOARD_URL=${DASHBOARD_URL:-https://ceph2:11000}
 
     grafana:
-        image: ${GRAFANA_IMAGE:-ceph/ceph-grafana}
+        image: ${GRAFANA_IMAGE:-quay.io/ceph/ceph-grafana:8.3.5}
         container_name: grafana
         hostname: grafana
         user: "0:0"
