@@ -20,16 +20,23 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
 
     npm ci
 
-    if [[ -z "${DASHBOARD_URL}" ]]; then
+    if [[ -z "${DASHBOARD_URL}" && -z "${DOWNSTREAM_BUILD}" ]]; then
         # Required to run dashboard python module.
         npm run build
     fi
 
     # Start dev server
     if [[ "$DASHBOARD_DEV_SERVER" == 1 || -n "${DASHBOARD_URL}" ]]; then
-        npm run start &
+        if [[ -n "$DOWNSTREAM_BUILD" ]]; then
+            echo "Building downstream frontend for ${DOWNSTREAM_BUILD}..."
+            npm run build -- --configuration=en-US,production-"${DOWNSTREAM_BUILD}" --output-path=dist
+            npm run start -- --configuration=en-US,production-"${DOWNSTREAM_BUILD}" &
+        else
+            npm run start &
+        fi
+
     elif [[ -z "${E2E_CMD}" ]]; then
-        npm run build -- ${FRONTEND_BUILD_OPTIONS} --watch &
+        npm run build -- "${FRONTEND_BUILD_OPTIONS}" --watch &
     fi
 fi
 
