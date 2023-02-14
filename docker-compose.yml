@@ -21,6 +21,7 @@ services:
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
             - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
             - DASHBOARD_URL
+            - DOWNSTREAM_BUILD
             - FS
             - GRAFANA_HOST_PORT=${GRAFANA_HOST_PORT}
             - MDS

@@ -400,3 +400,16 @@ docker-compose up -d --scale ceph2=1
 # Start ceph2 but not ceph:
 docker-compose up -d --scale ceph2=1 --scale ceph=0
 ```
+
+## Start a downstream ceph product
+
+* Set your `DOWNSTREAM_BUILD` to a product.
+
+```
+DOWNSTREAM_BUILD=redhat
+```
+
+and start the ceph normally.
+```
+docker-compose up -d ceph
+```
