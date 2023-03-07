@@ -16,6 +16,7 @@ RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/ceph.spe
     -o /ceph/ceph.spec.in
 
 ARG FOR_MAKE_CHECK=1
+ARG _SOURCED_LIB_BUILD=1
 RUN bash -x /ceph/install-deps.sh \
     && dnf clean packages
 
