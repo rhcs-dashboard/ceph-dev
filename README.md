@@ -78,7 +78,7 @@ docker-compose run --rm -e HOST_PWD=$PWD ceph /docker/ci/pre-commit-setup.sh
 
 You don't need to build ceph if you've set ```CEPH_IMAGE=rhcsdashboard/ceph-rpm:...``` container image (the default).
 
-* Start ceph + dashboard feature services:
+### Start ceph + dashboard feature services:
 ```
 docker-compose up -d
 
@@ -119,7 +119,7 @@ docker-compose up -d --scale ceph-host2=1
 docker-compose down
 ```
 
-* Build Ceph:
+### Build Ceph:
 ```
 # Set a build-ready image and your local ccache path in .env file:
 CEPH_IMAGE=rhcsdashboard/ceph:main  # DO NOT use ceph-rpm:... image.
@@ -133,7 +133,7 @@ docker-compose run --rm ceph /docker/build-ceph.sh
 docker-compose run --rm ceph /docker/build-dashboard-frontend.sh
 ```
 
-* Run backend unit tests and/or lint:
+### Backend unit tests and/or lint:
 ```
 # All tests + lint:
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_tox
@@ -206,7 +206,7 @@ docker-compose run --rm ceph /docker/ci/run-api-tests.sh tasks.mgr.dashboard.tes
 docker-compose run --rm ceph /docker/ci/run-api-tests.sh tasks.mgr.dashboard.test_rgw.RgwBucketTest.test_all
 ```
 
-* Run frontend unit tests or lint:
+### Frontend unit tests or lint:
 ```
 # Tests
 
@@ -225,7 +225,7 @@ docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_jest health.compone
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_npm_lint
 ```
 
-* Run frontend E2E tests:
+### Frontend E2E tests:
 ```
 # If ceph is running:
 docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
@@ -239,22 +239,22 @@ docker-compose exec ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests --sp
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_frontend_e2e_tests
 ```
 
-* Run monitoring tests:
+### Monitoring tests:
 ```
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_monitoring
 ```
 
-* Run sanity checks:
+### Sanity checks:
 ```
 docker-compose run --rm ceph /docker/ci/run-sanity-checks.sh
 ```
 
-* Build Ceph documentation:
+### Build Ceph documentation:
 ```
 docker-compose run --rm ceph /docker/ci/sanity-checks.sh run_build_doc
 ```
 
-* Display Ceph documentation:
+### Display Ceph documentation:
 ```
 docker-compose run --rm -p 11001:8080 ceph /docker/ci/sanity-checks.sh run_serve_doc
 
