@@ -99,7 +99,7 @@ services:
             - DASHBOARD_URL=${DASHBOARD_URL:-https://ceph2:11000}
 
     grafana:
-        image: ${GRAFANA_IMAGE:-quay.io/ceph/ceph-grafana:8.3.5}
+        image: ${GRAFANA_IMAGE:-quay.io/ceph/ceph-grafana:9.4.7}
         container_name: grafana
         hostname: grafana
         user: "0:0"
@@ -113,7 +113,7 @@ services:
             - GF_SECURITY_ALLOW_EMBEDDING=true
 
     prometheus:
-        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.33.4}
+        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.43.0}
         container_name: prometheus
         hostname: prometheus
         ports: ['${PROMETHEUS_HOST_PORT:-9090}:9090']
@@ -122,7 +122,7 @@ services:
             - ${CEPH_REPO_DIR}/${PROMETHEUS_ALERTS_DIR:-monitoring/ceph-mixin}:/etc/prometheus/alerts:Z
 
     node-exporter:
-        image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v1.3.1}
+        image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v1.5.0}
         container_name: node-exporter
         hostname: node-exporter
         ports: ['${NODE_EXPORTER_HOST_PORT:-9100}:9100']
@@ -134,7 +134,7 @@ services:
             - '--no-collector.timex'
 
     alertmanager:
-        image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.23.0}
+        image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.25.0}
         container_name: alertmanager
         hostname: alertmanager
         ports: ['${ALERTMANAGER_HOST_PORT:-9093}:9093']
