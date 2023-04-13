@@ -46,3 +46,6 @@ set_prometheus_api_host() {
     done
 }
 set_prometheus_api_host &
+
+# Export metrics through prometheus exporter rather than ceph-exporter
+"$CEPH_BIN"/ceph config set mgr mgr/prometheus/exclude_perf_counters false
