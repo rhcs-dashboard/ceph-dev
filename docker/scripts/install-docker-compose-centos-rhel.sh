@@ -18,7 +18,7 @@ yum install -y yum-utils device-mapper-persistent-data lvm2
 # if the system is RHEL, install required dependencies:
 readonly OS=$(cat /etc/system-release | awk '{print $1}')
 if [ "$OS" == 'Red' ]; then
-    yum install -y http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.42-1.gitad8f0f7.el7.noarch.rpm
+    yum install -y container-selinux
 fi
 
 # Docker provides a repository where you can fetch the stable Docker CE version. Install it with this command:
