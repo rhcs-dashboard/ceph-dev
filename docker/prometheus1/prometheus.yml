@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+  external_labels:  
+    cluster: cluster2
+scrape_configs:
+  - job_name: 'node-exporter'
+    file_sd_configs:
+      - files:
+        - node-exporter-targets.yml
+  - job_name: 'ceph'
+    honor_labels: true
+    file_sd_configs:
+      - files:
+        - ceph-targets.yml
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - 'alertmanager:9094'
+
+rule_files:
+  - 'alerts/ceph_default_alerts.yml'
+  - 'alerts/prometheus_alerts.yml'
