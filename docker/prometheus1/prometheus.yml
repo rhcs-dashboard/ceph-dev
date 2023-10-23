@@ -11,25 +11,13 @@ scrape_configs:
     file_sd_configs:
       - files:
         - ceph-targets.yml
-  - job_name: 'federate'
-    scrape_interval: 15s
-    honor_labels: true
-    metrics_path: '/federate'
-    params:
-      'match[]':
-        - '{job="ceph"}'
-        - '{job="node"}'
-        - '{job="haproxy"}'
-        - '{job="ceph-exporter"}'
-    static_configs:
-    - targets: []
 
 alerting:
   alertmanagers:
   - scheme: http
     static_configs:
     - targets:
-      - 'alertmanager:9093'
+      - 'alertmanager:9094'
 
 rule_files:
   - 'alerts/ceph_default_alerts.yml'

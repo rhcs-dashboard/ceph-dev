@@ -12,9 +12,3 @@ datasources:
     url: http://prometheus:9090
     editable: true
 
-  - name: Thanos
-    type: prometheus
-    access: proxy
-    orgId: 1
-    url: http://thanos-querier:10902
-    editable: true

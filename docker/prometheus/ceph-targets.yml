@@ -5,8 +5,4 @@
           cluster: "cluster1"
         }
     },
-    {
-        "targets": [ "ceph2:9283" ],
-        "labels": {}
-    }
 ]
