@@ -1,0 +1,214 @@
+{
+    "inventory": [
+      {
+        "name": "node-0",
+        "devices": [
+          {
+            "path": "/dev/nvme0n1",
+            "sys_api": {
+              "vendor": "CCC",
+              "model": "ccc",
+              "size": 274877906944,
+              "rotational": "0",
+              "human_readable_size": "256 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "CCC-ccc-node-0-nvme0n1"
+          },
+          {
+            "path": "/dev/sda",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": false,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-0-sda"
+          },
+          {
+            "path": "/dev/sdb",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-0-sdb"
+          },
+          {
+            "path": "/dev/sdc",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-0-sdc"
+          },
+          {
+            "path": "/dev/sdd",
+            "sys_api": {
+              "vendor": "BBB",
+              "model": "bbb",
+              "size": 549755813888,
+              "rotational": "0",
+              "human_readable_size": "512 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "BBB-bbb-node-0-sdd"
+          }
+        ]
+      },
+      {
+        "name": "node-1",
+        "devices": [
+          {
+            "path": "/dev/nvme0n1",
+            "sys_api": {
+              "vendor": "CCC",
+              "model": "ccc",
+              "size": 274877906944,
+              "rotational": "0",
+              "human_readable_size": "256 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "CCC-ccc-node-1-nvme0n1"
+          },
+          {
+            "path": "/dev/sda",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": false,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-1-sda"
+          },
+          {
+            "path": "/dev/sdb",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-1-sdb"
+          },
+          {
+            "path": "/dev/sdc",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-1-sdc"
+          },
+          {
+            "path": "/dev/sdd",
+            "sys_api": {
+              "vendor": "BBB",
+              "model": "bbb",
+              "size": 549755813888,
+              "rotational": "0",
+              "human_readable_size": "512 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "BBB-bbb-node-1-sdd"
+          }
+        ]
+      },
+      {
+        "name": "node-2",
+        "devices": [
+          {
+            "path": "/dev/nvme0n1",
+            "sys_api": {
+              "vendor": "CCC",
+              "model": "ccc",
+              "size": 274877906944,
+              "rotational": "0",
+              "human_readable_size": "256 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "CCC-ccc-node-2-nvme0n1"
+          },
+          {
+            "path": "/dev/sda",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": false,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-2-sda"
+          },
+          {
+            "path": "/dev/sdb",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-2-sdb"
+          },
+          {
+            "path": "/dev/sdc",
+            "sys_api": {
+              "vendor": "AAA",
+              "model": "aaa",
+              "size": 4398046511104,
+              "rotational": "1",
+              "human_readable_size": "4096 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "AAA-aaa-node-2-sdc"
+          },
+          {
+            "path": "/dev/sdd",
+            "sys_api": {
+              "vendor": "BBB",
+              "model": "bbb",
+              "size": 549755813888,
+              "rotational": "0",
+              "human_readable_size": "512 GB"
+            },
+            "available": true,
+            "rejected_reasons": [],
+            "device_id": "BBB-bbb-node-2-sdd"
+          }
+        ]
+      }
+    ]
+  }
