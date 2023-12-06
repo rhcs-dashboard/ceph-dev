@@ -1,7 +1,8 @@
 global:
   scrape_interval: 5s
   evaluation_interval: 5s
-
+  external_labels:
+    cluster: cluster1
 scrape_configs:
   - job_name: 'node-exporter'
     file_sd_configs:
