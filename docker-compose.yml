@@ -37,6 +37,7 @@ services:
             - PYTHONDONTWRITEBYTECODE=1
             - RGW
             - RGW_MULTISITE=${RGW_MULTISITE:-0}
+            - NVMEOF_GW=${NVMEOF_GW}
         cap_add:
             - ALL
         entrypoint: /docker/entrypoint.sh
