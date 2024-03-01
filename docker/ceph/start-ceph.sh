@@ -4,12 +4,13 @@ set -e
 
 source /docker/set-start-env.sh
 
-# Build frontend:
+#Build frontend:
 if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
     cd "$MGR_PYTHON_PATH"/dashboard/frontend
 
     # Set dev server proxy:
     TARGET_URL="${HTTP_PROTO}://${HOSTNAME}:${CEPH_MGR_DASHBOARD_PORT}"
+    echo "target" $TARGET_URL
     [[ -n "${DASHBOARD_URL}" ]] && TARGET_URL=${DASHBOARD_URL}
     jq "(.[] | .target)=\""${TARGET_URL}"\"" proxy.conf.json.sample > proxy.conf.json
 
@@ -18,7 +19,7 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
         npm update @angular/cli
     fi
 
-    npm ci
+    npm i
 
     if [[ -z "${DASHBOARD_URL}" && -z "${DOWNSTREAM_BUILD}" ]]; then
         # Required to run dashboard python module.
@@ -47,14 +48,28 @@ fi
 
 rm -rf "$CEPH_CONF_PATH"/*
 
-cd /ceph/build
-../src/vstart.sh ${VSTART_OPTIONS}
+for cluster in ${CEPH_CLUSTERS[@]}; do
+    cd /ceph/build
+    echo ${cluster}
+    # Env. vars used in vstart.
+    export_var CEPH_ASOK_DIR=/ceph/build.ceph-dev/run/"${cluster}"/asok
+    export_var CEPH_CONF=/ceph/build.ceph-dev/run/"${cluster}"/ceph.conf
+    export_var CEPH_CONF_PATH=/ceph/build.ceph-dev/run/"${cluster}"
+    export_var CEPH_DEV_DIR=/ceph/build.ceph-dev/run/"${cluster}"/dev
+    export_var CEPH_OUT_DIR=/ceph/build.ceph-dev/run/"${cluster}"/out
+    export VSTART_DEST=/ceph/build.ceph-dev/run/"${cluster}"
+    export CEPH_MGR_DASHBOARD_PORT=$(($CEPH_PORT + 1000))
+
+    ../src/mstart.sh ${cluster} ${VSTART_OPTIONS}
+
+    export CEPH_PORT=$(($CEPH_PORT + 100))
+done
 
 echo 'vstart.sh completed!'
 
 # Create rbd pool:
-"$CEPH_BIN"/ceph osd pool create rbd 8 8 replicated
-"$CEPH_BIN"/ceph osd pool application enable rbd rbd
+CEPH_CLI_ALL osd pool create rbd 8 8 replicated
+CEPH_CLI_ALL osd pool application enable rbd rbd
 
 # Configure Object Gateway:
 if [[ "$RGW" -gt 0  ||  "$RGW_MULTISITE" == 1 ]]; then
@@ -63,7 +78,7 @@ fi
 
 # Enable prometheus module
 if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
-    "$CEPH_BIN"/ceph mgr module enable prometheus
+    CEPH_CLI mgr module enable prometheus
     echo 'Prometheus mgr module enabled.'
 fi
 
@@ -82,8 +97,8 @@ if [[ "$DASHBOARD_SSL" == 0 && "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_FIRST_CLUSTER
         SSL_OPTIONS=''
     fi
 
-    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/ssl false $SSL_OPTIONS
-    "$CEPH_BIN"/ceph config set mgr mgr/dashboard/x/server_port "$CEPH_MGR_DASHBOARD_PORT" $SSL_OPTIONS
+    CEPH_CLI_ALL config set mgr mgr/dashboard/ssl false $SSL_OPTIONS
+    CEPH_CLI_ALL config set mgr mgr/dashboard/x/server_port "$CEPH_MGR_DASHBOARD_PORT" $SSL_OPTIONS
     /docker/restart-dashboard.sh
 
     echo "SSL disabled."
@@ -97,12 +112,12 @@ fi
 create_test_user() {
     DASHBOARD_TEST_USER_SECRET_FILE="/tmp/dashboard-test-user-secret.txt"
     printf 'test' > "${DASHBOARD_TEST_USER_SECRET_FILE}"
-    "$CEPH_BIN"/ceph dashboard ac-user-create test -i "${DASHBOARD_TEST_USER_SECRET_FILE}" "${DASHBOARD_USER_CREATE_OPTIONS}"
+    CEPH_CLI_ALL dashboard ac-user-create test -i "${DASHBOARD_TEST_USER_SECRET_FILE}" "${DASHBOARD_USER_CREATE_OPTIONS}"
 }
-create_test_user || "$CEPH_BIN"/ceph dashboard ac-user-create test test "${DASHBOARD_USER_CREATE_OPTIONS}"
+create_test_user || CEPH_CLI_ALL dashboard ac-user-create test test "${DASHBOARD_USER_CREATE_OPTIONS}"
 
 # Enable debug mode.
-"$CEPH_BIN"/ceph dashboard debug enable
+CEPH_CLI_ALL dashboard debug enable
 
 # Set monitoring stack:
 /docker/set-monitoring.sh
@@ -111,4 +126,4 @@ create_test_user || "$CEPH_BIN"/ceph dashboard ac-user-create test test "${DASHB
 [[ "$CEPH_VERSION" -le '14' ]] && exit 0
 
 # Set dashboard log level.
-"$CEPH_BIN"/ceph config set mgr mgr/dashboard/log_level debug
+CEPH_CLI_ALL config set mgr mgr/dashboard/log_level debug

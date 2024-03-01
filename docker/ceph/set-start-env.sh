@@ -2,6 +2,8 @@
 
 set -e
 
+source /docker/set-mstart-env.sh
+
 [[ -z "$MGR" ]] && export MGR=1
 [[ -z "$MGR_PYTHON_PATH" ]] && export MGR_PYTHON_PATH=/ceph/src/pybind/mgr
 [[ -d "$MGR_PYTHON_PATH"/dashboard/frontend ]] && export IS_UPSTREAM_LUMINOUS=0
