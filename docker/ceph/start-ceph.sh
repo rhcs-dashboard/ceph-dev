@@ -67,6 +67,11 @@ if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
     echo 'Prometheus mgr module enabled.'
 fi
 
+#Enable and set test_orchestrator module
+if [[ "$TEST_ORCHESTRATOR" == 1 ]]; then
+    /docker/scripts/mock-devices.sh
+fi
+
 # Upstream luminous start ends here
 if [[ "$IS_UPSTREAM_LUMINOUS" != 0 ]]; then
     exit 0
