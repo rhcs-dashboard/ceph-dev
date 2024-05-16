@@ -123,6 +123,63 @@ services:
             - ./docker/prometheus:/etc/prometheus:Z
             - ${CEPH_REPO_DIR}/${PROMETHEUS_ALERTS_DIR:-monitoring/ceph-mixin}:/etc/prometheus/alerts:Z
 
+    prometheus2:
+        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.43.0}
+        container_name: prometheus2
+        hostname: prometheus2
+        ports: ['${PROMETHEUS2_HOST_PORT:-9090}:9090']
+        volumes:
+            - ./docker/prometheus1:/etc/prometheus:Z
+            - ${CEPH2_REPO_DIR}/${PROMETHEUS_ALERTS_DIR:-monitoring/ceph-mixin}:/etc/prometheus/alerts:Z
+
+    thanos-sidecar:
+        image: ${THANOS_IMAGE}
+        container_name: thanos-sidecar
+        hostname: thanos-sidecar
+        volumes_from:
+          - prometheus:rw
+        command:
+          - "sidecar"
+          - "--tsdb.path=/prometheus"
+          - "--prometheus.url=http://prometheus:9090"
+        expose:
+          - 10901
+          - 10902
+        depends_on:
+          - prometheus
+
+    thanos-sidecar2:
+        image: ${THANOS_IMAGE}
+        container_name: thanos-sidecar2
+        hostname: thanos-sidecar2
+        volumes_from:
+          - prometheus2:rw
+        command:
+          - "sidecar"
+          - "--tsdb.path=/prometheus"
+          - "--prometheus.url=http://prometheus2:9090"
+        expose:
+          - 10901
+          - 10902
+        depends_on:
+          - prometheus2
+
+    thanos-querier:
+        image: ${THANOS_IMAGE}
+        container_name: thanos-querier
+        hostname: thanos-querier
+        command:
+          - "query"
+          - "--store=thanos-sidecar:10901"
+          - "--store=thanos-sidecar2:10901"
+        expose:
+          - 10902
+          - 10901
+        ports:
+          - "10902:10902"
+        depends_on:
+          - thanos-sidecar
+
     node-exporter:
         image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v1.5.0}
         container_name: node-exporter

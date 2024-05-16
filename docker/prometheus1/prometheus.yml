@@ -1,8 +1,8 @@
 global:
   scrape_interval: 5s
   evaluation_interval: 5s
-  external_labels:
-    cluster: cluster1
+  external_labels:  
+    cluster: cluster2
 scrape_configs:
   - job_name: 'node-exporter'
     file_sd_configs:
@@ -19,7 +19,7 @@ alerting:
   - scheme: http
     static_configs:
     - targets:
-      - 'alertmanager:9093'
+      - 'alertmanager:9094'
 
 rule_files:
   - 'alerts/ceph_default_alerts.yml'
