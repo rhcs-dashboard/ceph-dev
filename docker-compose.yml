@@ -131,6 +131,7 @@ services:
         volumes:
             - ./docker/prometheus1:/etc/prometheus:Z
             - ${CEPH2_REPO_DIR}/${PROMETHEUS_ALERTS_DIR:-monitoring/ceph-mixin}:/etc/prometheus/alerts:Z
+        scale: -1
 
     node-exporter:
         image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v1.5.0}

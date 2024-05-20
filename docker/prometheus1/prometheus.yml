@@ -6,18 +6,38 @@ scrape_configs:
     file_sd_configs:
       - files:
         - node-exporter-targets.yml
+    relabel_configs:
+    - source_labels: [__address__]
+      target_label: cluster
+      replacement: 'cluster2'
   - job_name: 'ceph'
     honor_labels: true
     file_sd_configs:
       - files:
         - ceph-targets.yml
+    relabel_configs:
+    - source_labels: [__address__]
+      target_label: cluster
+      replacement: 'cluster2'
+  - job_name: 'federate'
+    scrape_interval: 15s
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        - '{job="ceph"}'
+        - '{job="node"}'
+        - '{job="haproxy"}'
+        - '{job="ceph-exporter"}'
+    static_configs:
+    - targets: []
 
 alerting:
   alertmanagers:
   - scheme: http
     static_configs:
     - targets:
-      - 'alertmanager:9094'
+      - 'alertmanager:9093'
 
 rule_files:
   - 'alerts/ceph_default_alerts.yml'

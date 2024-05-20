@@ -395,7 +395,7 @@ docker push rhcsdashboard/ceph:main
 
 * Start ceph2 + ceph + ...:
 ```
-docker-compose up -d --scale ceph2=1
+docker-compose up -d --scale ceph2=1 --scale prometheus2=1
 
 # Start ceph2 but not ceph:
 docker-compose up -d --scale ceph2=1 --scale ceph=0
