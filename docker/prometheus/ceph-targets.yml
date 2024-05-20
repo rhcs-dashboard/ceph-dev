@@ -1,7 +1,9 @@
 [
     {
         "targets": [ "ceph:9283" ],
-        "labels": {}
+        "labels": {
+          cluster: "cluster1"
+        }
     },
     {
         "targets": [ "ceph2:9283" ],
