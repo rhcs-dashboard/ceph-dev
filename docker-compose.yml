@@ -123,6 +123,16 @@ services:
             - ./docker/prometheus:/etc/prometheus:Z
             - ${CEPH_REPO_DIR}/${PROMETHEUS_ALERTS_DIR:-monitoring/ceph-mixin}:/etc/prometheus/alerts:Z
 
+    prometheus2:
+        image: ${PROMETHEUS_IMAGE:-prom/prometheus:v2.43.0}
+        container_name: prometheus2
+        hostname: prometheus2
+        ports: ['${PROMETHEUS2_HOST_PORT:-9090}:9090']
+        volumes:
+            - ./docker/prometheus1:/etc/prometheus:Z
+            - ${CEPH2_REPO_DIR}/${PROMETHEUS_ALERTS_DIR:-monitoring/ceph-mixin}:/etc/prometheus/alerts:Z
+        scale: -1
+
     node-exporter:
         image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v1.5.0}
         container_name: node-exporter

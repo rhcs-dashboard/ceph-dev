@@ -11,3 +11,4 @@ datasources:
     orgId: 1
     url: http://prometheus:9090
     editable: true
+

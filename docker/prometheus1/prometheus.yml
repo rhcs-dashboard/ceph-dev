@@ -9,7 +9,7 @@ scrape_configs:
     relabel_configs:
     - source_labels: [__address__]
       target_label: cluster
-      replacement: 'cluster1'
+      replacement: 'cluster2'
   - job_name: 'ceph'
     honor_labels: true
     file_sd_configs:
@@ -18,7 +18,7 @@ scrape_configs:
     relabel_configs:
     - source_labels: [__address__]
       target_label: cluster
-      replacement: 'cluster1'
+      replacement: 'cluster2'
   - job_name: 'federate'
     scrape_interval: 15s
     honor_labels: true
@@ -30,8 +30,7 @@ scrape_configs:
         - '{job="haproxy"}'
         - '{job="ceph-exporter"}'
     static_configs:
-    - targets:
-      - 'prometheus2:9090'
+    - targets: []
 
 alerting:
   alertmanagers:
