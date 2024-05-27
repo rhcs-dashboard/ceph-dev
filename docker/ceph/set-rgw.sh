@@ -146,7 +146,7 @@ if [[ "$RGW_MULTISITE" == 1 ]]; then
         echo -n "{$(cat ${RGW_REALM_USER_ACCESS_KEY_FILE} | sed 's/,$//')}" > "${RGW_REALM_USER_ACCESS_KEY_FILE}"
         echo -n "{$(cat ${RGW_REALM_USER_SECRET_KEY_FILE} | sed 's/,$//')}" > "${RGW_REALM_USER_SECRET_KEY_FILE}"
     else
-        readonly FIRST_CLUSTER_HOSTNAME=$(hostname | sed -e 's/-cluster//g' -e 's/2//g')
+        readonly FIRST_CLUSTER_HOSTNAME=$(hostname | sed -e 's/2//g')
         readonly CLUSTER2_PULL_REALM="${REALM_NAME_PREFIX}1"
         readonly CLUSTER2_ZONEGROUP="${ZONEGROUP_NAME_PREFIX}1-${CLUSTER2_PULL_REALM}"
         readonly CLUSTER2_ZONE="${ZONE_NAME_PREFIX}3-${CLUSTER2_ZONEGROUP}"
