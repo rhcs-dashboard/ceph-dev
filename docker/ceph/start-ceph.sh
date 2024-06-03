@@ -58,10 +58,8 @@ if [[ "$RGW" -gt 0  ||  "$RGW_MULTISITE" == 1 ]]; then
 fi
 
 # Enable prometheus module
-if [[ "$IS_FIRST_CLUSTER" == 1 ]]; then
-    "$CEPH_BIN"/ceph mgr module enable prometheus
-    echo 'Prometheus mgr module enabled.'
-fi
+"$CEPH_BIN"/ceph mgr module enable prometheus
+echo 'Prometheus mgr module enabled.'
 
 #Enable and set test_orchestrator module
 if [[ "$TEST_ORCHESTRATOR" == 1 ]]; then
@@ -75,7 +73,7 @@ fi
 
 # Disable ssl (if selected)
 readonly VSTART_HAS_SSL_FLAG=$(cat /ceph/src/vstart.sh | grep DASHBOARD_SSL | wc -l)
-if [[ "$DASHBOARD_SSL" == 0 && "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_FIRST_CLUSTER" == 1 ]]; then
+if [[ "$DASHBOARD_SSL" == 0 && "$VSTART_HAS_SSL_FLAG" == 0 ]]; then
     echo "Disabling SSL..."
 
     SSL_OPTIONS='--force'
@@ -91,7 +89,7 @@ if [[ "$DASHBOARD_SSL" == 0 && "$VSTART_HAS_SSL_FLAG" == 0 && "$IS_FIRST_CLUSTER
 fi
 
 # Secondary cluster start (or upstream mimic start) ends here.
-[[ "$IS_FIRST_CLUSTER" == 0 || "$CEPH_VERSION" -le '13' ]] && exit 0
+[[ "$CEPH_VERSION" -le '13' ]] && exit 0
 
 # Create dashboard "test" user:
 [[ "$CEPH_VERSION" -gt '14' ]] && DASHBOARD_USER_CREATE_OPTIONS='--force-password'

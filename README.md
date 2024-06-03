@@ -308,14 +308,14 @@ docker-compose exec ceph /docker/sso/sso-disable.sh
 RGW_MULTISITE=1
 ```
 
-* Start ceph (cluster 1) + ceph cluster 2:
+* Start ceph (cluster 1) + ceph2 (cluster 2):
 ```
-docker-compose up -d --scale ceph-cluster2=1
+docker-compose up -d --scale ceph2=1 --scale prometheus2=1
 ```
 
 * Run 100s duration [benchmark](https://github.com/markhpc/hsbench#usage):
 ```
-docker-compose exec ceph-cluster2 bash
+docker-compose exec ceph2 bash
 hsbench -a <rgw-user-access-key> -s <rgw-user-secret-key> -u http://127.0.0.1:8000 -z 4K -d 100 -t 10 -b 10
 ```
 
