@@ -25,10 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [centos_stream8, centos_stream9]
+        os: [centos_stream9]
         include:
-          - os: centos_stream8
-            centos_version: 8
           - os: centos_stream9
             centos_version: 9
     steps:
@@ -57,13 +55,11 @@ jobs:
         branch: [main, reef, quincy, pacific]
         name: [ceph, ceph-rpm]
         include:
-          - centos_version: 8
+          - centos_version: 9
           - name: ceph
             dir: ceph
           - name: ceph-rpm
             dir: ceph/rpm
-          - branch: main
-            centos_version: 9
     steps:
     - name: Checkout
       uses: actions/checkout@master

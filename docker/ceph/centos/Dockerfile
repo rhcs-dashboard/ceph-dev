@@ -1,21 +1,19 @@
-ARG CENTOS_VERSION=8
+ARG CENTOS_VERSION=9
 FROM quay.io/centos/centos:stream$CENTOS_VERSION as ceph-base
 ARG CENTOS_VERSION
 
-RUN dnf --disablerepo '*' --enablerepo=extras swap centos-linux-repos centos-stream-repos -y
-RUN dnf distro-sync -y
-
 RUN dnf install -y epel-release \
     && dnf clean packages
-RUN dnf install -y bind-utils curl dnf dnf-plugins-core git golang-github-prometheus hostname \
+RUN dnf install -y bind-utils dnf dnf-plugins-core git golang-github-prometheus hostname \
     iproute iputils jq jsonnet lsof net-tools procps-ng \
     python3-jinja2 python3-jsonpatch python3-pip util-linux which \
     && dnf clean packages
 
+RUN dnf config-manager --set-enabled crb
+RUN dnf distro-sync -y
+
 RUN sed -i 's/gpgcheck=1/gpgcheck=0/' /etc/dnf/dnf.conf
 RUN sed -i 's/skip_if_unavailable=False/skip_if_unavailable=True/' /etc/dnf/dnf.conf
-
-RUN dnf config-manager --set-enabled powertools
 
 RUN pip3 install -U pip
 
@@ -50,16 +48,20 @@ RUN dnf install -y ant doxygen libxslt-devel libxml2-devel graphviz python3-deve
     python3-Cython \
     && dnf clean packages
 
+# Conflicting versions of virtualenv causes issues with tox.
+RUN pip3 uninstall -y virtualenv
+RUN pip3 install virtualenv
+
 # For dev. mode: run backend unit tests.
-RUN dnf install -y libtool-ltdl-devel libxml2-devel python36-devel xmlsec1-devel xmlsec1-openssl-devel \
+RUN dnf install -y libtool-ltdl-devel libxml2-devel xmlsec1-devel xmlsec1-openssl-devel \
     && dnf clean packages
 
 # SSO (after installing xmlsec deps).
 RUN pip3 install python3-saml==1.9.0
 
 # NFS Ganesha.
-RUN dnf install -y centos-release-nfs-ganesha30 \
-    && dnf install -y nfs-ganesha-ceph nfs-ganesha-rados-grace nfs-ganesha-rados-urls \
+RUN dnf install -y centos-release-nfs-ganesha5 centos-release-ceph-reef \
+    && dnf install -y libcephfs2 nfs-ganesha-ceph nfs-ganesha-rados-grace nfs-ganesha-rados-urls \
     && dnf clean packages
 
 # S3 benchmark:
