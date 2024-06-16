@@ -1,7 +1,8 @@
-ARG CENTOS_VERSION=8
+ARG CENTOS_VERSION=9
 FROM quay.io/centos/centos:stream$CENTOS_VERSION
 
-RUN dnf --disablerepo '*' --enablerepo=extras swap centos-linux-repos centos-stream-repos -y
+RUN dnf install -y bind-utils dnf dnf-plugins-core
+RUN dnf config-manager --set-enabled crb
 RUN dnf distro-sync -y
 
 RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
