@@ -191,7 +191,7 @@ setup_api_tests_env() {
 
     cd "$REPO_DIR"/build
 
-    rm -rf "$CEPH_CONF_PATH"/*
+    rm -rf "${CEPH_CONF_PATH:?}"/*
     rm -f vstart_runner.log
 
     # vstart_runner uses /ceph/build cluster path.
