@@ -45,7 +45,7 @@ if [[ -n "${DASHBOARD_URL}" ]]; then
     exit 0
 fi
 
-rm -rf "$CEPH_CONF_PATH"/*
+rm -rf "${CEPH_CONF_PATH:?}"/*
 
 cd /ceph/build
 ../src/vstart.sh ${VSTART_OPTIONS}
