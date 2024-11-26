@@ -26,6 +26,11 @@ fi
 export RGW_DEBUG
 export VSTART_OPTIONS
 
+# Add --exporter to VSTART_OPTIONS if the exporter flag is set
+if [[ "$EXPORTER" == 1 ]]; then
+    VSTART_OPTIONS="$VSTART_OPTIONS --cephexporter"
+fi
+
 HTTP_PROTO='http'
 if [[ "$DASHBOARD_SSL" == 1 ]]; then
     HTTP_PROTO='https'
