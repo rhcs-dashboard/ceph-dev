@@ -19,6 +19,15 @@ scrape_configs:
     - source_labels: [__address__]
       target_label: cluster
       replacement: 'cluster1'
+  - job_name: 'ceph-exporter'
+    honor_labels: true
+    file_sd_configs:
+      - files:
+        - ceph-exporter-targets.yml
+    relabel_configs:
+    - source_labels: [__address__]
+      target_label: cluster
+      replacement: 'cluster1'
   - job_name: 'federate'
     scrape_interval: 15s
     honor_labels: true
