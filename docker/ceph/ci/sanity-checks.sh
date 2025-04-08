@@ -116,7 +116,7 @@ run_tox() {
         if [[ "$(tox -l | grep cov | wc -l)" > 0 ]]; then  # Nautilus branch.
             TOX_ARGS="py3-run pytest $TOX_ARGS"
         else  # Master branch.
-            TOX_ARGS="py3 $TOX_ARGS"
+            TOX_ARGS="py3 -- $TOX_ARGS"
         fi
     fi
 
