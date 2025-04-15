@@ -151,19 +151,18 @@ services:
             - '--config.file=/etc/alertmanager/config.yml'
 
     keycloak:
-        image: ${KEYCLOAK_IMAGE:-jboss/keycloak:11.0.3}
+        image: ${KEYCLOAK_IMAGE:-quay.io/keycloak/keycloak:21.1.1}
         container_name: keycloak
         hostname: keycloak
         ports: ['${KEYCLOAK_HOST_HTTP_PORT:-8080}:8080', '${KEYCLOAK_HOST_HTTPS_PORT:-8443}:8443']
         volumes:
             - ./docker/keycloak:/docker:Z
         environment:
-            - KEYCLOAK_USER=admin
-            - KEYCLOAK_PASSWORD=keycloak
+            - KEYCLOAK_ADMIN=admin
+            - KEYCLOAK_ADMIN_PASSWORD=keycloak
             - KEYCLOAK_IMPORT=/docker/saml-demo-realm.json
-            - BIND=127.0.0.1
-        scale: -1
-    
+        command: start --hostname keycloak
+
     haproxy:
         image: ${HAPROXY_IMAGE:-haproxy:2.3}
         container_name: haproxy
