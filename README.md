@@ -413,3 +413,13 @@ and start the ceph normally.
 ```
 docker-compose up -d ceph
 ```
+
+## Kafka + Kafka UI deployment
+
+To start a Kafka and Kafka UI for testing rgw notification specifically,
+you can start the kafka and kafka-ui by
+
+```
+docker-compose up -d kafka
+```
+which will start both of them and kafka ui can be visible at http://localhost:8082
