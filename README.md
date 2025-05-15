@@ -426,3 +426,27 @@ you can start the kafka and kafka-ui by
 docker compose up -d kafka
 ```
 which will start both of them and kafka ui can be visible at http://localhost:8082
+
+## HA Proxy
+
+To start ha proxy for mgr service, you can do
+
+```
+docker compose up -d haproxy_mgr
+```
+
+and for rgw service
+
+```
+docker compose up -d haproxy_rgw
+```
+
+By default, rgw is configured to allow CORS.
+
+RGW HA server can be accessed in http://localhost:9080
+
+```
+curl http://localhost:9080
+
+<?xml version="1.0" encoding="UTF-8"?><ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>anonymous</ID></Owner><Buckets></Buckets></ListAllMyBucketsResult>%   
+```

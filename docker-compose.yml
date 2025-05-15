@@ -170,12 +170,23 @@ services:
         image: ${HAPROXY_IMAGE:-haproxy:2.3}
         container_name: haproxy
         hostname: haproxy
-        ports: ['${HAPROXY_HOST_HTTP_PORT:-80}:80', '${HAPROXY_HOST_HTTPS_PORT:-443}:443']
+        ports: ['${HAPROXY_HOST_HTTP_PORT:-80}:80', '${HAPROXY_HOST_HTTPS_PORT:-443}:443', '${HAPROXY_RGW_HOST_HTTP_PORT:-9080}:9080']
         volumes:
-            - ./docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
             - ./docker/haproxy/dashboard.pem:/etc/ssl/certs/dashboard.pem
             - ./docker/haproxy/cors.lua:/etc/haproxy/cors.lua
         profiles: ['haproxy']
+
+    haproxy_mgr:
+        extends: haproxy
+        volumes:
+        - ./docker/haproxy/haproxy-mgr.cfg:/usr/local/etc/haproxy/haproxy.cfg
+        profiles: ["ha-mgr"]
+
+    haproxy_rgw:
+        extends: haproxy
+        volumes:
+        - ./docker/haproxy/haproxy-rgw.cfg:/usr/local/etc/haproxy/haproxy.cfg
+        profiles: ["ha-rgw"]
 
     kafka:
         image: ${KAFKA_IMAGE:-confluentinc/cp-kafka:7.4.0}
