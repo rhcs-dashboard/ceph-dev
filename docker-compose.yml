@@ -168,7 +168,7 @@ services:
         image: ${HAPROXY_IMAGE:-haproxy:2.3}
         container_name: haproxy
         hostname: haproxy
-        ports: ['${HAPROXY_HOST_HTTP_PORT:-80}:80', '${HAPROXY_HOST_HTTPS_PORT:-443}:443']
+        ports: ['${HAPROXY_HOST_HTTP_PORT:-80}:80', '${HAPROXY_HOST_HTTPS_PORT:-443}:443', '${HAPROXY_HOST_HTTPS_PORT:-9080}:9080']
         volumes:
             - ./docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
             - ./docker/haproxy/dashboard.pem:/etc/ssl/certs/dashboard.pem
