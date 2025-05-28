@@ -57,7 +57,7 @@ RUN dnf install -y libtool-ltdl-devel libxml2-devel xmlsec1-devel xmlsec1-openss
     && dnf clean packages
 
 # SSO (after installing xmlsec deps).
-RUN pip3 install python3-saml==1.9.0
+RUN pip3 install python3-saml==1.16.0 --only-binary=:all:
 
 # NFS Ganesha.
 RUN dnf install -y centos-release-nfs-ganesha5 centos-release-ceph-reef \
