@@ -7,6 +7,19 @@ RUN dnf config-manager --add-repo http://apt-mirror.front.sepia.ceph.com/lab-ext
 RUN dnf config-manager --setopt gpgcheck=0 apt-mirror.front.sepia.ceph.com_lab-extras_${CENTOS_VERSION}_ --save
 RUN dnf copr enable -y ceph/el${CENTOS_VERSION}
 
+ARG VCS_BRANCH=main
+RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/install-deps.sh \
+    -o /ceph/install-deps.sh \
+    && chmod +x /ceph/install-deps.sh
+RUN (curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/src/script/lib-build.sh \
+    -o /ceph/src/script/lib-build.sh --create-dirs \
+    && chmod +x /ceph/src/script/lib-build.sh ) || true
+RUN curl -LsS https://raw.githubusercontent.com/ceph/ceph/"$VCS_BRANCH"/ceph.spec.in \
+    -o /ceph/ceph.spec.in
+
+RUN bash -x /ceph/install-deps.sh \
+    && dnf clean packages
+
 ARG USE_REPO_FILES=0
 ARG REPO_URL
 ARG CEPH_RELEASE=main

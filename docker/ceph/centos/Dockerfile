@@ -18,7 +18,9 @@ RUN sed -i 's/skip_if_unavailable=False/skip_if_unavailable=True/' /etc/dnf/dnf.
 RUN pip3 install -U pip
 
 # Sanity checks:
-RUN pip3 install mypy tox
+# pinning tox to less than 4 since newer versions of it
+# is breaking it in py3.9
+RUN pip3 install mypy 'tox<4'
 
 # AWS CLI.
 RUN pip3 install awscli boto3 boto3-stubs
@@ -52,14 +54,6 @@ RUN dnf install -y ant doxygen libxslt-devel libxml2-devel graphviz python3-deve
 RUN pip3 uninstall -y virtualenv
 RUN pip3 install virtualenv
 
-# For dev. mode: run backend unit tests.
-RUN dnf install -y libtool-ltdl-devel libxml2-devel xmlsec1-devel xmlsec1-openssl-devel \
-    && dnf clean packages
-
-# SSO (after installing xmlsec deps).
-RUN pip3 install python3-saml==1.16.0 --only-binary=:all:
-
-# NFS Ganesha.
 RUN dnf install -y centos-release-nfs-ganesha5 centos-release-ceph-reef \
     && dnf install -y libcephfs2 nfs-ganesha-ceph nfs-ganesha-rados-grace nfs-ganesha-rados-urls \
     && dnf clean packages
