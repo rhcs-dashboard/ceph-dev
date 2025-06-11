@@ -1,4 +1,4 @@
-![Publish ceph images](https://github.com/rhcs-dashboard/ceph-dev/workflows/Publish%20ceph%20images/badge.svg?branch=main)
+![Publish ceph images](https://github.com/rhcs-dashboard/ceph-dev/actions/workflows/main.yml/badge.svg?branch=main)
 
 # RHCS Dashboard Dev. Env.
 
