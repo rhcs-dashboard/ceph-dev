@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [main, squid, reef, quincy, pacific]
+        branch: [main, tentacle, squid, reef, quincy, pacific]
         name: [ceph, ceph-rpm]
         include:
           - centos_version: 9
@@ -69,7 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [main, squid, reef, quincy, pacific]
+        branch: [main, tentacle, squid, reef, quincy, pacific]
     steps:
     - name: Checkout
       uses: actions/checkout@master
