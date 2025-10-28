@@ -1,5 +1,3 @@
-version: '2.2'
-
 services:
     ceph-base:
         image: ${CEPH_IMAGE:-rhcsdashboard/ceph-rpm:main}
@@ -45,14 +43,13 @@ services:
         command: /docker/start.sh
         cpus: ${CEPH_CONTAINER_CPUS:-4}
         mem_limit: ${CEPH_CONTAINER_MEM_LIMIT:-6g}
-        scale: -1
+
     ceph:
         extends:
             service: ceph-base
         container_name: ceph
         hostname: ceph
         ports: ['${CEPH_PROXY_HOST_PORT:-4200}:4200','${CEPH_HOST_PORT:-11000}:11000']
-        scale: 1
 
     ceph-host2:
         extends:
@@ -60,6 +57,7 @@ services:
         container_name: ceph-host2
         hostname: ceph-host2
         command: /docker/start-ceph-additional-host.sh
+        profiles: ['additional-host']
 
     ceph2:
         extends:
@@ -71,6 +69,7 @@ services:
         volumes:
             - ${CEPH2_REPO_DIR}:/ceph
             - ${CEPH2_CUSTOM_BUILD_DIR:-empty_volume}:/ceph/build.custom
+        profiles: ['ceph2']
 
     ceph-e2e:
         extends:
@@ -83,6 +82,7 @@ services:
             - RUN_NPM_INSTALL=${RUN_NPM_INSTALL:-0}
         entrypoint: ''
         command: '/docker/e2e/e2e-run.sh'
+        profiles: ['e2e']
 
     ceph2-e2e:
         extends:
@@ -94,6 +94,7 @@ services:
             - ${CEPH2_REPO_DIR}:/ceph
         environment:
             - DASHBOARD_URL=${DASHBOARD_URL:-https://ceph2:11000}
+        profiles: ['ceph2-e2e']
 
     grafana:
         image: ${GRAFANA_IMAGE:-quay.io/ceph/ceph-grafana:9.4.7}
@@ -126,7 +127,7 @@ services:
         volumes:
             - ./docker/prometheus1:/etc/prometheus:Z
             - ${CEPH2_REPO_DIR}/${PROMETHEUS_ALERTS_DIR:-monitoring/ceph-mixin}:/etc/prometheus/alerts:Z
-        scale: -1
+        profiles: ['ceph2']
 
     node-exporter:
         image: ${NODE_EXPORTER_IMAGE:-prom/node-exporter:v1.5.0}
@@ -162,7 +163,7 @@ services:
             - KEYCLOAK_PASSWORD=keycloak
             - KEYCLOAK_IMPORT=/docker/saml-demo-realm.json
             - BIND=127.0.0.1
-        scale: -1
+        profiles: ['sso']
     
     haproxy:
         image: ${HAPROXY_IMAGE:-haproxy:2.3}
@@ -173,7 +174,7 @@ services:
             - ./docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
             - ./docker/haproxy/dashboard.pem:/etc/ssl/certs/dashboard.pem
             - ./docker/haproxy/cors.lua:/etc/haproxy/cors.lua
-        scale: -1
+        profiles: ['haproxy']
 
     kafka:
         image: ${KAFKA_IMAGE:-confluentinc/cp-kafka:7.4.0}
@@ -193,6 +194,7 @@ services:
         - default
         depends_on:
             - kafka-ui
+        profiles: ['kafka']
 
     kafka-ui:
         image: ${KAFKA_UI_IMAGE:-provectuslabs/kafka-ui:latest}
@@ -203,6 +205,7 @@ services:
         ports: ['${KAFKA_UI_HOST_PORT:-8082}:8080']
         networks:
         - default
+        profiles: ['kafka']
 
 volumes:
     empty_volume:
