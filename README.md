@@ -56,10 +56,10 @@ cp .env.example .env
 * Install [Docker Compose](https://docs.docker.com/compose/install/) by running the following, depending on your OS:
 ```
 # Fedora:
-sudo bash ./docker/scripts/install-docker compose-fedora.sh
+sudo bash ./docker/scripts/install-docker-compose-fedora.sh
 
 # CentOS 7 / RHEL 7:
-sudo bash ./docker/scripts/install-docker compose-centos-rhel.sh
+sudo bash ./docker/scripts/install-docker-compose-centos-rhel.sh
 ```
 
 If you ran the above script, then you can run *docker* and *docker compose* without *sudo* if you log out and log in.

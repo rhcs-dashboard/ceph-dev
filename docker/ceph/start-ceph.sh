@@ -18,7 +18,11 @@ if [[ "$FRONTEND_BUILD_REQUIRED" == 1 ]]; then
         npm update @angular/cli
     fi
 
-    npm ci
+    if [[ "$DASHBOARD_NPM_CI" == 1 ]]; then
+        npm ci
+    else
+        npm install
+    fi
 
     if [[ -z "${DASHBOARD_URL}" && -z "${DOWNSTREAM_BUILD}" ]]; then
         # Required to run dashboard python module.

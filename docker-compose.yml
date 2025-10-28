@@ -18,6 +18,7 @@ services:
             - CYPRESS_CACHE_FOLDER=/ceph/build.cypress
             - DASHBOARD_DEV_SERVER=${DASHBOARD_DEV_SERVER:-1}
             - DASHBOARD_SSL=${DASHBOARD_SSL:-0}
+            - DASHBOARD_NPM_CI=${DASHBOARD_NPM_CI:-0}
             - DASHBOARD_URL
             - DOWNSTREAM_BUILD
             - TEST_ORCHESTRATOR
