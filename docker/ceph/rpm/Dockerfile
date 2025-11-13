@@ -1,5 +1,11 @@
 ARG CENTOS_VERSION=9
-FROM rhcsdashboard/ceph-base:centos_stream${CENTOS_VERSION}
+ARG TARGETPLATFORM
+ARG TARGETARCH
+
+FROM --platform=$TARGETPLATFORM rhcsdashboard/ceph-base:centos_stream${CENTOS_VERSION}
+
+ARG TARGETARCH
+ENV TARGETARCH=$TARGETARCH
 ARG CENTOS_VERSION
 
 # Sepia provide missing dependencies until epel provide all dependencies.
