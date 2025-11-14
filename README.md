@@ -14,8 +14,8 @@
     ```
 1. Enter `ceph-dev` directory.
 1. To install `docker` and `docker compose`, if you're using:
-   * Fedora: `sudo bash ./docker/scripts/install-docker compose-fedora.sh`
-   * CentOS/RHEL: `sudo bash ./docker/scripts/install-docker compose-centos-rhel.sh`
+   * Fedora: `sudo bash ./docker/scripts/install-docker-compose-fedora.sh`
+   * CentOS/RHEL: `sudo bash ./docker/scripts/install-docker-compose-centos-rhel.sh`
    * Other OSes: please check [this](https://docs.docker.com/compose/install/). Additionally, please ensure that SELinux is running in permissive mode:
      ```bash
      setenforce 0
@@ -448,5 +448,5 @@ RGW HA server can be accessed in http://localhost:9080
 ```
 curl http://localhost:9080
 
-<?xml version="1.0" encoding="UTF-8"?><ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>anonymous</ID></Owner><Buckets></Buckets></ListAllMyBucketsResult>%   
+<?xml version="1.0" encoding="UTF-8"?><ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>anonymous</ID></Owner><Buckets></Buckets></ListAllMyBucketsResult>%
 ```
