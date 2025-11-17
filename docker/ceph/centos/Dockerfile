@@ -1,6 +1,12 @@
 ARG CENTOS_VERSION=9
+ARG TARGETPLATFORM
+ARG TARGETARCH
+
 FROM quay.io/centos/centos:stream$CENTOS_VERSION as ceph-base
+
+ARG TARGETARCH
 ARG CENTOS_VERSION
+ENV TARGETARCH=$TARGETARCH
 
 RUN dnf install -y epel-release \
     && dnf clean packages
@@ -31,9 +37,11 @@ RUN /root/aws-cli-configure.sh
 RUN pip3 install nodeenv
 
 # For dev. mode: run e2e tests.
-RUN dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
-    libXScrnSaver xorg-x11-server-Xvfb \
-    && dnf clean packages
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+    dnf install -y https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
+        libXScrnSaver xorg-x11-server-Xvfb \
+        && dnf clean packages; \
+    fi
 
 # SSO deps (install before fedora provisional deps).
 RUN dnf install -y gcc-c++ make \
