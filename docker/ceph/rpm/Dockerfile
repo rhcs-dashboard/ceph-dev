@@ -9,8 +9,8 @@ ENV TARGETARCH=$TARGETARCH
 ARG CENTOS_VERSION
 
 # Sepia provide missing dependencies until epel provide all dependencies.
-RUN dnf config-manager --add-repo http://apt-mirror.front.sepia.ceph.com/lab-extras/${CENTOS_VERSION}/
-RUN dnf config-manager --setopt gpgcheck=0 apt-mirror.front.sepia.ceph.com_lab-extras_${CENTOS_VERSION}_ --save
+RUN dnf config-manager --add-repo https://apt-mirror.sepia.ceph.com/lab-extras/${CENTOS_VERSION}/
+RUN dnf config-manager --setopt gpgcheck=0 apt-mirror.sepia.ceph.com_lab-extras_${CENTOS_VERSION}_ --save
 RUN dnf copr enable -y ceph/el${CENTOS_VERSION}
 
 ARG VCS_BRANCH=main
