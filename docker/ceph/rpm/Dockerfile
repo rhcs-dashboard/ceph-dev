@@ -34,7 +34,7 @@ RUN /root/set-ceph-repo.sh
 RUN dnf install -y --nogpgcheck ceph-mds ceph-mgr-cephadm ceph-mgr-dashboard \
     ceph-exporter \
     ceph-mgr-diskprediction-local \
-    ceph-mon ceph-osd ceph-radosgw rbd-mirror \
+    ceph-mon ceph-osd ceph-radosgw rbd-mirror cephfs-mirror \
     && dnf clean packages
 
 RUN dnf clean all && rm -rf /var/cache/dnf/*
