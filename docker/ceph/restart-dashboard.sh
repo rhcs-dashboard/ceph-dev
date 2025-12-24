@@ -4,5 +4,5 @@ set -e
 
 cd /ceph/build
 
-"$CEPH_BIN"/ceph mgr module disable dashboard
-"$CEPH_BIN"/ceph mgr module enable dashboard --force
+MGR_ID=$("$CEPH_BIN"/ceph mgr stat | awk -v FS='"active_name": ' 'NF>1{print $2}' | tr -d '",')
+"$CEPH_BIN"/ceph mgr fail "$MGR_ID"
