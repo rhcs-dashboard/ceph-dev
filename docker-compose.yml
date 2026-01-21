@@ -219,6 +219,24 @@ services:
         - default
         profiles: ['kafka']
 
+    loki:
+      image: grafana/loki:2.4.0
+      volumes:
+        - ./docker/loki:/etc/loki
+        - ${CEPH_REPO_DIR}/build.ceph/out:/etc/logs
+      ports:
+        - "3100:3100"
+      command: '--config.file=/etc/loki/loki-config.yaml'
+
+    promtail:
+      image: grafana/promtail:2.4.0
+      volumes:
+        - /var/log:/var/log
+        - ./docker/promtail:/etc/promtail
+        - ${CEPH_REPO_DIR}/build.ceph/out:/etc/logs
+      command: '--config.file=/etc/promtail/promtail-config.yaml'
+
+
 volumes:
     empty_volume:
     grafana_data:
