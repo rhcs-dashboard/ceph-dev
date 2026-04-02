@@ -10,8 +10,8 @@ ENV TARGETARCH=$TARGETARCH
 
 RUN dnf install -y epel-release \
     && dnf clean packages
-RUN dnf install -y bind-utils dnf dnf-plugins-core git golang-github-prometheus hostname \
-    iproute iputils jq jsonnet lsof net-tools procps-ng \
+RUN dnf install -y bind-utils dnf dnf-plugins-core git hostname \
+    iproute iputils jq jsonnet lsof net-tools procps-ng prometheus \
     python3-jinja2 python3-jsonpatch python3-pip util-linux which \
     && dnf clean packages
 
