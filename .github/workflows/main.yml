@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [main, tentacle, squid, reef, quincy, pacific]
+        branch: [main, umbrella,tentacle, squid, reef, quincy, pacific]
         name: [ceph, ceph-rpm]
         arch: [amd64, arm64]
         include:
@@ -119,7 +119,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [main, tentacle, squid, reef, quincy, pacific]
+        branch: [main, umbrella, tentacle, squid, reef, quincy, pacific]
         name: [ceph, ceph-rpm]
     steps:
     - name: Log in to DockerHub
@@ -149,7 +149,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [main, tentacle, squid, reef, quincy, pacific]
+        branch: [main, umbrella, tentacle, squid, reef, quincy, pacific]
     steps:
     - name: Checkout
       uses: actions/checkout@master
