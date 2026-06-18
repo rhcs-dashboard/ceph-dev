@@ -98,7 +98,7 @@ services:
         profiles: ['ceph2-e2e']
 
     grafana:
-        image: ${GRAFANA_IMAGE:-quay.io/ceph/ceph-grafana:9.4.7}
+        image: ${GRAFANA_IMAGE:-quay.io/ceph/grafana:12.3.1}
         container_name: grafana
         hostname: grafana
         user: "0:0"
@@ -219,12 +219,131 @@ services:
         - default
         profiles: ['kafka']
 
+    postgres:
+        image: ankushbehl/cephfs-workspace-db:latest
+        container_name: cephfs-workspace-db-prod
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${DB_NAME:-cephfs_workspace}
+            POSTGRES_USER: ${DB_USER:-cephfs_user}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-cephfs_password}
+            POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - cephfs-network
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-cephfs_user} -d ${DB_NAME:-cephfs_workspace}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    # Redis Cache
+    redis:
+        image: redis:7-alpine
+        container_name: cephfs-workspace-redis-prod
+        restart: unless-stopped
+        command: redis-server --appendonly yes
+        volumes:
+            - redis_data:/data
+        networks:
+            - cephfs-network
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    # Backend API
+    backend:
+        image: ankushbehl/cephfs-workspace-backend-ceph-dev:${VERSION:-latest}
+        container_name: cephfs-workspace-backend-prod
+        restart: unless-stopped
+        user: root
+        privileged: true
+        devices:
+            - /dev/fuse
+        cap_add:
+            - SYS_ADMIN
+        security_opt:
+            - apparmor:unconfined
+        environment:
+            NODE_ENV: production
+            PORT: 3000
+            DB_HOST: postgres
+            DB_PORT: 5432
+            DB_NAME: ${DB_NAME:-cephfs_workspace}
+            DB_USER: ${DB_USER:-cephfs_user}
+            DB_PASSWORD: ${DB_PASSWORD:-cephfs_password}
+            REDIS_HOST: redis
+            REDIS_PORT: 6379
+            REDIS_PASSWORD: ""
+            JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+            JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
+            CEPHFS_MOUNT_PATH: /mnt/cephfs/volumes
+            CEPHFS_FS_NAME: a
+            CEPH_CONF: /etc/ceph/ceph.conf
+            CEPH_KEYRING: /etc/ceph/keyring
+            LOG_LEVEL: ${LOG_LEVEL:-info}
+        volumes:
+            - ${CEPH_REPO_DIR}:/ceph:z
+            - ${CEPH_CUSTOM_BUILD_DIR:-empty_volume}:/ceph/build.custom
+            - backend_logs:/app/logs
+            - backend_uploads:/app/uploads
+        networks:
+            - cephfs-network
+            - default
+        depends_on:
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+            ceph:
+                condition: service_started
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 60s
+
+    # Frontend (Nginx + Angular)
+    # Note: Uncomment when frontend image is published to Docker Hub
+    frontend:
+        image: ankushbehl/cephfs-workspace-frontend:${VERSION:-latest}
+        container_name: cephfs-workspace-frontend-prod
+        restart: unless-stopped
+        ports:
+            - "${FRONTEND_PORT:-4205}:80"
+        networks:
+            - cephfs-network
+        depends_on:
+            - backend
+            - ceph
+        healthcheck:
+            test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 10s
+
+
 volumes:
     empty_volume:
     grafana_data:
+    postgres_data:
+        driver: local
+    redis_data:
+        driver: local
+    backend_logs:
+        driver: local
+    backend_uploads:
+        driver: local
 
 networks:
     kafka-network:
+        driver: bridge
+    cephfs-network:
         driver: bridge
     default:
         driver: bridge
