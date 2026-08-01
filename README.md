@@ -450,3 +450,48 @@ curl http://localhost:9080
 
 <?xml version="1.0" encoding="UTF-8"?><ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>anonymous</ID></Owner><Buckets></Buckets></ListAllMyBucketsResult>%
 ```
+
+# Cephalobox
+
+A podman based cephadm deployment for deploying ceph. Instead of a full podman in podman, it leverages podman directly on container's host with privileged
+capabilities, so that cephadm can natively deploy and manage services.
+
+## Quirks
+
+* OSDs are not managed by cephadm. instead deployed using ceph-osd binary.
+
+## Deployment
+
+Strongly advised to use podman compose. docker compose is too much..
+
+1. Build cephadm binary in your local. Since this favors mostly local development, generate the cephadm binary in your `src/cephadm` directory inside ceph.
+
+2. Also build the front-end assets inside the `src/pybind/mgr/dashboard/frontend` folder in ceph.
+
+3. Populate the `CEPH_REPO_DIR` in the .env file so that it reads your local code.
+
+4. use the image you want, supports `main`, `umbrella` and `tentacle`. Prebundling the image so that we don't need to pull it everytime we start a cluster.
+Provide the correct image in .env file's `CEPHALOBOX_IMAGE`. defaults to `rhcsdashboard/cephalobox:main`.
+
+5. Start the container
+
+```bash
+podman compose up -d cephalobox
+```
+
+6. Check the logs. By default, it pushes out cephadm's bootstrap log and also the ceph-mgr logs.
+
+```bash
+podman compose logs -f cephalobox
+```
+
+7. to destroy
+
+```bash
+podman compose down -v
+```
+
+## Limitation
+
+* Impossible to run nvmeof service because of the way it is built.
+* Can't create osds at all. Maybe possible to add hosts, but not tested.

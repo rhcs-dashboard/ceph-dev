@@ -1,0 +1,14 @@
+[Unit]
+Description=Cephalobox 
+After=network.target sshd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+KillMode=process
+ExecStartPre=/bin/sleep 3
+ExecStart=/bin/bash /usr/local/bin/cephalobox.sh
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target

@@ -219,6 +219,27 @@ services:
         - default
         profiles: ['kafka']
 
+    cephalobox:
+        image: ${CEPHALOBOX_IMAGE:-rhcsdashboard/cephalobox:main}
+        container_name: cephalobox
+        hostname: cephalobox
+        privileged: true
+        tty: true
+        stdin_open: true
+        ports:
+            - 8443:8443
+            - 3000:3000
+        networks:
+            default:
+                ipv4_address: 172.20.0.2
+        volumes:
+        - /dev:/dev
+        - /run/udev:/run/udev:ro
+        - /dev/hugepages:/dev/hugepages
+        - /sys/fs/cgroup:/sys/fs/cgroup:rw
+        - ${CEPH_REPO_DIR}:/ceph
+        restart: unless-stopped
+
 volumes:
     empty_volume:
     grafana_data:
