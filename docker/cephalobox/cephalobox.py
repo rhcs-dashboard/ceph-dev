@@ -28,10 +28,6 @@ def get_primary_routable_ip_address() -> str:
         temporary_socket.close()
     return primary_ip
 
-def remove_systemctl_time_sync_spoof():
-    if os.path.exists("/usr/bin/systemctl.real"):
-        execute_shell_command_safely("mv /usr/bin/systemctl.real /usr/bin/systemctl")
-
 def prepare_local_cephadm_binary():
     """Locates cephadm within the local shared source directory, sets up bin/, and makes it executable."""
     print("\n=== Phase 2: Preparing Local Cephadm Binary ===")
@@ -61,6 +57,7 @@ def create_initial_cluster_configuration_file():
     config_content = """[global]
 osd_pool_default_min_size=1
 osd_pool_default_size=1
+public_network=172.20.0.0/24
 
 [mon]
 mon_allow_pool_size_one=true
@@ -122,7 +119,6 @@ def initialize_cephalobox():
     load_ceph_image()
 
     bootstrap_initial_ceph_cluster(monitor_ip_address)
-    remove_systemctl_time_sync_spoof()
     
     print("\nCephalabox has done its job!!!!")
 

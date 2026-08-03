@@ -237,6 +237,7 @@ services:
         - /run/udev:/run/udev:ro
         - /dev/hugepages:/dev/hugepages
         - /sys/fs/cgroup:/sys/fs/cgroup:rw
+        - /tmp:/sys/class/dmi/id:ro
         - ${CEPH_REPO_DIR}:/ceph
         restart: unless-stopped
 

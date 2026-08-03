@@ -4,6 +4,9 @@
 mkdir -p /run/udev/data
 mkdir -p /dev/cpu
 
+rm -rf /etc/sysctl.d
+mkdir -p /etc/sysctl.d
+
 # spoofing time for chrony service
 if [ ! -f "/usr/bin/systemctl.real" ]; then
     mv /usr/bin/systemctl /usr/bin/systemctl.real
