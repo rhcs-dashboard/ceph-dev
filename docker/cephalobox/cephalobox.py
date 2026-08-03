@@ -3,7 +3,6 @@ import os
 import sys
 import subprocess
 import socket
-import time
 
 SHARED_CEPH_FOLDER = "/ceph"
 
@@ -35,17 +34,16 @@ def prepare_local_cephadm_binary():
     
     if not os.path.exists(local_cephadm_path):
         print(f"\n[FATAL ERROR] Local cephadm binary not found at expected path: {local_cephadm_path}")
-        print("Please verify that your source code folder is properly mounted at /ceph-dir.")
+        print(f"Please verify that your source code folder is properly mounted at: {SHARED_CEPH_FOLDER} ")
         sys.exit(1)
-        
+
     os.makedirs("bin", exist_ok=True)
     bin_cephadm_target = os.path.join("bin", "cephadm")
-    
+
     for target in [bin_cephadm_target, "./cephadm"]:
         if os.path.exists(target):
             os.remove(target)
-            
-    # Copy local source binary to bin/ and root execution path
+
     execute_shell_command_safely(f"cp {local_cephadm_path} {bin_cephadm_target}")
     execute_shell_command_safely(f"cp {local_cephadm_path} ./cephadm")
     execute_shell_command_safely("chmod +x bin/cephadm ./cephadm")
@@ -71,18 +69,6 @@ mon_data_avail_warn=1
 
 def load_ceph_image():
     print("\nLoading cached images....")
-    
-    custom_image = os.environ.get("CEPH_IMAGE")
-    if custom_image:
-        print(f"Detected custom image: {custom_image}")
-        print(f"Pulling custom image: {custom_image}...")
-        result = subprocess.run(["podman", "pull", custom_image])
-        if result.returncode == 0:
-            print(f"Successfully pulled custom image: {custom_image}")
-            return custom_image
-        else:
-            print(f"Failed to pull custom image {custom_image}. Falling back...")
-
     tarball_path = "/opt/ceph-image.tar"
     if os.path.exists(tarball_path):
         print(f"Loading pre-bundled image from {tarball_path}...")
@@ -90,7 +76,7 @@ def load_ceph_image():
         if result.returncode == 0:
             print("Successfully loaded cached image.")
             return None
-            
+
     print("No cached images... going to retry on pulling the images..")
     return None
 
@@ -99,7 +85,7 @@ def bootstrap_initial_ceph_cluster(monitor_ip_address: str):
     custom_image = os.environ.get("CEPH_IMAGE")
     image_flag = f"--image {custom_image} " if custom_image else ""
     bootstrap_command = (
-        f"./cephadm {image_flag}bootstrap "
+        f"cephadm {image_flag}bootstrap "
         f"--mon-ip {monitor_ip_address} "
         f"--allow-overwrite "
         f"--skip-mon-network "
