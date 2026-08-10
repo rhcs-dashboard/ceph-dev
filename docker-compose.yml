@@ -219,6 +219,39 @@ services:
         - default
         profiles: ['kafka']
 
+    cephalobox:
+        image: ${CEPHALOBOX_IMAGE:-rhcsdashboard/cephalobox:main}
+        container_name: cephalobox
+        hostname: cephalobox
+        tty: true
+        stdin_open: true
+        ports:
+            - 8443:8443
+            - 3000:3000
+        networks:
+        - default
+        volumes:
+        - /run/udev:/run/udev:ro
+        - /tmp:/sys/class/dmi/id:ro
+        - ${CEPH_REPO_DIR}:/ceph
+        restart: unless-stopped
+        # focused privileges so that we don't need to give full
+        # privilege to container. SYS_ADMIN is still needed to load kernel but
+        # disallows permissions to network and raw devices.
+        # if it proves tricky, maybe eventually go on with privileged: true
+        # privileged: true
+        cap_add:
+        - SYS_ADMIN
+        security_opt:
+        - seccomp:unconfined
+        - label=disable
+        tmpfs:
+        - /run
+        - /run/lock
+        - /tmp
+        devices:
+        - /dev/fuse:/dev/fuse
+
 volumes:
     empty_volume:
     grafana_data:

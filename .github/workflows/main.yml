@@ -162,3 +162,28 @@ jobs:
         docker logout
     - name: Docker Logout
       run: docker logout
+
+  build-cephalobox:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [main, umbrella, tentacle]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Pull ceph-ci image
+      run: |
+        sudo docker pull quay.ceph.io/ceph-ci/ceph:${{ matrix.branch }}
+        sudo docker save quay.ceph.io/ceph-ci/ceph:${{ matrix.branch }} -o ./docker/cephalobox/ceph-image.tar
+
+    - name: Build
+      run: sudo docker build -t docker.io/rhcsdashboard/cephalobox:${{ matrix.branch }} -f docker/cephalobox/Dockerfile ./docker/cephalobox --build-arg TARGETCEPH=${{ matrix.branch }}
+
+    - name: Push
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        sudo docker push docker.io/rhcsdashboard/cephalobox:${{ matrix.branch }}
+        sudo docker logout
