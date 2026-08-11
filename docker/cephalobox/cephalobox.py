@@ -58,7 +58,6 @@ def prepare_local_cephadm_binary():
             print(f"\n[FATAL ERROR] Failed to extract cephadm from image {cephadm_image}.")
             sys.exit(1)
 
-        execute_shell_command_safely(f"sed -i '1s/ -P//' {global_target_sbin}")
         print(f"Successfully extracted cephadm from {cephadm_image}")
 
     # copy from local shared source directory
