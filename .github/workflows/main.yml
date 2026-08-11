@@ -10,6 +10,7 @@ on:
     - docker/ceph/aws/aws-cli-configure.sh
     - 'docker/ceph/**/Dockerfile'
     - docker/ceph/rpm/set-ceph-repo.sh
+    - 'docker/cephalobox/**'
   pull_request:
     branches:
       - main
@@ -18,6 +19,7 @@ on:
     - docker/ceph/aws/aws-cli-configure.sh
     - 'docker/ceph/**/Dockerfile'
     - docker/ceph/rpm/set-ceph-repo.sh
+    - 'docker/cephalobox/**'
   schedule:
     - cron:  '0 2 * * *'
 

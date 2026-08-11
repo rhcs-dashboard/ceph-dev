@@ -219,12 +219,42 @@ services:
         - default
         profiles: ['kafka']
 
+    ceph-image-puller:
+        image: docker:cli
+        container_name: ceph-image-puller
+        security_opt:
+        - label=disable
+        environment:
+        - CEPHADM_TARGET_IMAGE_REFERENCE=${CEPHADM_IMAGE:-quay.ceph.io/ceph-ci/ceph:main}
+        - REGISTRY_URL=${REGISTRY_URL}
+        - REGISTRY_USERNAME=${REGISTRY_USERNAME}
+        - REGISTRY_PASSWORD=${REGISTRY_PASSWORD}
+        volumes:
+        - ${XDG_RUNTIME_DIR:-/run/user/1000}/podman/podman.sock:/var/run/docker.sock
+        - ceph_image:/opt:z
+        - ./docker/cephalobox/ceph-image-puller:/ceph-image-puller
+        entrypoint: /bin/sh
+        command: ["/ceph-image-puller/image-puller.sh"]
+
     cephalobox:
         image: ${CEPHALOBOX_IMAGE:-rhcsdashboard/cephalobox:main}
         container_name: cephalobox
         hostname: cephalobox
         tty: true
         stdin_open: true
+        depends_on:
+            ceph-image-puller:
+                condition: service_completed_successfully
+        environment:
+        - CEPHADM_IMAGE=${CEPHADM_IMAGE:-quay.ceph.io/ceph-ci/ceph:main}
+        - SHARED_CEPH_REPO_DIR=${SHARED_CEPH_REPO_DIR:-0}
+        - REGISTRY_URL=${REGISTRY_URL}
+        - REGISTRY_USERNAME=${REGISTRY_USERNAME}
+        - REGISTRY_PASSWORD=${REGISTRY_PASSWORD}
+        - CONTAINER_IMAGE_PROMETHEUS=${CONTAINER_IMAGE_PROMETHEUS}
+        - CONTAINER_IMAGE_NODE_EXPORTER=${CONTAINER_IMAGE_NODE_EXPORTER}
+        - CONTAINER_IMAGE_ALERTMANAGER=${CONTAINER_IMAGE_ALERTMANAGER}
+        - CONTAINER_IMAGE_GRAFANA=${CONTAINER_IMAGE_GRAFANA}
         ports:
             - 8443:8443
             - 3000:3000
@@ -234,6 +264,7 @@ services:
         - /run/udev:/run/udev:ro
         - /tmp:/sys/class/dmi/id:ro
         - ${CEPH_REPO_DIR}:/ceph
+        - ceph_image:/opt
         restart: unless-stopped
         # focused privileges so that we don't need to give full
         # privilege to container. SYS_ADMIN is still needed to load kernel but
@@ -255,6 +286,7 @@ services:
 volumes:
     empty_volume:
     grafana_data:
+    ceph_image:
 
 networks:
     kafka-network:

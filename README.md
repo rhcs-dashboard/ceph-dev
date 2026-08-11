@@ -491,6 +491,58 @@ podman compose logs -f cephalobox
 podman compose down -v
 ```
 
+### Deploying a cluster with custom image
+
+1. Set `CEPHADM_IMAGE` in the .env file.
+
+```bash
+CEPHADM_IMAGE=my.registry/ceph/ceph
+```
+
+Optionally, if the registry is behind auth, provide the registry details in its env variables in .env
+
+```bash
+REGISTRY_URL=
+REGISTRY_USERNAME=
+REGISTRY_PASSWORD=
+```
+
+You can also set CONTAINER_IMAGE_* for each of the images incase you want to override the defaults
+
+```bash
+CONTAINER_IMAGE_PROMETHEUS=
+CONTAINER_IMAGE_NODE_EXPORTER=
+CONTAINER_IMAGE_ALERTMANAGER=
+CONTAINER_IMAGE_GRAFANA=
+```
+
+2. Once done all of those, start the cluster as
+
+```bash
+podman pull cephalobox
+
+podman compose up --attach-dependencies cephalobox
+```
+
+3. The image pulling happens in its own service which can be logged as
+
+```bash
+podman compose logs -f ceph-image-puller
+```
+
+### Disable Shared Ceph Folder
+
+1. Set `SHARED_CEPH_REPO_DIR` to 0 to disable cephadm from mounting your local directory.
+
+2. Start the cluster
+
+```bash
+podman compose up --attach-dependencies cephalobox
+```
+
+This will pull the images locally and then mount them to the cephalobox container so that the image pulling
+is more faster.
+
 ## Limitation
 
 * Impossible to run nvmeof service because of the way it is built.
