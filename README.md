@@ -543,6 +543,44 @@ podman compose up --attach-dependencies cephalobox
 This will pull the images locally and then mount them to the cephalobox container so that the image pulling
 is more faster.
 
+### Starting multiple clusters
+
+1. Upto 5 clusters are defined in the docker-compose.yml template. This can be started by
+
+```bash
+podman compose up -d cephalobox cephalobox2 cephalobox3 cephalobox4 cephalobox5
+```
+
+2. You can view individual logs by doing
+
+```bash
+pdoamn compose logs -f cephalobox4
+```
+
+Or just all the logs by
+
+```bash
+podman compose logs -f
+```
+
+3. You can also add more clusters there by following the template defined there. Just make sure the port is mapped correctly.
+For eg. inside docker-compose.yml
+
+```yml
+    cephalobox6:
+        <<: *cephalobox-base
+        container_name: cephalobox6
+        hostname: cephalobox6
+        ports:
+            - "8448:8443"
+            - "3004:3000"
+```
+and then start as
+
+```bash
+podman compose up -d cephalobox6
+```
+
 ## Limitation
 
 * Impossible to run nvmeof service because of the way it is built.

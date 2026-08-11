@@ -236,10 +236,8 @@ services:
         entrypoint: /bin/sh
         command: ["/ceph-image-puller/image-puller.sh"]
 
-    cephalobox:
+    x-cephalobox-template: &cephalobox-base
         image: ${CEPHALOBOX_IMAGE:-rhcsdashboard/cephalobox:main}
-        container_name: cephalobox
-        hostname: cephalobox
         tty: true
         stdin_open: true
         depends_on:
@@ -255,9 +253,6 @@ services:
         - CONTAINER_IMAGE_NODE_EXPORTER=${CONTAINER_IMAGE_NODE_EXPORTER}
         - CONTAINER_IMAGE_ALERTMANAGER=${CONTAINER_IMAGE_ALERTMANAGER}
         - CONTAINER_IMAGE_GRAFANA=${CONTAINER_IMAGE_GRAFANA}
-        ports:
-            - 8443:8443
-            - 3000:3000
         networks:
         - default
         volumes:
@@ -282,6 +277,46 @@ services:
         - /tmp
         devices:
         - /dev/fuse:/dev/fuse
+
+    cephalobox:
+        <<: *cephalobox-base
+        container_name: cephalobox
+        hostname: cephalobox
+        ports:
+            - "8443:8443"
+            - "3000:3000"
+
+    cephalobox2:
+        <<: *cephalobox-base
+        container_name: cephalobox2
+        hostname: cephalobox2
+        ports:
+            - "8444:8443"
+            - "3001:3000"
+
+    cephalobox3:
+        <<: *cephalobox-base
+        container_name: cephalobox3
+        hostname: cephalobox3
+        ports:
+            - "8445:8443"
+            - "3002:3000"
+
+    cephalobox4:
+        <<: *cephalobox-base
+        container_name: cephalobox4
+        hostname: cephalobox4
+        ports:
+            - "8446:8443"
+            - "3003:3000"
+
+    cephalobox5:
+        <<: *cephalobox-base
+        container_name: cephalobox5
+        hostname: cephalobox5
+        ports:
+            - "8447:8443"
+            - "3004:3000"
 
 volumes:
     empty_volume:
