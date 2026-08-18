@@ -11,7 +11,12 @@ mkdir -p "$BASE_DIRECTORY_FOR_OSDS"
 CONFIG_PATH="$BASE_DIRECTORY_FOR_OSDS/ceph.conf"
 cephadm shell -- cat /etc/ceph/ceph.conf > "$CONFIG_PATH"
 
-CONTAINER_IMAGE=$(podman images -q quay.ceph.io/ceph-ci/ceph | head -n 1)
+if [ -n "$CEPHADM_IMAGE" ] && [ "$CEPHADM_IMAGE" != "None" ]; then
+    CONTAINER_IMAGE="$CEPHADM_IMAGE"
+else
+    echo "No CEPHADM_IMAGE specified. getting it from local podman images..."
+    CONTAINER_IMAGE=$(podman images --format "{{.Repository}}:{{.Tag}}" | grep ceph | head -n 1)
+fi
 
 if [ -z "$CONTAINER_IMAGE" ]; then
     echo "[FATAL] No pre-cached Ceph image found!"

@@ -29,25 +29,53 @@ def get_primary_routable_ip_address() -> str:
 
 def prepare_local_cephadm_binary():
     """Locates cephadm within the local shared source directory, sets up bin/, and makes it executable."""
-    print("\n=== Phase 2: Preparing Local Cephadm Binary ===")
-    local_cephadm_path = os.path.join(SHARED_CEPH_FOLDER, "src/cephadm/cephadm")
-    
-    if not os.path.exists(local_cephadm_path):
-        print(f"\n[FATAL ERROR] Local cephadm binary not found at expected path: {local_cephadm_path}")
-        print(f"Please verify that your source code folder is properly mounted at: {SHARED_CEPH_FOLDER} ")
-        sys.exit(1)
+    print("\n=== Phase 2: Preparing Cephadm Binary ===")
 
-    os.makedirs("bin", exist_ok=True)
-    bin_cephadm_target = os.path.join("bin", "cephadm")
+    global_target_sbin = "/usr/sbin/cephadm"
+    global_target_bin = "/usr/bin/cephadm"
 
-    for target in [bin_cephadm_target, "./cephadm"]:
+    for target in [global_target_sbin, global_target_bin]:
         if os.path.exists(target):
-            os.remove(target)
+            try:
+                os.remove(target)
+            except OSError:
+                pass
 
-    execute_shell_command_safely(f"cp {local_cephadm_path} {bin_cephadm_target}")
-    execute_shell_command_safely(f"cp {local_cephadm_path} ./cephadm")
-    execute_shell_command_safely("chmod +x bin/cephadm ./cephadm")
-    print(f"Successfully configured local cephadm binary from {local_cephadm_path} into bin/ and root.")
+    cephadm_image = os.environ.get("CEPHADM_IMAGE")
+
+    # extract from the container image
+    if cephadm_image and cephadm_image != "None":
+        print(f"Extracting cephadm binary directly from container image: {cephadm_image}...")
+
+        with open(global_target_sbin, "w") as out_file:
+            extract_result = subprocess.run(
+                ["podman", "run", "--rm", "--net=host", "--entrypoint=cat", cephadm_image, "/usr/sbin/cephadm"],
+                stdout=out_file,
+                text=True
+            )
+
+        if extract_result.returncode != 0:
+            print(f"\n[FATAL ERROR] Failed to extract cephadm from image {cephadm_image}.")
+            sys.exit(1)
+
+        print(f"Successfully extracted cephadm from {cephadm_image}")
+
+    # copy from local shared source directory
+    else:
+        print("No container image specified. Falling back to local shared source directory...")
+        local_cephadm_path = os.path.join(SHARED_CEPH_FOLDER, "src/cephadm/cephadm")
+
+        if not os.path.exists(local_cephadm_path):
+            print(f"\n[FATAL ERROR] Local cephadm binary not found at expected path: {local_cephadm_path}")
+            sys.exit(1)
+
+        execute_shell_command_safely(f"cp {local_cephadm_path} {global_target_sbin}")
+        print(f"Successfully copied local cephadm binary from {local_cephadm_path}")
+
+    execute_shell_command_safely(f"cp {global_target_sbin} {global_target_bin}")
+    execute_shell_command_safely(f"chmod +x {global_target_sbin} {global_target_bin}")
+
+    print("Successfully made cephadm binaries executable globally.")
 
 def create_initial_cluster_configuration_file():
     """Generates the initial-ceph.conf file with size-one and deletion overrides."""
@@ -63,6 +91,21 @@ mon_allow_pool_delete=true
 mon_data_avail_crit=1
 mon_data_avail_warn=1
 """
+    mgr_configs = []
+    prefix = "CONTAINER_IMAGE_"
+
+    for env_key, env_value in os.environ.items():
+        # looking for envs like CONTAINER_IMAGE_* that have a value
+        if env_key.startswith(prefix) and env_value.strip():
+            component_name = env_key[len(prefix):].lower()
+
+            mgr_configs.append(f"mgr/cephadm/container_image_{component_name} = {env_value.strip()}")
+            print(f"Found custom image for {component_name}: {env_value.strip()}")
+
+    if mgr_configs:
+        config_content += "\n[mgr]\n"
+        config_content += "\n".join(mgr_configs) + "\n"
+
     with open("initial-ceph.conf", "w") as config_file:
         config_file.write(config_content)
     print("Successfully generated initial-ceph.conf")
@@ -80,29 +123,44 @@ def load_ceph_image():
     print("No cached images... going to retry on pulling the images..")
     return None
 
+def get_registry_credentials():
+    registry_url = os.environ.get("REGISTRY_URL")
+    registry_username = os.environ.get("REGISTRY_USERNAME")
+    registry_password = os.environ.get("REGISTRY_PASSWORD")
+
+    if not all([registry_url, registry_username, registry_password]):
+        print("\n[INFO] Registry credentials not fully provided. Skipping login.")
+        return ""
+
+    return f" --registry-url {registry_url} --registry-username {registry_username} --registry-password {registry_password}"
+
 def bootstrap_initial_ceph_cluster(monitor_ip_address: str):
     print(f"\n=== Phase 3: Bootstrapping Cluster on {monitor_ip_address} ===")
-    custom_image = os.environ.get("CEPH_IMAGE")
+    custom_image = os.environ.get("CEPHADM_IMAGE")
+    shared_repo_toggle = os.environ.get("SHARED_CEPH_REPO_DIR", "0")
+
+    shared_repo_flag = "--shared_ceph_folder /ceph " if shared_repo_toggle == "1" else ""
     image_flag = f"--image {custom_image} " if custom_image else ""
+
     bootstrap_command = (
-        f"cephadm {image_flag}bootstrap "
+        f"yes \"yes\" | cephadm {image_flag}bootstrap "
         f"--mon-ip {monitor_ip_address} "
         f"--allow-overwrite "
         f"--skip-mon-network "
         f"--config initial-ceph.conf "
         f"--dashboard-password-noupdate "
-        f"--shared_ceph_folder /ceph "
+        f"{shared_repo_flag}"
         f"--initial-dashboard-password admin "
         f"--allow-fqdn-hostname"
-    )
+        f"{get_registry_credentials()}"
+    ).strip()
     execute_shell_command_safely(bootstrap_command, capture_output=False)
 
 def initialize_cephalobox():
     monitor_ip_address = get_primary_routable_ip_address()
+    load_ceph_image()
     prepare_local_cephadm_binary()
     create_initial_cluster_configuration_file()
-
-    load_ceph_image()
 
     bootstrap_initial_ceph_cluster(monitor_ip_address)
     
