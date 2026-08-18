@@ -286,6 +286,8 @@ services:
         ports:
             - "8443:8443"
             - "3000:3000"
+            - "9095:9095"
+            - "9093:9093"
 
     cephalobox2:
         <<: *cephalobox-base
@@ -294,6 +296,7 @@ services:
         ports:
             - "8444:8443"
             - "3001:3000"
+            - "9096:9095"
 
     cephalobox3:
         <<: *cephalobox-base
@@ -302,6 +305,7 @@ services:
         ports:
             - "8445:8443"
             - "3002:3000"
+            - "9097:9095"
 
     cephalobox4:
         <<: *cephalobox-base
@@ -310,6 +314,7 @@ services:
         ports:
             - "8446:8443"
             - "3003:3000"
+            - "9098:9095"
 
     cephalobox5:
         <<: *cephalobox-base
